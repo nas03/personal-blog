@@ -1,9 +1,11 @@
+/* Library */
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import config from "@/config"
+/* Services */
+import { morganLogger } from '@/services';
 /* Config library */
 dotenv.config();
 /* Settings */
@@ -18,6 +20,7 @@ server.use(bodyParser.json());
 
 server.use(cookieParser());
 
+server.use(morganLogger());
 server.listen(PORT, () => {
-	console.log(`⚡️ [server]: Started at port ${PORT}`);
+	console.log(`⚡️[server]: Started at port ${PORT}`);
 });
