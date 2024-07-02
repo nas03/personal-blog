@@ -12,4 +12,6 @@ Welcome to my personal blog project! This project aims to provide a platform for
 
 - **AI Content Generation**: Leverage the power of AI to automatically generate content. Save time and effort by letting the AI assist you in creating engaging blog posts.
 
+- **AI Recommendation System**: Leverage the power of AI to automatically filter and recommend most relevant posts.
+
 Feel free to explore and contribute to this project. Happy blogging!
