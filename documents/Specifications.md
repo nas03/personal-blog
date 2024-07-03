@@ -1,0 +1,24 @@
+## Database Design
+
+- users (user_id, name, email, hashedPassword, isAdmin)
+- posts (post_id, user_id, est_read_time, thumbnail_url, title, content, ts_updated,ts_registered, view_number, like_number, dislike_number)
+- categories (category_id, title, description)
+- post_category (post_id, category_id)
+- post_comments (id, post_id, user_id, comment) (limit comment to 150 words)
+- post_medias (id, post_id, file_type, file_url)
+- user_access_history (id, user_id, user_agent, ip_address, ts_registered)
+- user_refresh_tokens (id, user_id, access_token, expired, delete_flag, ts_registered)
+
+## Pricing
+
+| **No** | **Technology**                | **Deployment Service**              | **Subscription Tier** | **Fee per month** | **Note**                                                                                                                                                                                                                                                                                                                           |
+| ------ | ----------------------------- | ----------------------------------- | --------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1      | Cloud Storage                 | CloudFlare R2                       | Free                  | 0                 | - Free Storage 10 GB / month <br/> - Class A Operations 1 million requests / month <br/> - Class B Operations 10 million requests / month <br/> - Egress (data transfer to Internet) Free <br/> - Use AWS S3 Client to access R2 Bucket                                                                                            |
+| 2      | PostgreSQL (Database)         | AWS RDS                             | Free                  | 0                 | - 12 Months Free <br/> - 750 Hours of Amazon RDS Single-AZ db.t2.micro, db.t3.micro, and db.t4g.micro Instances usage running MySQL, MariaDB, PostgreSQL databases each month (applicable DB engines) <br/> - 20 GB of General Purpose (SSD) database storage <br/> - 20 GB of storage for database backups and DB Snapshots <br/> |
+| 4      | Load Balancer                 | AWS Elastic Load Balancing          | Free                  | 0                 | - 12 Months Free <br/> - Automatic distribution of incoming application traffic across multiple Amazon EC2 instances. <br/> - 750 Hours per month shared between Classic and Application load balancers <br/>- 15 GB of data processing for Classic load balancers <br/> - 15 LCUs for Application load balancers                  |
+| 5      | Training Recommendation Model | Google Colab                        | Free                  | 0                 | --                                                                                                                                                                                                                                                                                                                                 |
+| 6      | Content Generator Model       | Google Colab                        | Free                  | 0                 | --                                                                                                                                                                                                                                                                                                                                 |
+| 7      | Frontend Deployment           | Vercel                              | Free                  | 0                 | --                                                                                                                                                                                                                                                                                                                                 |
+| 8      | Backend Deployment            | AWS EC2                             | Free                  | 0                 | - 12 Months Free <br/> - 750 hours per month of Linux, RHEL, or SLES t2.micro or t3.micro instance dependent on region<br/> -750 hours per month of Windows t2.micro or t3.micro instance dependent on region <br/>- 750 hours per month of public IPv4 address regardless of instance type                                        |
+| 9      | CI/CD                         | Github Actions Workflow             | Free                  | --                |
+| 10     | Environment Variables         | AWS Systems Manager Parameter Store | Free                  | --                |

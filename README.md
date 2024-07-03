@@ -10,7 +10,7 @@ Welcome to my personal blog project! This project aims to provide a platform for
 
 - **Deploy Using Docker**: Utilize Docker to containerize and deploy your blog application. This ensures easy deployment and scalability across different environments.
 
-- **AI Content Generation**: Leverage the power of AI to automatically generate content. Save time and effort by letting the AI assist you in creating engaging blog posts.
+- **AI Content Generator**: Leverage the power of AI to automatically generate content. Save time and effort by letting the AI assist you in creating engaging blog posts.
 
 - **AI Recommendation System**: Leverage the power of AI to automatically filter and recommend most relevant posts.
 
