@@ -1,6 +1,6 @@
 # Task
 
-- [ ] Design database
+- [x] Design database
 - [ ] Modelling database with Draw.io
 - [ ] Setup AWS Parameter Store
 - [ ] Setup AWS S3 Client and Cloudflare R2' s connection
