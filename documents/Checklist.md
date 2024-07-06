@@ -2,7 +2,8 @@
 
 - [x] Design database
 - [x] Modelling database with Draw.io
-- [ ] Setup AWS Parameter Store
-- [ ] Setup AWS S3 Client and Cloudflare R2' s connection
+- [x] Setup AWS Parameter Store
+- [ ] Setup AWS S3 Client and Cloudflare R2's connection
 - [x] Setup local database connection and test querying with knex
-- [ ] Setup AWS RDS and deploy local database
+- [x] Setup AWS RDS and deploy local database
+- [ ] Setup Redis for caching
