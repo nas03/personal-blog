@@ -5,10 +5,24 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
+import { aws } from '@/helpers';
 /* Services */
 
 /* Config library */
 dotenv.config();
+const envList = [
+	'DB_USER',
+	'DB_PASSWORD',
+	'DB_PORT',
+	'DB_HOST',
+	'DB_NAME',
+	'CLOUDFLARE_TOKEN',
+	'CLOUDFLARE_ACCESS_KEY_ID',
+	'CLOUDFLARE_SECRET_KEY_ID',
+	'CLOUDFLARE_HOST',
+	'CLOUDFLARE_HOST_EU',
+];
+
 /* Settings */
 const PORT = process.env.PORT || 5500;
 /* Config server */
@@ -28,6 +42,11 @@ server.use(cookieParser());
 // Logging HTTP Request
 server.use(morgan('dev'));
 
-server.listen(PORT, () => {
-	console.log(`⚡️[server]: Started at port ${PORT}`);
-});
+const startup = async () => {
+	await aws.getParameters(envList);
+	server.listen(PORT, () => {
+		console.log(`⚡️[server]: Started at port ${PORT}`);
+	});
+};
+
+startup();

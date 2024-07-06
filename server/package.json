@@ -5,13 +5,15 @@
   "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "merge-sql": "ts-node sql/merge_sql.ts"
   },
   "keywords": [],
   "author": "nas03",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.609.0",
+    "@aws-sdk/client-ssm": "^3.609.0",
     "axios": "^1.7.2",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
@@ -32,7 +34,8 @@
     "@types/morgan": "^1.9.9",
     "nodemon": "^3.1.4",
     "ts-node": "^10.9.2",
-    "tsc": "^2.0.4"
+    "tsc": "^2.0.4",
+    "tsconfig-paths": "^4.2.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

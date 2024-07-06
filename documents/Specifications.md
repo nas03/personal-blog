@@ -23,3 +23,4 @@
 | 9      | CI/CD                         | Github Actions Workflow             | Free                  | --                |
 | 10     | Environment Variables         | AWS Systems Manager Parameter Store | Free                  | --                |
 | 11     | Caching Request               | Redis                               | Free                  | --                |                                                                                                                                                                                                                                                                                                                                    |
+| 12     | Multi Factor Authentication   | Authenticator App                   | Free                  | --                |
