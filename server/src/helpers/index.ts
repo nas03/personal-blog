@@ -1,4 +1,4 @@
 import db from '@/helpers/db';
 import logger from '@/helpers/logger';
-import aws from '@/helpers/aws';
-export { db, logger, aws };
+import r2 from '@/helpers/r2';
+export { db, logger, r2 };
