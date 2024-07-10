@@ -1,20 +1,34 @@
-const createResponse = (
-	isSuccess: boolean,
-	data: object | {},
-	code?: number,
-	message?: string
-) => {
-	if (isSuccess) {
-		return {
-			status: 'success',
-			code: 200,
-			data,
-		};
-	}
-	return {
-		status: 'error',
-		code,
-		message,
-	};
+import jwt from "jsonwebtoken";
+import { Request, Response, Application, Router } from "express";
+
+export const createResponse = (res: Response, isSuccess: boolean, data?: any, code: number = 500, message: string = "") => {
+  if (isSuccess) {
+    return res.status(200).json({
+      status: "success",
+      data: data,
+      message: message,
+    });
+  }
+
+  return res.status(code).json({
+    status: "error",
+    data: data,
+    message: message,
+  });
 };
-export { createResponse };
+
+export const createAccessToken = (payload: { user_id: string; email: string; role?: string }) => {
+  return jwt.sign(
+    {
+      ...payload,
+      iat: Math.floor(Date.now() / 1000),
+    },
+    `${process.env.JWT_SECRET_KEY}`,
+    {
+      algorithm: "ES256",
+      expiresIn: process.env.JWT_ACCESS_EXP,
+    }
+  );
+};
+
+export const registerRoutes = (app: Application, prefix: string, route: Router[]) => app.use(prefix, route);

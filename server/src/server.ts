@@ -1,11 +1,14 @@
 /* Library */
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import morgan from "morgan";
+/* Router */
+import userRoute from "@/app/user/api";
+import { registerRoutes } from "@/utilities";
+import knex from "knex";
 /* Services */
 
 /* Config library */
@@ -28,12 +31,14 @@ server.use(bodyParser.json());
 server.use(cookieParser());
 
 // Logging HTTP Request
-server.use(morgan('dev'));
+server.use(morgan("dev"));
+
+server.use("/api/user", userRoute);
 
 const startup = async () => {
-	server.listen(PORT, () => {
-		console.log(`⚡️[server]: Started at port ${PORT}`);
-	});
+  server.listen(PORT, () => {
+    console.log(`⚡️[server]: Started at port ${PORT}`);
+  });
 };
 
 startup();
