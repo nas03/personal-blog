@@ -6,6 +6,6 @@ export type User = {
 	phone_number: string;
 	hashed_password: string;
 	is_admin: boolean;
-	ts_created: Date;
+	ts_updated: Date;
 	ts_registered: Date;
 };

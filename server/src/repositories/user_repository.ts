@@ -9,11 +9,10 @@ import { Knex } from "knex";
 const getUserData = async (payload: Pick<User, "user_id"> | Pick<User, "email">) => {
   return await db("user")
     .select("*")
-
-    /*  .where((builder) => {
+    .where((builder) => {
       if ("email" in payload && payload["email"]) return builder.where(payload.email);
       if ("user_id" in payload) return builder.where(payload.user_id);
-    }) */
+    })
     .first();
 };
 
@@ -44,7 +43,7 @@ const deleteUserData = async (user_id: string) => {
   }
 };
 
-const createUserData = async (payload: Omit<User, "ts_updated" | "ts_registered">) => {
+const createUserData = async (payload: Omit<User, "user_id" | "ts_updated" | "ts_registered">) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       return await trx<User>("user").insert(payload);

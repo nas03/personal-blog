@@ -1,2 +1,2 @@
-import * as login from "./login";
-export { login };
+import auth from "@/app/user/domain/auth";
+export { auth };

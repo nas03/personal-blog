@@ -26,9 +26,17 @@ export const createAccessToken = (payload: { user_id: string; email: string; rol
     `${process.env.JWT_SECRET_KEY}`,
     {
       algorithm: "ES256",
-      expiresIn: process.env.JWT_ACCESS_EXP,
-    }
+      expiresIn: `${process.env.JWT_ACCESS_EXP}`,
+    },
   );
 };
 
-export const registerRoutes = (app: Application, prefix: string, route: Router[]) => app.use(prefix, route);
+export const validateFields = (data: any, fields: string[]) => {
+  for (let field of fields) {
+    if (!data[field]) {
+      return false;
+    }
+  }
+
+  return true;
+};

@@ -5,12 +5,11 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import morgan from "morgan";
-/* Router */
-import userRoute from "@/app/user/api";
-import { registerRoutes } from "@/utilities";
-import knex from "knex";
-/* Services */
 
+/* Router */
+import { route } from "@/app";
+/* Services */
+import { printRoute } from "@/helpers/logHTTP";
 /* Config library */
 dotenv.config();
 
@@ -33,31 +32,14 @@ server.use(cookieParser());
 // Logging HTTP Request
 server.use(morgan("dev"));
 
-server.use("/api/user", userRoute);
+server.use("/api", route);
 
 const startup = async () => {
-  server.listen(PORT, () => {
-    console.log(`⚡️[server]: Started at port ${PORT}`);
+  await server.listen(PORT, () => {
+    console.log(`⚡️[server]: Started at port ${PORT}\n`);
   });
+
+  server._router.stack.forEach(printRoute.bind(null, []));
 };
 
 startup();
-
-/* import express from 'express';
-import { registerOrderRoutes } from './apps/orders/api';
-import { registerUserRoutes } from './apps/users/api';
-import { registerPaymentRoutes } from './apps/payments/api';
-
-const app = express();
-const port = 3000;
-
-app.use(express.json());
-
-// Register routes
-registerOrderRoutes(app);
-registerUserRoutes(app);
-registerPaymentRoutes(app);
-
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-}); */

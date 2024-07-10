@@ -9,4 +9,5 @@ export const message = Object.freeze({
 	fields_cannot_blank: 'fields cannot be blank',
 	not_authorized: 'user is not authorized',
 	user_not_exists: 'user is not existed',
+	fields_invalid: 'fields are invalid',
 });
