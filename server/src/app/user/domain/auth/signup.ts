@@ -1,9 +1,14 @@
+// Library
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
+// Utilities
 import { createResponse, validateFields, emailValidator, phoneNumberValidator } from "@/utilities";
-import { code, message } from "@/constants";
-import { user_repository } from "@/repositories";
-import { User } from "@/constants";
+// Constants
+import { authorization, code, message } from "@/constants/consts";
+// Interfaces
+import { User } from "@/constants/interfaces";
+// Repository
+import { users_repository } from "@/repositories";
 
 type SignUpData = {
   first_name: string;
@@ -35,10 +40,10 @@ export const signup = async (req: Request, res: Response) => {
       last_name: last_name,
       hashed_password: hashed_password,
       email: email,
-      is_admin: false,
+      authorization_id: authorization.USER,
       phone_number: phone_number,
     };
-    const newUser = await user_repository.createUserData(payload);
+    const newUser = await users_repository.createUserData(payload);
 
     if (!newUser) {
       return createResponse(res, false, null, code.ERROR, message.system_error);
@@ -49,3 +54,5 @@ export const signup = async (req: Request, res: Response) => {
     return createResponse(res, false, null, code.ERROR, message.system_error);
   }
 };
+
+// SSO

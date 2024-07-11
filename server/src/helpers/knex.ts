@@ -12,12 +12,17 @@ const knexConfig: { [key: string]: Knex.Config } = {
       password: String(process.env.DB_PASSWORD),
       database: String(process.env.DB_NAME),
       port: Number(process.env.DB_PORT),
-      debug: true,
+      debug: true
     },
+    debug: true,
     searchPath: "public",
     pool: {
       min: 0,
       max: 10,
+      /* afterCreate: (conn: any, done: any) => {
+        console.log(conn);
+        done(conn);
+      }, */
     },
   },
   production: {

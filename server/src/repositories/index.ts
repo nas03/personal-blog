@@ -1,2 +1,2 @@
-import * as user_repository from './user_repository';
-export { user_repository };
+import * as users_repository from './users_repository';
+export { users_repository };

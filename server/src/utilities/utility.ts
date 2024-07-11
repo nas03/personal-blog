@@ -5,7 +5,9 @@ export const createResponse = (res: Response, isSuccess: boolean, data?: any, co
   if (isSuccess) {
     return res.status(200).json({
       status: "success",
-      data: data,
+      data: {
+        ...data,
+      },
       message: message,
     });
   }
@@ -25,10 +27,13 @@ export const createAccessToken = (payload: { user_id: string; email: string; rol
     },
     `${process.env.JWT_SECRET_KEY}`,
     {
-      algorithm: "ES256",
       expiresIn: `${process.env.JWT_ACCESS_EXP}`,
-    },
+    }
   );
+};
+
+export const createRefreshToken = (payload: { user_id: string; email: string; exp: number; role?: string }) => {
+  return jwt.sign({ ...payload, iat: Math.floor(Date.now() / 1000) }, String(process.env.JWT_SECRET_KEY));
 };
 
 export const validateFields = (data: any, fields: string[]) => {

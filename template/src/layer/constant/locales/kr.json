@@ -1,0 +1,264 @@
+{
+  "email": {
+    "common": {
+      "dear": "님",
+      "cm_download": {
+        "dl1": "플랫폼 다운로드는",
+        "dl2": "이쪽에서",
+        "dl3": "해 주세요."
+      },
+      "cm_contact": {
+        "pls": "문의 등이 있으시면 당사 ",
+        "company": "지원 데스크",
+        "us": "로 부담없이 문의해 주십시오."
+      },
+      "cm_address": {
+        "sp_desk": "지원데스크:",
+        "email": " 문의 양식",
+        "time_desk": "(24시간 365일 접수)",
+        "onl_chat": "온라인 채팅",
+        "time_chat": "(일본 시간 10:00~24:00 지원)"
+      },
+      "cm_notice": {
+        "title": "위험 경고",
+        "content": ": FX거래(외환마진거래/차금결제거래)는 대상 통화나 종목의 급격한 가격 변동에 따른 투자 원금의 손실 뿐만 아니라 투자 원금 이상의 고액의 손실이 발생할 위험이 매우 높다는 점을 유의해 주시기 바랍니다. 이러한 투자 위험은 높은 레버리지와 초기 입금액의 여러 배에 해당하는 금액으로 거래가 가능한 것에서 비롯되며, 모든 고객에게 적합한 금융 상품 임을 보장하지 않습니다. 투자 위험을 완전히 숙지하시고 자신의 경험을 바탕으로 신중하게 검토한 후 거래해 주시기 바랍니다."
+      },
+      "cm_zone": {
+        "title": "제한 지역과 연령 제한",
+        "content": ": FXON은 미합중국을 비롯한 제한지역 거주자에게 서비스를 제공하지 않습니다. 20세 미만의 고객은 당사의 서비스를 이용할 수 없으며, 본 서비스는 일본 금융청의 감시 하에 있지 않으므로 일본 거주자에 대한 금융 서비스의 권유나 금융 상품의 제공에 관여하지 않음을 안내 드립니다."
+      },
+      "cm_confirm": "이 메일에 짐작가는 것이 없으실 경우, 대단히 송구스러우나 본문을 삭제하지 마시고 메일을 그대로 회신하여 주시기 바랍니다.",
+      "cm_policy": {
+        "left": "이용약관",
+        "right": "개인정보보호정책"
+      },
+      "cm_button": "사이트 로그인",
+      "cm_login": "Management Console 로그인"
+    },
+    "fraud_alert": {
+      "subject": "접속용 URL이 전송되었습니다.",
+      "title_a": "평소와 다른 트랜잭션이 감지되었습니다.",
+      "title_b": "부정 액세스 방지를 위해 아래의 액세스용 URL을 통해 Management Console에 로그인해 주세요.",
+      "table_title": "액세스용 URL",
+      "footer": "액세스용 URL은 발행 후 1시간 동안 유효합니다."
+    },
+    "reset_password": {
+      "subject": "패스워드 재설정용 URL 공지",
+      "title": "신청해 주신 '패스워드 재설정용 URL'을 발송해 드렸습니다. 아래 URL을 클릭하여 패스워드 재설정 절차를 진행해 주세요.",
+      "table_title": "패스워드 재설정용 URL",
+      "footer": "비밀번호 재설정용 URL은 발급 후 30분 동안 유효합니다."
+    },
+    "summary_email": {
+      "subject": "サマリーページのアクセス用URLが送付されました",
+      "title": {
+        "l1": "こちらの本人確認情報用URLより、本人確認情報をご確認ください。",
+        "l2": "サマリーページのアクセス用URLが送付されました。以下のアクセス用URLより、サマリーページへアクセスしてください。"
+      },
+      "table_title": "アクセス用URL",
+      "footer": "アクセス用URLは、発行より24時間有効です。"
+    },
+    "create_real_trading_account": {
+      "ta_cd_block2_data2": {
+        "content": {
+          "content1": "엘리트",
+          "content2": "스탠더드"
+        }
+      },
+      "ta_cd_block2_data4": {
+        "content": {
+          "content1": "USD(달러)",
+          "content2": "JPY(엔화)",
+          "content3": "EUR(유로화)",
+          "content4": "Bitcoin"
+        }
+      }
+    },
+    "close_trading_account": {
+      "content1": "실제",
+      "content2": "데모"
+    },
+    "complete_payment": {
+      "cp_payment_title": {
+        "local_bank": "국내 은행 송금",
+        "credit_card": {
+          "visa": "신용카드（VISA）",
+          "jcb": "신용카드（JCB）",
+          "amex": "신용카드（AMEX）",
+          "master": "신용카드（MASTER）",
+          "diners": "신용카드（DINERS）"
+        }
+      },
+      "wallets": {
+        "usd": {
+          "title": "USD Wallet（달러）",
+          "currency": "USD（달러）"
+        },
+        "jpy": {
+          "title": "JPY Wallet（엔화）",
+          "currency": "JPY（엔화）"
+        },
+        "eur": {
+          "title": "EUR Wallet（유로화）",
+          "currency": "EUR（유로화）"
+        }
+      },
+      "title_th": {
+        "usd_wallet": "USD 지갑",
+        "jpy_wallet": "JPY 지갑",
+        "eur_wallet": "EUR 지갑",
+        "partner_wallet": "파트너 월렛",
+        "btc_wallet": "BTC 지갑",
+        "point_wallet": "포인트 월렛",
+        "deposit": "으로 입금",
+        "withdraw": "에서 출금",
+        "redeem": "으로 교환",
+        "refund": "으로 환불",
+        "account": "계정",
+        "withdraw_fee": "출금 수수료",
+        "deposit_fee": "입금 수수료"
+      }
+    },
+    "change_document_status_document_deficiency":{
+      "myforex":{
+          "title":"【Myforex】{{document_name}}에 미비점이 있었습니다",
+          "title_body":"각종 증명서 제출용 URL:",
+          "intro_content":{
+            "l1":"평소 Myforex를 이용해 주셔서 대단히 감사합니다.",
+            "l2":"고객님께서 제출해주신 증빙 서류를 확인하였지만 기재 사항에 다음과 같은 미비점이 있었습니다."
+          },
+          "note":{
+            "l1":"이 메일은 Myforex에서 '본인 확인' 절차를 밟은 고객님께 발송되었습니다. 짐작이 가지 않는 경우 대단히 번거로우시겠지만 본문은 삭제하지 마시고 메일 그대로 회신하여 주시길 부탁드립니다.",
+            "l2":"평소 Myforex를 이용해 주셔서 대단히 감사합니다.질문 등이 있으시면 당사 지원 데스크로 부담없이 문의해 주세요."
+          }
+      },
+      "icpay":{
+          "title":"【IC PAY】{{document_name}}에 미비점이 있었습니다",
+          "title_body":"각종 증명서 제출용 URL:",
+          "intro_content":{
+            "l1":"평소 IC Pay를 이용해 주셔서 대단히 감사합니다.",
+            "l2":"고객님께서 제출해주신 증빙 서류를 확인하였지만 기재 사항에 다음과 같은 미비점이 있었습니다."
+          }
+      },
+      "fxon":{
+      },
+      "recognition_symbol_ekyc_document":{
+        "ADL":"자동차 운전 면허증",
+        "ADH":"운전 경력 증명서",
+        "PAS":"여권",
+        "MNU":"마이넘버 카드",
+        "FRE":"체류 카드",
+        "PRC":"특별 영주권자 증명서",
+        "BRE":"주민기본대장 카드",
+        "OTH":"기타 ID 카드",
+        "HIN":"보험증",
+        "UTI":"공공요금 명세서",
+        "TAX":"납세 증명서",
+        "COM":"통신 요금 명세서",
+        "INS":"보험금 청구서",
+        "CAD":"카드 이용 대금 명세서",
+        "BAN":"은행 잔고 증명서",
+        "RES":"주민표",
+        "MNN": "마이넘버 통지카드"
+      }
+    },
+    "invite_user": {
+      "subject": "Management Console에 초대합니다.",
+      "title": "Management Console 초대 URL이 발급되었습니다. 아래의 초대 URL을 통해 관리 사용자 등록을 진행해 주세요.",
+      "table_title": "초대 URL",
+      "footer": "액세스용 URL은 발행 후 48시간 동안 유효합니다."
+    },
+    "format_twilio": {
+      "twl_formatMessageSms": "P2T 인증 코드는 {0}입니다. 이 인증 코드의 유효 기간은 {1}분입니다.",
+      "twl_formatVoiceMessage": "P2T 인증 코드는 {0}입니다. 이 인증 코드의 유효 기간은 {1}분입니다."
+    },
+    "two_fa_login": {
+      "subject": "인증 코드가 전송되었습니다.",
+      "title": "Management Console의 인증 코드가 발급되었습니다. 아래의 인증 코드를 인증 화면에 입력해 주세요.",
+      "table_title": "인증 코드",
+      "footer_a": "인증 코드는 발급 후 1시간 동안 유효합니다.",
+      "footer_b": "상기 인증 코드와 무관한 경우, Management Console에 접속하여 보안 설정을 다시 확인해 주세요."
+
+    },
+    "login_notify": {
+      "subject": "Management Console 로그인이 감지되었습니다.",
+      "title": "Management Console 로그인이 감지되었습니다.",
+      "table_title": "로그인 정보",
+      "content_title": {
+        "date_time": "Date & time",
+        "ip_address": "IP address",
+        "country": "Country",
+        "device": "Device/browser"
+      },
+      "footer": "상기 로그인과 무관한 경우, Management Console에 접속하여 보안 설정을 다시 확인해 주세요."
+    }
+  },
+  "csv_pdf": {
+    "range_use_setting": {
+      "enable_rule_update": "유효 룰 변경",
+      "update_priotity": "우선 순위 갱신",
+      "delete_rule": "룰 삭제",
+      "enable_rule": "유효",
+      "disable_rule": "무효",
+      "create_rule": "룰 정의 신규 생성",
+      "rule_description_update": "룰 설명 갱신",
+      "rule_name_update": "룰 이름 갱신",
+      "site_update": "사이트 갱신",
+      "rus_title": {
+        "id": "ID",
+        "content": "갱신 내용",
+        "rule_name": "룰명",
+        "before_update": "갱신 전",
+        "after_update": "갱신 후",
+        "staff_name": "갱신자",
+        "ts_regist": "갱신 일시"
+      }
+    },
+    "payment_transaction":{
+      "status":{
+        "action_required":"Action required",
+        "processing":"Processing",
+        "pending":"Pending",
+        "approved":"Approved",
+        "reject":"Reject",
+        "close":"Close"
+      },
+      "payment_type":{
+        "pay_in":"Payin",
+        "pay_out":"Payout"
+      },
+      "title":{
+        "payment_date":"Payment date",
+        "transaction_id":"Transaction ID",
+        "site":"Site",
+        "status":"Status",
+        "type":"Type",
+        "method":"Method",
+        "category":"Category",
+        "detail":"Detail",
+        "company_acc":"Company (ACC)",
+        "service_acc":"Service (ACC No.)",
+        "amount":"Amount",
+        "fee":"Fee",
+        "rate":"Rate",
+        "name":"Name",
+        "email":"Email",
+        "w_balance_1":"W-Balance 1",
+        "wallet_acc_id_1":"Wallet (ACC.) ID 1",
+        "w_balance_2":"W-Balance 2",
+        "wallet_acc_id_2":"Wallet (ACC.) ID 2",
+        "decision_date":"Decision date",
+        "support_status":"Support status",
+        "manual_auto":"Manual or AUTO"
+      },
+      "support_status":{
+        "no_working":"No working",
+        "working":"Working",
+        "completion":"Completion"
+      },
+      "auto":"AUTO"
+    }
+  },
+  "transaction_history": {
+    "title_cashback": "캐시백 가산"
+  }
+}

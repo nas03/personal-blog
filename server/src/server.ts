@@ -9,7 +9,7 @@ import morgan from "morgan";
 /* Router */
 import { route } from "@/app";
 /* Services */
-import { printRoute } from "@/helpers/logHTTP";
+import { printRoute } from "@/helpers/logRoutes";
 /* Config library */
 dotenv.config();
 
@@ -35,7 +35,7 @@ server.use(morgan("dev"));
 server.use("/api", route);
 
 const startup = async () => {
-  await server.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`⚡️[server]: Started at port ${PORT}\n`);
   });
 

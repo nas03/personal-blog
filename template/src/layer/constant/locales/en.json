@@ -1,0 +1,264 @@
+{
+  "email": {
+    "common": {
+      "dear": "Dear",
+      "cm_download": {
+        "dl1": "Please click ",
+        "dl2": "here",
+        "dl3": " to download the platform."
+      },
+      "cm_contact": {
+        "pls": "If you have any questions, please ",
+        "company": "support desk.",
+        "us": "feel free to contact our "
+      },
+      "cm_address": {
+        "sp_desk": "Support desk:",
+        "email": " Contact Form",
+        "time_desk": " (24 hours a day, 365 days a year)",
+        "onl_chat": " Online chat",
+        "time_chat": " (10: 00-24: 00 Japan time)"
+      },
+      "cm_notice": {
+        "title": "Risk warning",
+        "content": ": Please note that FX trading (foreign exchange margin trading/contract for difference trading) may not only result in a huge loss and the value falling below the principal amount invested due to sudden price fluctuations of the target currency or stock but there is also a very high risk of a loss exceeding the investment principal. The investment risk is due to the high leverage and the ability to trade with an amount many times larger than the initial deposit, and we cannot guarantee that this financial product is suitable for all customers. When making a transaction, please make sure you fully understand the investment risk and carefully consider your own experience before trading."
+      },
+      "cm_zone": {
+        "title": "Restricted areas and age restrictions",
+        "content": ": FXON does not provide services to residents of the United States or other restricted areas. Customers using our services must be at least 20 years of age. In addition, our service is not monitored by the Japan Financial Services Agency, and we are not involved in solicitation for financial services or provision of financial products to residents of Japan."
+      },
+      "cm_confirm": "If you think this email has come to you in error, please reply to the email with the original message included.",
+      "cm_policy": {
+        "left": "Terms and Conditions",
+        "right": "Privacy Policy"
+      },
+      "cm_button": "Log in to the portal",
+      "cm_login": "Log in to Management Console"
+    },
+    "fraud_alert": {
+      "subject": "The access URL has been sent ",
+      "title_a": "An unusual transaction has been detected.",
+      "title_b": "To prevent unauthorized access, please log in to the Management Console from this access URL.",
+      "table_title": "Access URL",
+      "footer": "The access URL is valid for one hour from the time of issuance."
+    },
+    "reset_password": {
+      "subject": "Password reset URL",
+      "title": "As requested, we are sending you the \"URL to reset your password\". Please use this URL to reset your password.",
+      "table_title": " Password reset URL",
+      "footer": "The password reset URL will become invalid after 30 minutes."
+    },
+    "summary_email": {
+      "subject": "サマリーページのアクセス用URLが送付されました",
+      "title": {
+        "l1": "こちらの本人確認情報用URLより、本人確認情報をご確認ください。",
+        "l2": "サマリーページのアクセス用URLが送付されました。以下のアクセス用URLより、サマリーページへアクセスしてください。"
+      },
+      "table_title": "アクセス用URL",
+      "footer": "アクセス用URLは、発行より24時間有効です。"
+    },
+    "create_real_trading_account": {
+      "ta_cd_block2_data2": {
+        "content": {
+          "content1": "Elite",
+          "content2": "Standard"
+        }
+      },
+      "ta_cd_block2_data4": {
+        "content": {
+          "content1": "USD",
+          "content2": "JPY",
+          "content3": "EUR",
+          "content4": "Bitcoin"
+        }
+      }
+    },
+    "close_trading_account": {
+      "content1": "Real",
+      "content2": "Demo"
+    },
+    "complete_payment": {
+      "cp_payment_title": {
+        "local_bank": "Domestic bank",
+        "credit_card": {
+          "visa": "Credit card（VISA）",
+          "jcb": "Credit card（JCB）",
+          "amex": "Credit card（AMEX）",
+          "master": "Credit card（MASTER）",
+          "diners": "Credit card（DINERS）"
+        }
+      },
+      "wallets": {
+        "usd": {
+          "title": "USD Wallet",
+          "currency": "USD"
+        },
+        "jpy": {
+          "title": "JPY Wallet",
+          "currency": "JPY"
+        },
+        "eur": {
+          "title": "EUR Wallet",
+          "currency": "EUR"
+        }
+      },
+      "title_th": {
+        "usd_wallet": "USD Wallet",
+        "jpy_wallet": "JPY Wallet",
+        "eur_wallet": "EUR Wallet",
+        "partner_wallet": "Partner Wallet",
+        "btc_wallet": "BTC Wallet",
+        "point_wallet": "Point Wallet",
+        "deposit": "Deposit to ",
+        "deposit_into": "Deposit into ",
+        "withdraw": "Withdraw from ",
+        "redeem": "Redeem from ",
+        "refund": "Refund to ",
+        "account": "account",
+        "withdraw_fee": "Withdrawal commission",
+        "deposit_fee": "Deposit fee"
+      }
+    },
+    "change_document_status_document_deficiency":{
+      "myforex":{
+          "title":"【Myforex】Your {{document_name}} was incomplete",
+          "title_body":"URL for submitting various certificates:",
+          "intro_content":{
+            "l1":"We sincerely thank you for using Myforex.",
+            "l2":"We have checked the identity document you have submitted and following items mentioned are incomplete."
+          },
+          "note":{
+            "l1":"This email is sent to the customers who have completed the \"identity verification\" procedure on Myforex. If you have no clue about this email, please reply the email directly without deleting the original email.",
+            "l2":"We sincerely thank you for using Myforex. If you have any questions, please feel free to contact our support desk."
+          }
+      },
+      "icpay":{
+          "title":"【IC PAY】The {{document_name}} is incomplete",
+          "title_body":"URL for submitting various certificates:",
+          "intro_content":{
+            "l1":"We sincerely thank you for using IC Pay.",
+            "l2":"We have checked the identity document you have submitted and following items mentioned are incomplete."
+          }
+      },
+      "fxon":{
+      },
+      "recognition_symbol_ekyc_document":{
+        "ADL":"Driver's license",
+        "ADH":"Driving history certificate",
+        "PAS":"Passport",
+        "MNU":"My Number Card",
+        "FRE":"Residence card",
+        "PRC":"Special Permanent Resident Certificate",
+        "BRE":"Basic Resident Registration Card",
+        "OTH":"Other ID cards",
+        "HIN":"Healt insurance card",
+        "UTI":"Utility bills and invoices",
+        "TAX":"Certificate of tax payment",
+        "COM":"Communication bills and invoices",
+        "INS":"Insurance invoices",
+        "CAD":"Credit card statement",
+        "BAN":"Bank balance certificate",
+        "RES":"Certificate of residence",
+        "MNN": "Notification card of My Number"
+      }
+    },
+    "invite_user": {
+      "subject": "Invited to Management Console",
+      "title": "An invitation URL to the Management Console has been issued. Please register as an administrative user from the following invitation URL.",
+      "table_title": "Invitation URL",
+      "footer": "The access URL is valid for 48 hours from the time of issuance."
+    },
+    "format_twilio": {
+      "twl_formatMessageSms": "Your P2T verification code is: {0}. This code will expire in {1} minutes.",
+      "twl_formatVoiceMessage": "Your P2T verification code is: {0}. This code will expire in {1} minutes."
+    },
+    "two_fa_login": {
+      "subject": "Verification code has been sent",
+      "title": "A verification code has been sent to the Management Console. Please enter the following verification code in the verification screen.",
+      "table_title": "Verification code",
+      "footer_a": "The verification code is valid for one hour from the time of issuance.",
+      "footer_b": "If you do not recognize the above verification code, please access the Management Console and review your security settings."
+    },
+    "login_notify": {
+      "subject": "Management Console login detected.",
+      "title": "Management Console login detected.",
+      "table_title": "Login information",
+      "content_title": {
+        "date_time": "Date & time",
+        "ip_address": "IP address",
+        "country": "Country",
+        "device": "Device/browser"
+      },
+      "footer": "If you do not recognize the above login, please access the Management Console and review your security settings."
+    }
+  },
+  "csv_pdf": {
+    "range_use_setting": {
+      "enable_rule_update": "Change the validity rule",
+      "update_priotity": "Update the priorities",
+      "delete_rule": "Delete the rule",
+      "enable_rule": "Enable",
+      "disable_rule": "Disable",
+      "create_rule": "Create a new rule definition",
+      "rule_description_update": "Update rule description",
+      "rule_name_update": "Update rule name",
+      "site_update": "Update the site",
+      "rus_title": {
+        "id": "ID",
+        "content": "Updates",
+        "rule_name": "Rule name",
+        "before_update": "Before update",
+        "after_update": "After update",
+        "staff_name": "Updated by",
+        "ts_regist": "Update date and time"
+      }
+    },
+    "payment_transaction":{
+      "status":{
+        "action_required":"Action required",
+        "processing":"Processing",
+        "pending":"Pending",
+        "approved":"Approved",
+        "reject":"Reject",
+        "close":"Close"
+      },
+      "payment_type":{
+        "pay_in":"Payin",
+        "pay_out":"Payout"
+      },
+      "title":{
+        "payment_date":"Payment date",
+        "transaction_id":"Transaction ID",
+        "site":"Site",
+        "status":"Status",
+        "type":"Type",
+        "method":"Method",
+        "category":"Category",
+        "detail":"Detail",
+        "company_acc":"Company (ACC)",
+        "service_acc":"Service (ACC No.)",
+        "amount":"Amount",
+        "fee":"Fee",
+        "rate":"Rate",
+        "name":"Name",
+        "email":"Email",
+        "w_balance_1":"W-Balance 1",
+        "wallet_acc_id_1":"Wallet (ACC.) ID 1",
+        "w_balance_2":"W-Balance 2",
+        "wallet_acc_id_2":"Wallet (ACC.) ID 2",
+        "decision_date":"Decision date",
+        "support_status":"Support status",
+        "manual_auto":"Manual or AUTO"
+      },
+      "support_status":{
+        "no_working":"No working",
+        "working":"Working",
+        "completion":"Completion"
+      },
+      "auto":"AUTO"
+    }
+  },
+  "transaction_history": {
+    "title_cashback": "cash back addition"
+  }
+}

@@ -1,11 +1,5 @@
 import logger from '@/helpers/logger';
 import {
-	SSMClient,
-	GetParametersRequest,
-	GetParametersCommand,
-	GetParameterCommandInput,
-} from '@aws-sdk/client-ssm';
-import {
 	S3Client,
 	S3ClientConfig,
 	PutObjectCommand,
@@ -15,10 +9,8 @@ import {
 	ListObjectsCommand,
 	HeadObjectCommand,
 } from '@aws-sdk/client-s3';
-import { ElastiCacheClient } from '@aws-sdk/client-elasticache';
 
 import dotenv from 'dotenv';
-import { String } from 'aws-sdk/clients/apigateway';
 
 dotenv.config();
 
