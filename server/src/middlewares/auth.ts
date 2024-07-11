@@ -12,7 +12,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
       return createResponse(res, false, authHeader, code.UNAUTHORIZED, message.not_authorized);
     }
     const refresh_token = authHeader.split(" ")[1];
-    const decodedToken = jwt.verify(refresh_token, String(process.env.JWT_SECRET_KEY)) as AccessToken;
+    const decodedToken = jwt.verify(refresh_token, String(process.env.JWT_SECRET)) as AccessToken;
 
     if (!decodedToken) {
       return createResponse(res, false, decodedToken, code.UNAUTHORIZED, message.not_authorized);

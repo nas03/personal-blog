@@ -6,7 +6,7 @@ import { createResponse, validateFields, emailValidator, phoneNumberValidator } 
 // Constants
 import { authorization, code, message } from "@/constants/consts";
 // Interfaces
-import { User } from "@/constants/interfaces";
+import { UserBasicData } from "@/constants/interfaces";
 // Repository
 import { users_basic_data_repository } from "@/repositories";
 
@@ -35,7 +35,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const hashed_password = await bcryptjs.hash(password, 10);
 
-    const payload: Omit<User, "user_id" | "ts_updated" | "ts_registered"> = {
+    const payload: Omit<UserBasicData, "user_id"> = {
       first_name: first_name,
       last_name: last_name,
       hashed_password: hashed_password,

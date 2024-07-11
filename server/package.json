@@ -12,9 +12,7 @@
   "author": "nas03",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-elasticache": "^3.609.0",
     "@aws-sdk/client-s3": "^3.609.0",
-    "@aws-sdk/client-ssm": "^3.609.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
