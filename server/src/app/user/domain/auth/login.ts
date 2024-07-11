@@ -3,7 +3,7 @@ import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import moment from "moment";
 // Repository
-import { users_repository } from "@/repositories";
+import { user_refresh_tokens_repository, users_repository } from "@/repositories";
 // Constants
 import { code, message } from "@/constants/consts";
 // Utility
@@ -32,10 +32,14 @@ export const login = async (req: Request, res: Response) => {
     });
 
     if (staySignedIn) {
+      const exp = Math.floor(Date.now() / 1000 + moment.duration("1d").asSeconds());
+      const iat = Math.floor(Date.now() / 1000);
+
       const refreshToken = createRefreshToken({
         user_id: userData.user_id,
         email: userData.email,
-        exp: Math.floor(Date.now() / 1000 + moment.duration("1d").asSeconds()),
+        exp: exp,
+        iat: iat,
       });
 
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
@@ -45,9 +49,11 @@ export const login = async (req: Request, res: Response) => {
         secure: true,
       });
 
-      return createResponse(res, true, {
-        accessToken,
-        refreshToken,
+      await user_refresh_tokens_repository.addRefreshToken({
+        user_id: userData.user_id,
+        refresh_token: refreshToken,
+        exp: exp,
+        iat: iat,
       });
     }
     return createResponse(res, true, { accessToken });

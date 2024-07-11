@@ -16,3 +16,12 @@ export type AccessToken = {
   iat: number;
   exp: number;
 };
+export type RefreshToken = {
+	id: number,
+	user_id: string,
+	refresh_token: string,
+	iat: number;
+	exp: number;
+	ts_updated: number
+	ts_registered: number
+}

@@ -32,8 +32,8 @@ export const createAccessToken = (payload: { user_id: string; email: string; rol
   );
 };
 
-export const createRefreshToken = (payload: { user_id: string; email: string; exp: number; role?: string }) => {
-  return jwt.sign({ ...payload, iat: Math.floor(Date.now() / 1000) }, String(process.env.JWT_SECRET_KEY));
+export const createRefreshToken = (payload: { user_id: string; email: string; exp: number; iat: number; role?: string }) => {
+  return jwt.sign({ ...payload }, String(process.env.JWT_SECRET_KEY));
 };
 
 export const validateFields = (data: any, fields: string[]) => {
