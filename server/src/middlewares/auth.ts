@@ -5,17 +5,25 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader) {
-    return createResponse(res, false, null, code.UNAUTHORIZED, message.not_authorized);
-  }
-  const decodedToken = jwt.verify(authHeader, String(process.env.JWT_SECRET_KEY)) as AccessToken;
-  if (!decodedToken) {
-    return createResponse(res, false, null, code.UNAUTHORIZED, message.not_authorized);
-  }
+  try {
+    const authHeader = req.headers["authorization"] as string;
+    console.log({ authHeader });
+    if (!authHeader) {
+      return createResponse(res, false, authHeader, code.UNAUTHORIZED, message.not_authorized);
+    }
+    const refresh_token = authHeader.split(" ")[1];
+    const decodedToken: any = jwt.verify(refresh_token, String(process.env.JWT_SECRET_KEY));
+    console.log({ decodedToken });
+    if (!decodedToken) {
+      return createResponse(res, false, decodedToken, code.UNAUTHORIZED, message.not_authorized);
+    }
 
-  if (Date.now() > decodedToken.exp) {
-    return createResponse(res, false, null, code.UNAUTHORIZED);
+    if (Date.now() / 1000 > decodedToken["exp"]) {
+      return createResponse(res, false, decodedToken, code.UNAUTHORIZED);
+    }
+    next();
+  } catch (error) {
+    console.log(error);
+    return createResponse(res, false, error, code.UNAUTHORIZED);
   }
-  next();
 };

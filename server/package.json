@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
-    "generate-secret": "node -e console.log(require('crypto').randomBytes(256).toString('base64'))"
+    "generate-secret": "node -e console.log(require('crypto').randomBytes(16).toString('base64'))"
   },
   "keywords": [],
   "author": "nas03",
