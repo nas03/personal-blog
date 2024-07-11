@@ -3,7 +3,7 @@ import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import moment from "moment";
 // Repository
-import { user_refresh_tokens_repository, users_repository } from "@/repositories";
+import { user_refresh_tokens_repository, users_basic_data_repository } from "@/repositories";
 // Constants
 import { code, message } from "@/constants/consts";
 // Utility
@@ -13,7 +13,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password, staySignedIn } = req.body;
 
-    const userData = await users_repository.getUserData({
+    const userData = await users_basic_data_repository.getUserData({
       email: email,
     });
 
@@ -45,7 +45,7 @@ export const login = async (req: Request, res: Response) => {
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
         httpOnly: true,
         maxAge: moment.duration(1,'d').asSeconds(),
-        sameSite: "none",
+        sameSite: "strict",
         secure: true,
       });
 

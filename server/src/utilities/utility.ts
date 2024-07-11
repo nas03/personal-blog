@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, Application, Router } from "express";
+import { Token } from "@/constants/interfaces";
 
 export const createResponse = (res: Response, isSuccess: boolean, data?: any, code: number = 500, message: string = "") => {
   if (isSuccess) {
@@ -19,7 +20,7 @@ export const createResponse = (res: Response, isSuccess: boolean, data?: any, co
   });
 };
 
-export const createAccessToken = (payload: { user_id: string; email: string; role?: string }) => {
+export const createAccessToken = (payload: { user_id: string; email: string; authorization_id?: number }) => {
   return jwt.sign(
     {
       ...payload,
@@ -43,5 +44,16 @@ export const validateFields = (data: any, fields: string[]) => {
     }
   }
 
+  return true;
+};
+
+export const verifyToken = (token: string) => {
+  const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET_KEY}`) as Token;
+  if (!decodedToken) {
+    return false;
+  }
+  if (Date.now() / 1000 > decodedToken.exp) {
+    return false;
+  }
   return true;
 };

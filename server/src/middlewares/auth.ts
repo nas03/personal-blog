@@ -12,14 +12,14 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
       return createResponse(res, false, authHeader, code.UNAUTHORIZED, message.not_authorized);
     }
     const refresh_token = authHeader.split(" ")[1];
-    const decodedToken: any = jwt.verify(refresh_token, String(process.env.JWT_SECRET_KEY));
-    console.log({ decodedToken });
+    const decodedToken = jwt.verify(refresh_token, String(process.env.JWT_SECRET_KEY)) as AccessToken;
+
     if (!decodedToken) {
       return createResponse(res, false, decodedToken, code.UNAUTHORIZED, message.not_authorized);
     }
 
     if (Date.now() / 1000 > decodedToken["exp"]) {
-      return createResponse(res, false, decodedToken, code.UNAUTHORIZED);
+      return createResponse(res, false, decodedToken, code.UNAUTHORIZED, message.token_expired);
     }
     next();
   } catch (error) {

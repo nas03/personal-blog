@@ -11,6 +11,7 @@ export const message = Object.freeze({
   not_authorized: "user is not authorized",
   user_not_exists: "user is not existed",
   fields_invalid: "fields are invalid",
+  token_expired: "token is expired"
 });
 
 export const authorization = Object.freeze({

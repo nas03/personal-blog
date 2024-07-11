@@ -8,10 +8,10 @@ const authRouter = Router();
 
 authRouter.post("/login", auth.login);
 authRouter.post("/signup", auth.signup);
-authRouter.get("/test", verifyToken, async (req, res) => {
+authRouter.get("/refresh", auth.refreshToken)
+/* authRouter.get("/test", verifyToken, async (req, res) => {
   console.log(req.cookies);
   return createResponse(res, true, { cookie: JSON.stringify(req.cookies) });
 });
-// authRouter.post("/auth");
-
+ */
 export default authRouter;

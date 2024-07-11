@@ -8,7 +8,7 @@ import { authorization, code, message } from "@/constants/consts";
 // Interfaces
 import { User } from "@/constants/interfaces";
 // Repository
-import { users_repository } from "@/repositories";
+import { users_basic_data_repository } from "@/repositories";
 
 type SignUpData = {
   first_name: string;
@@ -43,7 +43,7 @@ export const signup = async (req: Request, res: Response) => {
       authorization_id: authorization.USER,
       phone_number: phone_number,
     };
-    const newUser = await users_repository.createUserData(payload);
+    const newUser = await users_basic_data_repository.createUserData(payload);
 
     if (!newUser) {
       return createResponse(res, false, null, code.ERROR, message.system_error);

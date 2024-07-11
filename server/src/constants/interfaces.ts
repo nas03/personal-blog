@@ -9,19 +9,21 @@ export type User = {
   ts_updated: Date;
   ts_registered: Date;
 };
-export type AccessToken = {
+export interface Token {
   user_id: string;
-  email: string;
-  role?: string;
   iat: number;
   exp: number;
-};
-export type RefreshToken = {
-	id: number,
-	user_id: string,
-	refresh_token: string,
-	iat: number;
-	exp: number;
-	ts_updated: number
-	ts_registered: number
+}
+export interface AccessToken extends Token {
+  email: string;
+  role?: string;
+}
+export interface RefreshToken extends Token {
+  email: string;
+}
+export interface UserRefreshToken extends Token {
+  id: number;
+  refresh_token: string;
+  ts_updated: number;
+  ts_registered: number;
 }

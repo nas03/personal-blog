@@ -1,5 +1,5 @@
 import { login } from "./login";
 import { signup } from "./signup";
-
-const auth = { login, signup };
+import { refreshToken } from "./refresh_token";
+const auth = { login, signup, refreshToken };
 export default auth;
