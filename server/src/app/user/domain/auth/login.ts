@@ -44,7 +44,7 @@ export const login = async (req: Request, res: Response) => {
 
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
         httpOnly: true,
-        maxAge: moment.duration("1d").asSeconds(),
+        maxAge: moment.duration(1,'d').asSeconds(),
         sameSite: "none",
         secure: true,
       });
