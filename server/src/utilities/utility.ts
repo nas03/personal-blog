@@ -38,16 +38,6 @@ export const createRefreshToken = (payload: { user_id: string; email: string; ex
   return jwt.sign({ ...payload }, String(process.env.JWT_SECRET));
 };
 
-export const validateFields = (data: any, fields: string[]) => {
-  for (let field of fields) {
-    if (!data[field]) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
 export const verifyToken = (token: string) => {
   const decodedToken = jwt.verify(token, `${process.env.JWT_SECRET}`) as Token;
   if (!decodedToken) {

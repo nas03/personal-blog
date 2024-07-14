@@ -32,7 +32,7 @@ server.use(cookieParser());
 // Logging HTTP Request
 server.use(morgan("dev"));
 
-server.use("/api", route);
+server.use("/api/v1", route);
 
 const startup = async () => {
   server.listen(PORT, () => {

@@ -1,12 +1,20 @@
-export interface Token {
-  user_id: string;
-  iat: number;
-  exp: number;
-}
-export interface AccessToken extends Token {
-  email: string;
-  authorization_id?: number;
-}
-export interface RefreshToken extends Token {
-  email: string;
-}
+import { z } from "zod";
+
+const TokenSchema = z.object({
+  user_id: z.string(),
+  iat: z.number(),
+  exp: z.number(),
+});
+
+const AccessTokenSchema = TokenSchema.extend({
+  email: z.string(),
+  authorization_id: z.number().optional(),
+});
+
+const RefreshTokenSchema = TokenSchema.extend({
+  email: z.string(),
+});
+
+export type Token = z.infer<typeof TokenSchema>;
+export type AccessToken = z.infer<typeof AccessTokenSchema>;
+export type RefreshToken = z.infer<typeof RefreshTokenSchema>;

@@ -1,11 +1,12 @@
-import { UserRefreshToken } from "@/constants/interfaces";
+import { UserRefreshTokenRepo } from "@/constants/interfaces";
 import { db } from "@/helpers";
+
 export const getRefreshToken = async (user_id: string) => {
-  const query = db<UserRefreshToken>("user_refresh_tokens").select("id", "user_id", "refresh_token", "exp", "iat").where("user_id", user_id).first();
+  const query = db<UserRefreshTokenRepo>("user_refresh_tokens").select("id", "user_id", "refresh_token", "exp", "iat").where("user_id", user_id).first();
   return query;
 };
 
-export const addRefreshToken = async (payload: Omit<UserRefreshToken, "id">) => {
+export const addRefreshToken = async (payload: Omit<UserRefreshTokenRepo, "id">) => {
   try {
     const transaction = await db.transaction(async (trx) => {
       const query = await trx("user_refresh_tokens").insert({
@@ -27,7 +28,7 @@ export const addRefreshToken = async (payload: Omit<UserRefreshToken, "id">) => 
 export const deleteRefreshToken = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx) => {
-      const query = await trx<UserRefreshToken>("user_refresh_tokens").where("user_id", user_id).delete();
+      const query = await trx<UserRefreshTokenRepo>("user_refresh_tokens").where("user_id", user_id).delete();
 
       if (!query) return false;
       return true;
