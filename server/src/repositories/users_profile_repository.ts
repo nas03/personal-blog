@@ -23,7 +23,7 @@ export const createUserProfile = async (payload: UserProfileRepo) => {
   }
 };
 
-export const updateUserProfile = async (payload: Omit<UserProfileRepo, "id">) => {
+export const updateUserProfile = async (payload: Partial<Omit<UserProfileRepo, "id">>) => {
   try {
     const transaction = await db.transaction(async (trx) => {
       const query = await trx<UserProfileRepo>("users_profile").update(payload).where("user_id", payload.user_id);

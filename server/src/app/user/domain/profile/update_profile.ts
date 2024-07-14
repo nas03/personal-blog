@@ -1,5 +1,5 @@
 // constants
-import { code, message } from "@/constants/consts";
+import { code, message, zodError } from "@/constants/consts";
 import { UserProfileRepo } from "@/constants/interfaces";
 // helpers
 import { logger } from "@/helpers";
@@ -13,9 +13,9 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 const DataSchema = z.object({
-  profile_image_url: z.string(),
-  country: z.string(),
-  address: z.string(),
+  profile_image_url: z.string(zodError),
+  country: z.string(zodError),
+  address: z.string(zodError),
 });
 
 export const updateProfile = async (req: Request, res: Response) => {

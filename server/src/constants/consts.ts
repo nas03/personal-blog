@@ -15,6 +15,11 @@ export const message = Object.freeze({
   user_forbidden: "user is forbidden",
 });
 
+export const zodError = Object.freeze({
+  required_error: message.fields_cannot_blank,
+  invalid_type_error: message.fields_invalid,
+});
+
 export const authorization = Object.freeze({
   SYSTEM_ADMINISTRATOR: 1,
   USER: 2,

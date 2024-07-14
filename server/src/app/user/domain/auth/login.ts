@@ -6,21 +6,21 @@ import { z } from "zod";
 // Repository
 import { user_refresh_tokens_repository, users_basic_data_repository } from "@/repositories";
 // Constants
-import { code, message } from "@/constants/consts";
+import { code, message, zodError } from "@/constants/consts";
 // Utility
 import { createAccessToken, createRefreshToken, createResponse } from "@/utilities";
 
 const DataSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-  staySignedIn: z.boolean(),
+  email: z.string(zodError).email({ message: zodError.invalid_type_error }),
+  password: z.string(zodError).min(1, { message: zodError.invalid_type_error }),
+  staySignedIn: z.boolean(zodError),
 });
 
 export const login = async (req: Request, res: Response) => {
   try {
     const validate = DataSchema.safeParse(req.body);
     if (!validate.success) {
-      return createResponse(res, false, null, code.BAD_REQUEST, message.fields_invalid);
+      return createResponse(res, false, null, code.BAD_REQUEST, validate.error.issues[0].message);
     }
     const data = validate.data;
 

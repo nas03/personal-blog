@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 // Utilities
 import { createResponse, emailValidator, phoneNumberValidator } from "@/utilities";
 // Constants
-import { authorization, code, message } from "@/constants/consts";
+import { authorization, code, message, zodError } from "@/constants/consts";
 // Interfaces
 import { UserBasicDataRepo } from "@/constants/interfaces";
 // Repository
@@ -13,18 +13,18 @@ import { users_basic_data_repository } from "@/repositories";
 import { z } from "zod";
 
 const DataSchema = z.object({
-  first_name: z.string(),
-  last_name: z.string(),
-  email: z.string().email(),
-  password: z.string(),
-  phone_number: z.string(),
+  first_name: z.string(zodError),
+  last_name: z.string(zodError),
+  email: z.string(zodError).email({ message: zodError.invalid_type_error }),
+  password: z.string(zodError),
+  phone_number: z.string(zodError),
 });
 
 export const signup = async (req: Request, res: Response) => {
   try {
     const validate = DataSchema.safeParse(req.body);
     if (!validate.success) {
-      return createResponse(res, false, null, code.BAD_REQUEST, message.fields_cannot_blank);
+      return createResponse(res, false, null, code.BAD_REQUEST, validate.error.issues[0].message);
     }
     const data = validate.data;
 
