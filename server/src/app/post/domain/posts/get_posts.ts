@@ -5,6 +5,8 @@ import { createResponse, getUserIdByToken, zodValidate } from "@/utilities";
 import { Request, Response } from "express";
 import { z } from "zod";
 
+//! Must join with category table
+
 const DataSchema = z.object({
   post_id: z.number(zodError).nonnegative(zodError.invalid_type_error),
 });
@@ -39,7 +41,21 @@ export const getPostByUserId = async (req: Request, res: Response) => {
     if (!responseGetPosts) {
       return createResponse(res, false, null, code.ERROR, message.system_error);
     }
-    return createResponse(res, true, responseGetPosts);
+    return createResponse(res, true, { responseGetPosts });
+  } catch (error) {
+    const { message: errMessage, code: errCode } = error as ErrorLog;
+    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
+    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+
+    return createResponse(res, false, null, responseCode, responseMessage);
+  }
+};
+
+export const getPostByAuthor = async (req: Request, res: Response) => {
+  try {
+    const data = zodValidate(req.params, z.object({ user_id: z.string(zodError) }));
+    const responseGetPosts = await posts_repository.getPostByUser(data.user_id);
+    return createResponse(res, true, { responseGetPosts });
   } catch (error) {
     const { message: errMessage, code: errCode } = error as ErrorLog;
     const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
