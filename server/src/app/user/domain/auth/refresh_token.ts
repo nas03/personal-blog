@@ -1,8 +1,9 @@
+import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { RefreshToken } from "@/constants/interfaces";
 import { user_refresh_tokens_repository, users_basic_data_repository } from "@/repositories";
 import { createAccessToken, createRefreshToken, createResponse, verifyToken } from "@/utilities";
-import { Response, Request } from "express";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import moment from "moment";
 
@@ -48,6 +49,10 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     return createResponse(res, true, { accessToken });
   } catch (error) {
-    return createResponse(res, false, null, code.UNAUTHORIZED, message.not_authorized);
+    const { message: errMessage, code: errCode } = error as ErrorLog;
+    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
+    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+
+    return createResponse(res, false, null, responseCode, responseMessage);
   }
 };

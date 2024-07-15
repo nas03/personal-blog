@@ -14,10 +14,9 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
     const refresh_token = authHeader.split(" ")[1];
     const decodedToken = jwt.verify(refresh_token, String(process.env.JWT_SECRET)) as AccessToken;
 
-    if (!decodedToken) {
+    if (!decodedToken || !decodedToken.user_id) {
       return createResponse(res, false, decodedToken, code.UNAUTHORIZED, message.not_authorized);
     }
-
     if (Date.now() / 1000 > decodedToken["exp"]) {
       return createResponse(res, false, decodedToken, code.UNAUTHORIZED, message.token_expired);
     }

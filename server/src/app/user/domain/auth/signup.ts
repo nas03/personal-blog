@@ -11,6 +11,8 @@ import { UserBasicDataRepo } from "@/constants/interfaces";
 import { users_basic_data_repository } from "@/repositories";
 // library
 import { z } from "zod";
+// helper
+import { ErrorLog } from "@/constants/common";
 
 const DataSchema = z.object({
   first_name: z.string(zodError),
@@ -50,7 +52,11 @@ export const signup = async (req: Request, res: Response) => {
 
     return createResponse(res, true);
   } catch (error) {
-    return createResponse(res, false, null, code.ERROR, message.system_error);
+    const { message: errMessage, code: errCode } = error as ErrorLog;
+    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
+    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+
+    return createResponse(res, false, null, responseCode, responseMessage);
   }
 };
 

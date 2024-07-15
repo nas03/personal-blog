@@ -1,18 +1,22 @@
 export const code = Object.freeze({
-  ERROR: 500,
-  UNAUTHORIZED: 401,
+  SUCCESS: 200,
   BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  INVALID: 402,
   FORBIDDEN: 403,
+  CONFLICT: 409,
+  VALIDATOR: 422,
+  ERROR: 500,
 });
 
 export const message = Object.freeze({
-  system_error: "system error",
-  fields_cannot_blank: "fields cannot be blank",
-  not_authorized: "user is not authorized",
-  user_not_exists: "user is not existed",
-  fields_invalid: "fields are invalid",
-  token_expired: "token is expired",
-  user_forbidden: "user is forbidden",
+  system_error: "system_error",
+  fields_cannot_blank: "fields_cannot_blank",
+  not_authorized: "not_authorized",
+  user_not_exists: "user_not_exists",
+  fields_invalid: "fields_invalid",
+  token_expired: "token_expired",
+  user_forbidden: "user_forbidden",
 });
 
 export const zodError = Object.freeze({

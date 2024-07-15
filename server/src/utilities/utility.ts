@@ -1,22 +1,24 @@
-import jwt from "jsonwebtoken";
-import { Request, Response, Application, Router } from "express";
+import { ErrorLog } from "@/constants/common";
+import { code, message } from "@/constants/consts";
 import { Token } from "@/constants/interfaces";
-import { logger } from "@/helpers";
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import _ from "lodash";
+import { z, ZodSchema } from "zod";
 
 export const createResponse = (res: Response, isSuccess: boolean, data?: any, code: number = 500, message: string = "") => {
+  let resData = data ? data : {};
   if (isSuccess) {
     return res.status(200).json({
       status: "success",
-      data: {
-        ...data,
-      },
+      data: resData,
       message: message,
     });
   }
 
   return res.status(code).json({
     status: "error",
-    data: data,
+    data: resData,
     message: message,
   });
 };
@@ -50,16 +52,19 @@ export const verifyToken = (token: string) => {
 };
 
 export const getUserIdByToken = (req: Request) => {
-  try {
-    const token = req.headers?.authorization || "";
-    if (!token) {
-      return false;
-    }
-    const verify = jwt.verify(token, `${process.env.JWT_SECRET}`) as Token;
-    if (!verify) return false;
-    return verify.user_id;
-  } catch (error) {
-    console.log(error);
-    return false;
+  const token = req.headers?.authorization || "";
+  if (!token) {
+    throw new ErrorLog(code.UNAUTHORIZED, message.not_authorized);
   }
+  const verify = jwt.verify(token, `${process.env.JWT_SECRET}`) as Token;
+  if (!verify) throw new ErrorLog(code.UNAUTHORIZED, message.not_authorized);
+  return verify.user_id;
+};
+
+export const zodValidate = <T>(data: any, schema: ZodSchema<T>, options?: Partial<z.ParseParams>): T => {
+  const validate = _.isEmpty(options) ? schema.safeParse(data) : schema.safeParse(data, options);
+  if (!validate.success) {
+    throw new ErrorLog(code.BAD_REQUEST, validate.error.issues[0].message);
+  }
+  return validate.data;
 };

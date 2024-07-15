@@ -8,7 +8,8 @@ import { user_refresh_tokens_repository, users_basic_data_repository } from "@/r
 // Constants
 import { code, message, zodError } from "@/constants/consts";
 // Utility
-import { createAccessToken, createRefreshToken, createResponse } from "@/utilities";
+import { ErrorLog } from "@/constants/common";
+import { createAccessToken, createRefreshToken, createResponse, zodValidate } from "@/utilities";
 
 const DataSchema = z.object({
   email: z.string(zodError).email({ message: zodError.invalid_type_error }),
@@ -18,11 +19,7 @@ const DataSchema = z.object({
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const validate = DataSchema.safeParse(req.body);
-    if (!validate.success) {
-      return createResponse(res, false, null, code.BAD_REQUEST, validate.error.issues[0].message);
-    }
-    const data = validate.data;
+    const data = zodValidate(req.body, DataSchema);
 
     const userData = await users_basic_data_repository.getUserData({
       email: data.email,
@@ -68,8 +65,11 @@ export const login = async (req: Request, res: Response) => {
     }
     return createResponse(res, true, { accessToken });
   } catch (error) {
-    console.log(error);
-    return createResponse(res, false, null, code.ERROR, message.system_error);
+    const { message: errMessage, code: errCode } = error as ErrorLog;
+    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
+    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+
+    return createResponse(res, false, null, responseCode, responseMessage);
   }
 };
 

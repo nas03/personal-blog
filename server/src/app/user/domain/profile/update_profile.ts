@@ -1,8 +1,7 @@
 // constants
+import { ErrorLog } from "@/constants/common";
 import { code, message, zodError } from "@/constants/consts";
-import { UserProfileRepo } from "@/constants/interfaces";
 // helpers
-import { logger } from "@/helpers";
 // repository
 import { users_profile_repository } from "@/repositories";
 // utilities
@@ -21,10 +20,6 @@ const DataSchema = z.object({
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const user_id = getUserIdByToken(req);
-    if (!user_id) {
-      createResponse(res, false, null, code.UNAUTHORIZED, message.not_authorized);
-    }
-
     const validate = DataSchema.safeParse(req.body);
 
     if (!validate.success) {
@@ -33,7 +28,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
     const data = validate.data;
     const payload = {
-      user_id: String(user_id),
+      user_id: user_id,
       profile_image_url: data.profile_image_url,
       country: data.country,
       address: data.address,
@@ -45,7 +40,10 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
     return createResponse(res, true);
   } catch (error) {
-    logger.error(error);
-    return createResponse(res, false, null, code.ERROR, message.system_error);
+    const { message: errMessage, code: errCode } = error as ErrorLog;
+    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
+    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+
+    return createResponse(res, false, null, responseCode, responseMessage);
   }
 };
