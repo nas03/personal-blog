@@ -3,14 +3,18 @@ import { db } from "@/helpers";
 
 export const getPostById = async (post_id: number) => {
   const query = await db<PostRepo>("posts")
-  // .leftJoin("post_category", )
-  .select("post_id", "title", "user_id", "thumbnail_url", "content")
-  .where("post_id", post_id);
+    // .leftJoin("post_category", )
+    .select("post_id", "title", "user_id", "thumbnail_url", "content")
+    .where("post_id", post_id);
   return query;
 };
 
 export const getPostByUser = async (user_id: string) => {
-  const query = await db<PostRepo>("posts").select("post_id", "title", "user_id", "thumbnail_url", "content").where("user_id", user_id);
+  const query = await db<PostRepo>("posts")
+    .leftJoin("post_category as pc", "posts.post_id", "post_category.post_id")
+    .leftJoin("categories as cat", "cat.category_id", "pc.category_id")
+    .select("posts.post_id", "posts.title", "posts.user_id", "posts.thumbnail_url", "posts.content", "cat.title")
+    .where("user_id", user_id);
   return query;
 };
 

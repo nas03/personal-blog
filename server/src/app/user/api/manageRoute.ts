@@ -1,7 +1,7 @@
 //Library
 import { Router } from "express";
 //Domain functions
-import manage from "@/app/user/domain/mange";
+import manage from "@/app/user/domain/manage";
 import { verifyToken } from "@/middlewares/auth";
 const profileRouter = Router();
 
