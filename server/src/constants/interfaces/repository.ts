@@ -3,7 +3,7 @@ import { z } from "zod";
 /* --REPOSITORY-- */
 const RepositorySchema = z.object({
   ts_updated: z.date().optional(),
-  ts_registered: z.date().optional(),
+  ts_created: z.date().optional(),
 });
 
 const UserBasicDataSchema = RepositorySchema.extend({
