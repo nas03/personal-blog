@@ -1,4 +1,4 @@
-import { pgTable, serial, text, integer, uuid, varchar, timestamp, inet, PgTable } from "drizzle-orm/pg-core";
+/* import { pgTable, serial, text, integer, uuid, varchar, timestamp, inet, PgTable } from "drizzle-orm/pg-core";
 
 export const users_basic_data = pgTable("users_basic_data", {
   user_id: uuid("user_id").defaultRandom().primaryKey(),
@@ -52,7 +52,7 @@ export const comments = pgTable("comments", {
 });
 
 export const post_category = pgTable("post_category", {
-  id: integer("id").generatedAlwaysAsIdentity().primaryKey(),
+  id: integer("id").gene().primaryKey(),
   post_id: integer("post_id")
     .notNull()
     .references(() => posts.post_id, {
@@ -107,3 +107,4 @@ export const users_profile = pgTable("users_profile", {
   ts_updated: timestamp("ts_updated", { withTimezone: true }).defaultNow(),
   ts_created: timestamp("ts_created", { withTimezone: true }).defaultNow(),
 });
+ */
