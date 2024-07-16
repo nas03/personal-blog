@@ -1,4 +1,3 @@
-import { PostgreSQLSettings } from "aws-sdk/clients/dms";
 import { Knex } from "knex";
 
 import dotenv from "dotenv";
@@ -12,7 +11,7 @@ const knexConfig: { [key: string]: Knex.Config } = {
       password: String(process.env.DB_PASSWORD),
       database: String(process.env.DB_NAME),
       port: Number(process.env.DB_PORT),
-      debug: true
+      debug: true,
     },
     debug: true,
     searchPath: "public",
