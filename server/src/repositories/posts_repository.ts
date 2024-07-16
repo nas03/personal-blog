@@ -21,7 +21,7 @@ export const getPostByUser = async (user_id: string) => {
 export const createPost = async (payload: Omit<PostRepo, "post_id">) => {
   try {
     const transaction = await db.transaction(async (trx) => {
-      const query = await db<PostRepo>("posts").insert(payload);
+      const query = await trx<PostRepo>("posts").insert(payload);
       if (!query) return false;
       return query;
     });
