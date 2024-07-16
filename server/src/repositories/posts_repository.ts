@@ -2,7 +2,10 @@ import { PostRepo } from "@/constants/interfaces";
 import { db } from "@/helpers";
 
 export const getPostById = async (post_id: number) => {
-  const query = await db<PostRepo>("posts").select("post_id", "title", "user_id", "thumbnail_url", "content").where("post_id", post_id);
+  const query = await db<PostRepo>("posts")
+  .leftJoin("post_category", )
+  .select("post_id", "title", "user_id", "thumbnail_url", "content")
+  .where("post_id", post_id);
   return query;
 };
 

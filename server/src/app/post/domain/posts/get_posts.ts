@@ -33,7 +33,7 @@ export const getPostById = async (req: Request, res: Response) => {
   }
 };
 
-export const getPostByUserId = async (req: Request, res: Response) => {
+export const getPostsByUserId = async (req: Request, res: Response) => {
   try {
     const user_id = getUserIdByToken(req);
 
@@ -51,7 +51,7 @@ export const getPostByUserId = async (req: Request, res: Response) => {
   }
 };
 
-export const getPostByAuthor = async (req: Request, res: Response) => {
+export const getPostsByAuthor = async (req: Request, res: Response) => {
   try {
     const data = zodValidate(req.params, z.object({ user_id: z.string(zodError) }));
     const responseGetPosts = await posts_repository.getPostByUser(data.user_id);

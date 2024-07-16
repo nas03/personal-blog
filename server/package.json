@@ -50,5 +50,9 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+    "trustedDependencies": [
+    "aws-sdk"
+  ]
+
 }
