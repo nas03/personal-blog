@@ -17,6 +17,8 @@ export const message = Object.freeze({
   fields_invalid: "fields_invalid",
   token_expired: "token_expired",
   user_forbidden: "user_forbidden",
+  update_failed: "update_failed",
+  
 });
 
 export const zodError = Object.freeze({

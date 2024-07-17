@@ -25,3 +25,5 @@
 | 11     | Caching Request               | AWS ElastiCache                     | Free                  | --                |                                                                                                                                                                                                                                                                                                                                    |
 | 12     | Multi Factor Authentication   | Authenticator App                   | Free                  | --                |
 | 13     | Notification                  |                                     |                       |
+
+Requirements: https://docs.google.com/spreadsheets/d/13tb3wjAOPKoFF-hwi5lBNv_e9jhX4ijrXXSwQW8BgHA/edit?gid=0#gid=0

@@ -2,7 +2,7 @@
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 // Utilities
-import { createResponse, emailValidator, phoneNumberValidator } from "@/utilities";
+import { createResponse, emailValidator, getErrorMsg, phoneNumberValidator, zodValidate } from "@/utilities";
 // Constants
 import { authorization, code, message, zodError } from "@/constants/consts";
 // Interfaces
@@ -12,9 +12,8 @@ import { users_basic_data_repository } from "@/repositories";
 // library
 import { z } from "zod";
 // helper
-import { ErrorLog } from "@/constants/common";
 
-const DataSchema = z.object({
+const ValidateSchema = z.object({
   first_name: z.string(zodError),
   last_name: z.string(zodError),
   email: z.string(zodError).email({ message: zodError.invalid_type_error }),
@@ -24,11 +23,7 @@ const DataSchema = z.object({
 
 export const signup = async (req: Request, res: Response) => {
   try {
-    const validate = DataSchema.safeParse(req.body);
-    if (!validate.success) {
-      return createResponse(res, false, null, code.BAD_REQUEST, validate.error.issues[0].message);
-    }
-    const data = validate.data;
+    const data = zodValidate(req.body, ValidateSchema);
 
     if (!emailValidator(data.email) || !phoneNumberValidator(data.phone_number)) {
       return createResponse(res, false, null, code.BAD_REQUEST, message.fields_invalid);
@@ -52,9 +47,7 @@ export const signup = async (req: Request, res: Response) => {
 
     return createResponse(res, true);
   } catch (error) {
-    const { message: errMessage, code: errCode } = error as ErrorLog;
-    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
-    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+    const { responseCode, responseMessage } = getErrorMsg(error as Error);
 
     return createResponse(res, false, null, responseCode, responseMessage);
   }

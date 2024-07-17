@@ -1,11 +1,10 @@
-import { ErrorLog } from "@/constants/common";
 import { authorization, code, message, zodError } from "@/constants/consts";
 import { users_basic_data_repository } from "@/repositories";
 import { createResponse, getUserIdByToken, zodValidate } from "@/utilities";
 import { Request, Response } from "express";
 import { z } from "zod";
 
-const DataSchema = z.object({
+const ValidateSchema = z.object({
   user_id: z.string(zodError),
 });
 
@@ -21,7 +20,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 
     // VALIDATE TARGET_ID
-    const data = zodValidate(req.params, DataSchema);
+    const data = zodValidate(req.params, ValidateSchema);
 
     // DELETE TARGET FROM DB
     const target_id = data.user_id;
@@ -32,9 +31,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     return createResponse(res, true);
   } catch (error) {
-    const { message: errMessage, code: errCode } = error as ErrorLog;
-    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
-    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+   const {responseCode, responseMessage} = getErrorMsg(error as Error)
 
     return createResponse(res, false, null, responseCode, responseMessage);
   }

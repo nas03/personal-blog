@@ -8,10 +8,9 @@ import { user_refresh_tokens_repository, users_basic_data_repository } from "@/r
 // Constants
 import { code, message, zodError } from "@/constants/consts";
 // Utility
-import { ErrorLog } from "@/constants/common";
 import { createAccessToken, createRefreshToken, createResponse, zodValidate } from "@/utilities";
 
-const DataSchema = z.object({
+const ValidateSchema = z.object({
   email: z.string(zodError).email({ message: zodError.invalid_type_error }),
   password: z.string(zodError).min(1, { message: zodError.invalid_type_error }),
   staySignedIn: z.boolean(zodError),
@@ -19,7 +18,7 @@ const DataSchema = z.object({
 
 export const login = async (req: Request, res: Response) => {
   try {
-    const data = zodValidate(req.body, DataSchema);
+    const data = zodValidate(req.body, ValidateSchema);
 
     const userData = await users_basic_data_repository.getUserData({
       email: data.email,
@@ -65,9 +64,7 @@ export const login = async (req: Request, res: Response) => {
     }
     return createResponse(res, true, { accessToken });
   } catch (error) {
-    const { message: errMessage, code: errCode } = error as ErrorLog;
-    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
-    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+   const {responseCode, responseMessage} = getErrorMsg(error as Error)
 
     return createResponse(res, false, null, responseCode, responseMessage);
   }

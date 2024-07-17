@@ -16,9 +16,7 @@ export const getAllUser = async (req: Request, res: Response) => {
 
     return createResponse(res, true, { responseAllUserData });
   } catch (error) {
-    const { message: errMessage, code: errCode } = error as ErrorLog;
-    const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
-    const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+   const {responseCode, responseMessage} = getErrorMsg(error as Error)
 
     return createResponse(res, false, null, responseCode, responseMessage);
   }

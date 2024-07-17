@@ -18,3 +18,6 @@ const RefreshTokenSchema = TokenSchema.extend({
 export type Token = z.infer<typeof TokenSchema>;
 export type AccessToken = z.infer<typeof AccessTokenSchema>;
 export type RefreshToken = z.infer<typeof RefreshTokenSchema>;
+export type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};

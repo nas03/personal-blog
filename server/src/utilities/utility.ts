@@ -1,6 +1,7 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { Token } from "@/constants/interfaces";
+import { r2 } from "@/helpers";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import _ from "lodash";
@@ -67,4 +68,23 @@ export const zodValidate = <T>(data: any, schema: ZodSchema<T>, options?: Partia
     throw new ErrorLog(code.BAD_REQUEST, validate.error.issues[0].message);
   }
   return validate.data;
+};
+
+export const getErrorMsg = (error: Error) => {
+  const { message: errMessage, code: errCode } = error as ErrorLog;
+  const responseCode = message.hasOwnProperty(errMessage) ? errCode : code.ERROR;
+  const responseMessage = message.hasOwnProperty(errMessage) ? errMessage : message.system_error;
+  return { responseCode, responseMessage };
+};
+
+// TODO: Finish upload file function
+export const uploadFile = async (fileName: string, content: any, path: string, contentType?: string) => {
+  try {
+    const upload = await r2.putObject(path, fileName, content, contentType);
+    if (!upload) throw new ErrorLog(code.ERROR, message.system_error);
+    return upload;
+  } catch (error) {
+    console.log(error);
+    throw new ErrorLog(code.ERROR, message.system_error);
+  }
 };
