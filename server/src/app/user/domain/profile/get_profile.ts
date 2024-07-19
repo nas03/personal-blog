@@ -1,7 +1,7 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { users_profile_repository } from "@/repositories";
-import { createResponse, getUserIdByToken } from "@/utilities";
+import { createResponse, getErrorMsg, getUserIdByToken } from "@/utilities";
 import { Request, Response } from "express";
 
 export const getUserProfile = async (req: Request, res: Response) => {
