@@ -8,7 +8,7 @@ import { user_refresh_tokens_repository, users_basic_data_repository } from "@/r
 // Constants
 import { code, message, zodError } from "@/constants/consts";
 // Utility
-import { createAccessToken, createRefreshToken, createResponse, zodValidate } from "@/utilities";
+import { createAccessToken, createRefreshToken, createResponse, getErrorMsg, zodValidate } from "@/utilities";
 
 const ValidateSchema = z.object({
   email: z.string(zodError).email({ message: zodError.invalid_type_error }),
