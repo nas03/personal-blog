@@ -9,7 +9,7 @@ export const getUserProfile = async (user_id: string) => {
   return query;
 };
 
-export const createUserProfile = async (payload: UserProfileRepo) => {
+export const createUserProfile = async (payload: Partial<UserProfileRepo> & { user_id: string }) => {
   try {
     const transaction = await db.transaction(async (trx) => {
       const query = await trx<UserProfileRepo>("users_profile").insert(payload);

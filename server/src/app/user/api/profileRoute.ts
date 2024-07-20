@@ -7,4 +7,5 @@ const profileRouter = Router();
 
 profileRouter.get("/", verifyToken, profile.getUserProfile);
 profileRouter.post("/update", verifyToken, profile.updateProfile);
+profileRouter.post("/create", verifyToken, profile.createProfile);
 export default profileRouter;

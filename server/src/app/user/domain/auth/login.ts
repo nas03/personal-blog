@@ -38,9 +38,10 @@ export const login = async (req: Request, res: Response) => {
     });
 
     if (data.staySignedIn) {
-      const exp = Math.floor(Date.now() / 1000 + moment.duration("1d").asSeconds());
+      // !: Bug exp and iat
+      const exp = Math.floor(Date.now() / 1000) + moment.duration(1, "day").asSeconds();
       const iat = Math.floor(Date.now() / 1000);
-
+      console.log({ exp, iat });
       const refreshToken = createRefreshToken({
         user_id: userData.user_id,
         email: userData.email,
@@ -50,7 +51,7 @@ export const login = async (req: Request, res: Response) => {
 
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
         httpOnly: true,
-        maxAge: moment.duration(1, "d").asSeconds(),
+        maxAge: moment.duration(1, "day").asSeconds(),
         sameSite: "strict",
         secure: true,
       });
@@ -64,8 +65,7 @@ export const login = async (req: Request, res: Response) => {
     }
     return createResponse(res, true, { accessToken });
   } catch (error) {
-   const {responseCode, responseMessage} = getErrorMsg(error as Error)
-
+    const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);
   }
 };

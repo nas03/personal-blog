@@ -7,21 +7,23 @@ import jwt from "jsonwebtoken";
 import _ from "lodash";
 import { z, ZodSchema } from "zod";
 
-export const createResponse = (res: Response, isSuccess: boolean, data?: any, code: number = 500, message: string = "") => {
-  let resData = data ? data : {};
-  if (isSuccess) {
-    return res.status(200).json({
-      status: "success",
-      data: resData,
-      message: message,
-    });
-  }
+export const createResponse = (res: Response, isSuccess: boolean, data?: any, code: number = 200, message: string = "") => {
+  type Response = {
+    status: string | null;
+    data: any | null;
+    message: string;
+  };
+  const response: Response = {
+    status: null,
+    data: null,
+    message: "",
+  };
+  
+  isSuccess ? (response["status"] = "success") : (response["status"] = "error");
 
-  return res.status(code).json({
-    status: "error",
-    data: resData,
-    message: message,
-  });
+  response["data"] = data || null;
+  response["message"] = message;
+  return res.status(code).json(response);
 };
 
 export const createAccessToken = (payload: { user_id: string; email: string; authorization_id?: number }) => {
@@ -53,10 +55,11 @@ export const verifyToken = (token: string) => {
 };
 
 export const getUserIdByToken = (req: Request) => {
-  const token = req.headers?.authorization || "";
-  if (!token) {
+  const authHeader = req.headers["authorization"] || "";
+  if (!authHeader) {
     throw new ErrorLog(code.UNAUTHORIZED, message.not_authorized);
   }
+  const token = authHeader.split(" ")[1];
   const verify = jwt.verify(token, `${process.env.JWT_SECRET}`) as Token;
   if (!verify) throw new ErrorLog(code.UNAUTHORIZED, message.not_authorized);
   return verify.user_id;

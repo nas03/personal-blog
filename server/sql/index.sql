@@ -1,79 +1,139 @@
-create table public.categories (
-    category_id integer primary key not null,
-    title character varying(255) not null default '',
-    description text not null default ''::text,
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_registered timestamp with time zone default CURRENT_TIMESTAMP
+CREATE TABLE "users_basic_data"
+(
+    user_id          uuid PRIMARY KEY                DEFAULT gen_random_uuid(),
+    first_name       CHARACTER VARYING(100) NOT NULL,
+    last_name        CHARACTER VARYING(100) NOT NULL,
+    email            CHARACTER VARYING(255) NOT NULL,
+    phone_number     CHARACTER VARYING(20)           DEFAULT NULL,
+    hashed_password  CHARACTER VARYING(255) NOT NULL,
+    ts_updated       TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
+    ts_created       TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
+    authorization_id INTEGER                NOT NULL DEFAULT 2
 );
-create table public.comments (
-    comment_id integer primary key not null,
-    post_id integer not null,
-    user_id uuid not null,
-    comment character varying(200) default '',
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_registered timestamp with time zone default CURRENT_TIMESTAMP,
-    foreign key (post_id) references public.posts (post_id) match simple on update no action on delete cascade,
-    foreign key (user_id) references public.users_basic_data (user_id) match simple on update no action on delete cascade
+CREATE TABLE "posts"
+(
+    post_id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id       uuid                   NOT NULL,
+    thumbnail_url CHARACTER VARYING(255) NOT NULL DEFAULT '',
+    title         CHARACTER VARYING(255) NOT NULL DEFAULT '',
+    content       TEXT                   NOT NULL DEFAULT ''::TEXT,
+    ts_updated    TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
+    ts_registered TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-create table public.post_category (
-    id integer primary key not null,
-    post_id integer not null,
-    category_id integer not null,
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_registered timestamp with time zone default CURRENT_TIMESTAMP,
-    foreign key (category_id) references public.categories (category_id) match simple on update no action on delete cascade,
-    foreign key (post_id) references public.posts (post_id) match simple on update no action on delete cascade
+CREATE TABLE "categories"
+(
+    category_id   INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    title         CHARACTER VARYING(255) NOT NULL DEFAULT '',
+    description   TEXT                   NOT NULL DEFAULT ''::TEXT,
+    ts_updated    TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
+    ts_registered TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP
 );
-create table public.posts (
-    post_id integer primary key not null,
-    user_id uuid not null,
-    thumbnail_url character varying(255) not null default '',
-    title character varying(255) not null default '',
-    content text not null default ''::text,
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_registered timestamp with time zone default CURRENT_TIMESTAMP,
-    foreign key (user_id) references public.users_basic_data (user_id) match simple on update no action on delete cascade
+CREATE TABLE "comments"
+(
+    comment_id    INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    post_id       INTEGER NOT NULL,
+    user_id       uuid    NOT NULL,
+    COMMENT       CHARACTER VARYING(200)   DEFAULT '',
+    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-create table public.user_access_histories (
-    id integer primary key not null,
-    user_id uuid not null,
-    user_agent character varying(255) not null,
-    ip_address inet not null,
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_registered timestamp with time zone default CURRENT_TIMESTAMP,
-    foreign key (user_id) references public.users_basic_data (user_id) match simple on update no action on delete no action
+CREATE TABLE "post_category"
+(
+    id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    post_id       INTEGER NOT NULL,
+    category_id   INTEGER NOT NULL,
+    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories (category_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-create table public.user_refresh_tokens (
-    id integer primary key not null,
-    user_id uuid not null,
-    refresh_token text not null,
-    exp timestamp without time zone not null,
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_registered timestamp with time zone default CURRENT_TIMESTAMP,
-    iat timestamp without time zone,
-    foreign key (user_id) references public.users_basic_data (user_id) match simple on update no action on delete no action
+CREATE TABLE "user_access_histories"
+(
+    id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id       uuid                   NOT NULL,
+    user_agent    CHARACTER VARYING(255) NOT NULL,
+    ip_address    inet                   NOT NULL,
+    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-create table public.users_basic_data (
-    user_id uuid primary key not null default gen_random_uuid(),
-    first_name character varying(100) not null,
-    last_name character varying(100) not null,
-    email character varying(255) not null,
-    phone_number character varying(20) default NULL,
-    hashed_password character varying(255) not null,
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_created timestamp with time zone default CURRENT_TIMESTAMP,
-    authorization_id integer not null default 2
+CREATE TABLE "user_refresh_tokens"
+(
+    id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id       uuid   NOT NULL,
+    refresh_token TEXT   NOT NULL,
+    exp           BIGINT NOT NULL,
+    iat           BIGINT NOT NULL,
+    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-create unique index user_email_key on users_basic_data using btree (email);
-create unique index user_phone_number_key on users_basic_data using btree (phone_number);
-create table public.users_profile (
-    id integer primary key not null,
-    user_id uuid not null,
-    profile_image_url text,
-    country character varying(30) default NULL,
-    address text,
-    foreign key (user_id) references public.users_basic_data (user_id),
-    ts_updated timestamp with time zone default CURRENT_TIMESTAMP,
-    ts_created timestamp with time zone default CURRENT_TIMESTAMP,
-    match simple on update no action on delete cascade
+CREATE UNIQUE INDEX user_email_key ON users_basic_data USING btree (email);
+CREATE UNIQUE INDEX user_phone_number_key ON users_basic_data USING btree (phone_number);
+CREATE TABLE "users_profile"
+(
+    id                INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id           uuid NOT NULL UNIQUE ,
+    profile_image_url TEXT,
+    country           CHARACTER VARYING(30)    DEFAULT NULL,
+    address           TEXT,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id),
+    ts_updated        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
+CREATE OR REPLACE FUNCTION update_ts_updated() RETURNS TRIGGER AS $$ BEGIN NEW.ts_updated = NOW();
+RETURN NEW;
+END;
+$$ LANGUAGE 'plpgsql';
+CREATE TRIGGER users_basic_data
+    BEFORE
+        UPDATE
+    ON users_basic_data
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER posts
+    BEFORE
+        UPDATE
+    ON posts
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER categories
+    BEFORE
+        UPDATE
+    ON categories
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER comments
+    BEFORE
+        UPDATE
+    ON comments
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER post_category
+    BEFORE
+        UPDATE
+    ON post_category
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER user_access_histories
+    BEFORE
+        UPDATE
+    ON user_access_histories
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER user_refresh_tokens
+    BEFORE
+        UPDATE
+    ON user_refresh_tokens
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER users_profile
+    BEFORE
+        UPDATE
+    ON users_profile
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();

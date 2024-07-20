@@ -11,10 +11,10 @@ const getUserData = async (payload: Pick<UserBasicDataRepo, "user_id"> | Pick<Us
     .select("user_id", "authorization_id", "email", "first_name", "last_name", "hashed_password", "phone_number")
     .where((builder) => {
       if ("email" in payload && payload["email"]) {
-        return builder.where("email", payload.email);
+        builder.where("email", payload.email);
       }
       if ("user_id" in payload && payload["user_id"]) {
-        return builder.where("user_id", payload.user_id);
+        builder.where("user_id", payload.user_id);
       }
     })
     .first();
@@ -59,7 +59,7 @@ const deleteUserData = async (user_id: string) => {
 const createUserData = async (payload: Omit<UserBasicDataRepo, "user_id">) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UserBasicDataRepo>("users").insert(payload);
+      const query = await trx<UserBasicDataRepo>("users_basic_data").insert(payload);
 
       if (!query) return false;
       return query;
@@ -72,4 +72,4 @@ const createUserData = async (payload: Omit<UserBasicDataRepo, "user_id">) => {
     return false;
   }
 };
-export { deleteUserData, updateUserData, getUserData, createUserData };
+export { createUserData, deleteUserData, getUserData, updateUserData };

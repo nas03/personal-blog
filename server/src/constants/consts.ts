@@ -18,7 +18,7 @@ export const message = Object.freeze({
   token_expired: "token_expired",
   user_forbidden: "user_forbidden",
   update_failed: "update_failed",
-  
+  redis_error: "redis_error",
 });
 
 export const zodError = Object.freeze({

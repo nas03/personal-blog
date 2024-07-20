@@ -16,11 +16,15 @@ export const getPostById = async (req: Request, res: Response) => {
 
     const data = zodValidate(req.params, ValidateSchema);
     const post_id = data.post_id;
+  /*   const responseRedisCache = await redis.getCacheObject({ post_id: post_id });
+    if (responseRedisCache) {
+      return createResponse(res, true, { responseRedisCache });
+    } */
     const responseGetPost = await posts_repository.getPostById(post_id);
     if (!responseGetPost) {
       return createResponse(res, false, null, code.ERROR, message.system_error);
     }
-
+    // const setCache = await redis.setCacheObject({ post_id: post_id }, { ...responseGetPost });
     return createResponse(res, true, { responseGetPost });
   } catch (error) {
     console.log(error);

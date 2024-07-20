@@ -1,4 +1,3 @@
-import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { RefreshToken } from "@/constants/interfaces";
 import { user_refresh_tokens_repository, users_basic_data_repository } from "@/repositories";
@@ -49,8 +48,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     return createResponse(res, true, { accessToken });
   } catch (error) {
-   const {responseCode, responseMessage} = getErrorMsg(error as Error)
-
+    const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);
   }
 };

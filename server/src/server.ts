@@ -1,20 +1,22 @@
 /* Library */
-import express from "express";
-import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
 import morgan from "morgan";
 
 /* Router */
 import { route } from "@/app";
 /* Services */
 import { printRoute } from "@/helpers/logRoutes";
+import redis from "@/helpers/redis";
 /* Config library */
 dotenv.config();
 
 /* Settings */
 const PORT = process.env.PORT || 5500;
+const HOST = process.env.HOST || "::";
 /* Config server */
 const server = express();
 // Enable Cross-Origin Resource Sharing (CORS)
@@ -35,10 +37,10 @@ server.use(morgan("dev"));
 server.use("/api/v1", route);
 
 const startup = async () => {
-  server.listen(PORT, () => {
+  server.listen(Number(PORT), HOST, () => {
     console.log(`⚡️[server]: Started at port ${PORT}\n`);
   });
-
+  await redis.redisStart();
   server._router.stack.forEach(printRoute.bind(null, []));
 };
 

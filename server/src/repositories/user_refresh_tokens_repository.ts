@@ -11,8 +11,8 @@ export const addRefreshToken = async (payload: Omit<UserRefreshTokenRepo, "id">)
     const transaction = await db.transaction(async (trx) => {
       const query = await trx("user_refresh_tokens").insert({
         ...payload,
-        iat: new Date(payload.iat),
-        exp: new Date(payload.exp),
+        iat: payload.iat,
+        exp: payload.exp,
       });
 
       if (!query) return false;

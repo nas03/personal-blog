@@ -48,7 +48,6 @@ export const signup = async (req: Request, res: Response) => {
     return createResponse(res, true);
   } catch (error) {
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
-
     return createResponse(res, false, null, responseCode, responseMessage);
   }
 };

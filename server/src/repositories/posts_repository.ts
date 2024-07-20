@@ -70,4 +70,4 @@ export const deletePostByAuthor = async (user_id: number) => {
     console.log(error);
     return false;
   }
-};
+};``
