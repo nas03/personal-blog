@@ -2,10 +2,9 @@
 import { Router } from "express";
 //Domain functions
 import profile from "@/app/user/domain/profile";
-import { verifyToken } from "@/middlewares/auth";
 const profileRouter = Router();
 
-profileRouter.get("/", verifyToken, profile.getUserProfile);
-profileRouter.post("/update", verifyToken, profile.updateProfile);
-profileRouter.post("/create", verifyToken, profile.createProfile);
+profileRouter.get("/", profile.getUserProfile);
+profileRouter.post("/update", profile.updateProfile);
+profileRouter.post("/create", profile.createProfile);
 export default profileRouter;

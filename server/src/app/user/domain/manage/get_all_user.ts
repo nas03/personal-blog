@@ -1,6 +1,7 @@
-import { authorization, code, message } from "@/constants/consts";
+import { authorization, code, message, redisPath } from "@/constants/consts";
+import redis from "@/helpers/redis";
 import { users_basic_data_repository } from "@/repositories";
-import { createResponse, getErrorMsg, getUserIdByToken } from "@/utilities";
+import { createRedisKey, createResponse, getErrorMsg, getUserIdByToken } from "@/utilities";
 import { Request, Response } from "express";
 
 export const getAllUser = async (req: Request, res: Response) => {
@@ -12,14 +13,18 @@ export const getAllUser = async (req: Request, res: Response) => {
       return createResponse(res, false, null, code.FORBIDDEN, message.user_forbidden);
     }
 
-    /* const responseRedisCache = await redis.getCacheObject({ users: "*" });
-    console.log({ responseRedisCache });
-    if (responseRedisCache) {
-      return createResponse(res, true, { ...responseRedisCache });
-    } */
+    const redisKey = createRedisKey(redisPath.users_basic_data.user);
+    // GET DATA FROM REDIS
+    const getRedisCache = await redis.getCache(redisKey);
+    if (getRedisCache) {
+      return createResponse(res, true, getRedisCache);
+    }
 
+    // GET DATA FROM DB
     const responseAllUserData = await users_basic_data_repository.findAll();
-    // const cacheAllUserData = await redis.setCacheObject({ users: "*" }, { ...responseAllUserData }, Number(process.env.REDIS_DEFAULT_TTL));
+
+    // SAVE DATA TO REDIS
+    const setRedisCache = await redis.setCache(redisKey, responseAllUserData);
     return createResponse(res, true, { ...responseAllUserData });
   } catch (error) {
     console.log(error);

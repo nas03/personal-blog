@@ -1,6 +1,7 @@
-import { code, message, zodError } from "@/constants/consts";
+import { code, message, redisPath, zodError } from "@/constants/consts";
+import redis from "@/helpers/redis";
 import { posts_repository } from "@/repositories";
-import { createResponse, getErrorMsg, getUserIdByToken, zodValidate } from "@/utilities";
+import { createRedisKey, createResponse, getErrorMsg, getUserIdByToken, zodValidate } from "@/utilities";
 import { Request, Response } from "express";
 import { z } from "zod";
 
@@ -16,6 +17,10 @@ export const deletePostById = async (req: Request, res: Response) => {
     if (!responseDeletePost) {
       return createResponse(res, false, null, code.ERROR, message.update_failed);
     }
+
+    // DELETE DATA FROM REDIS
+    const delRedisCache = await redis.deleteCache(createRedisKey(redisPath.posts.post, post_id));
+
     return createResponse(res, true);
   } catch (error) {
     const { responseCode, responseMessage } = getErrorMsg(error as Error);

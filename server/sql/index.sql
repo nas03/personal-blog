@@ -1,19 +1,20 @@
-CREATE TABLE "users_basic_data"
+CREATE TABLE IF NOT EXISTS "users_basic_data"
 (
     user_id          uuid PRIMARY KEY                DEFAULT gen_random_uuid(),
     first_name       CHARACTER VARYING(100) NOT NULL,
     last_name        CHARACTER VARYING(100) NOT NULL,
-    email            CHARACTER VARYING(255) NOT NULL,
+    authorization_id INTEGER                NOT NULL DEFAULT 2
+        email CHARACTER VARYING (255) NOT NULL,
     phone_number     CHARACTER VARYING(20)           DEFAULT NULL,
     hashed_password  CHARACTER VARYING(255) NOT NULL,
     ts_updated       TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
     ts_created       TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
-    authorization_id INTEGER                NOT NULL DEFAULT 2
 );
-CREATE TABLE "posts"
+CREATE TABLE IF NOT EXISTS "posts"
 (
     post_id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid                   NOT NULL,
+    categories    INTEGER[],
     thumbnail_url CHARACTER VARYING(255) NOT NULL DEFAULT '',
     title         CHARACTER VARYING(255) NOT NULL DEFAULT '',
     content       TEXT                   NOT NULL DEFAULT ''::TEXT,
@@ -21,7 +22,7 @@ CREATE TABLE "posts"
     ts_registered TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE "categories"
+CREATE TABLE IF NOT EXISTS "categories"
 (
     category_id   INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     title         CHARACTER VARYING(255) NOT NULL DEFAULT '',
@@ -29,7 +30,7 @@ CREATE TABLE "categories"
     ts_updated    TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP,
     ts_registered TIMESTAMP WITH TIME ZONE        DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE "comments"
+CREATE TABLE IF NOT EXISTS "comments"
 (
     comment_id    INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     post_id       INTEGER NOT NULL,
@@ -40,17 +41,7 @@ CREATE TABLE "comments"
     FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE "post_category"
-(
-    id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    post_id       INTEGER NOT NULL,
-    category_id   INTEGER NOT NULL,
-    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES categories (category_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
-);
-CREATE TABLE "user_access_histories"
+CREATE TABLE IF NOT EXISTS "user_access_histories"
 (
     id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid                   NOT NULL,
@@ -60,7 +51,7 @@ CREATE TABLE "user_access_histories"
     ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE "user_refresh_tokens"
+CREATE TABLE IF NOT EXISTS "user_refresh_tokens"
 (
     id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid   NOT NULL,
@@ -71,12 +62,12 @@ CREATE TABLE "user_refresh_tokens"
     ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX user_email_key ON users_basic_data USING btree (email);
-CREATE UNIQUE INDEX user_phone_number_key ON users_basic_data USING btree (phone_number);
-CREATE TABLE "users_profile"
+CREATE UNIQUE INDEX IF NOT EXISTS user_email_key ON users_basic_data USING btree (email);
+CREATE UNIQUE INDEX IF NOT EXISTS  user_phone_number_key ON users_basic_data USING btree (phone_number);
+CREATE TABLE IF NOT EXISTS "users_profile"
 (
     id                INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id           uuid NOT NULL UNIQUE ,
+    user_id           uuid NOT NULL UNIQUE,
     profile_image_url TEXT,
     country           CHARACTER VARYING(30)    DEFAULT NULL,
     address           TEXT,
@@ -85,8 +76,11 @@ CREATE TABLE "users_profile"
     ts_created        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE OR REPLACE FUNCTION update_ts_updated() RETURNS TRIGGER AS $$ BEGIN NEW.ts_updated = NOW();
-RETURN NEW;
+CREATE OR REPLACE FUNCTION update_ts_updated() RETURNS TRIGGER AS
+$$
+BEGIN
+    NEW.ts_updated = NOW();
+    RETURN NEW;
 END;
 $$ LANGUAGE 'plpgsql';
 CREATE TRIGGER users_basic_data

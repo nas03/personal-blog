@@ -18,6 +18,7 @@ export const message = Object.freeze({
   token_expired: "token_expired",
   user_forbidden: "user_forbidden",
   update_failed: "update_failed",
+  create_failed: "create_failed",
   redis_error: "redis_error",
 });
 
@@ -29,4 +30,26 @@ export const zodError = Object.freeze({
 export const authorization = Object.freeze({
   SYSTEM_ADMINISTRATOR: 1,
   USER: 2,
+});
+
+export const redisPath = Object.freeze({
+  users_profile: Object.freeze({
+    user: "users_profile:user",
+  }),
+  users_basic_data: Object.freeze({
+    user: "users_basic_data:user",
+  }),
+  posts: Object.freeze({
+    post: "posts:post",
+    user: "posts:user",
+  }),
+  categories: Object.freeze({
+    category: "categories:category",
+  }),
+  user_access_histories: Object.freeze({
+    history: "user_access_histories:history",
+  }),
+  user_refresh_tokens: Object.freeze({
+    token: "user_refresh_tokens:token",
+  }),
 });

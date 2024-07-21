@@ -5,12 +5,10 @@ import { Request, Response } from "express";
 import { z } from "zod";
 
 const ValidateSchema = z.object({
-  post: z.object({
-    user_id: z.string(zodError),
-    title: z.string(zodError),
-    content: z.string(zodError),
-    thumbnail_url: z.string(zodError).optional(),
-  }),
+  user_id: z.string(zodError),
+  title: z.string(zodError),
+  content: z.string(zodError),
+  thumbnail_url: z.string(zodError).optional(),
   categories: z.array(z.number(zodError), zodError).optional(),
 });
 
@@ -18,13 +16,14 @@ export const createPost = async (req: Request, res: Response) => {
   try {
     const user_id = getUserIdByToken(req);
 
-    const payload = zodValidate(req.body, ValidateSchema);
+    const payload = zodValidate({ user_id, ...req.body }, ValidateSchema);
     const responseCreatePost = await posts_repository.createPost(payload);
     if (!responseCreatePost) {
       return createResponse(res, false, null, code.ERROR, message.update_failed);
     }
     return createResponse(res, true);
   } catch (error) {
+    console.log(error);
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);
   }

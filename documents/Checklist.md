@@ -11,3 +11,4 @@
 - [x] Validate request with zod
 - [x] ~~Migrate to Drizzle ORM?~~
 - [x] App feature google sheet
+- [x] Redis for caching

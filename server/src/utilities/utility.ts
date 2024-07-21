@@ -10,19 +10,19 @@ import { z, ZodSchema } from "zod";
 export const createResponse = (res: Response, isSuccess: boolean, data?: any, code: number = 200, message: string = "") => {
   type Response = {
     status: string | null;
-    data: any | null;
     message: string;
+    data: any | null;
   };
   const response: Response = {
     status: null,
-    data: null,
     message: "",
+    data: null,
   };
-  
+
   isSuccess ? (response["status"] = "success") : (response["status"] = "error");
 
-  response["data"] = data || null;
   response["message"] = message;
+  response["data"] = data || null;
   return res.status(code).json(response);
 };
 
@@ -90,4 +90,17 @@ export const uploadFile = async (fileName: string, content: any, path: string, c
     console.log(error);
     throw new ErrorLog(code.ERROR, message.system_error);
   }
+};
+
+export const isJSON = (data: string) => {
+  try {
+    const parse = JSON.parse(data);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const createRedisKey = <T>(path: string, id?: T) => {
+  return id ? `${path}:${id}` : `${path}:*`;
 };

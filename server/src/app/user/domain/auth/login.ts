@@ -38,7 +38,6 @@ export const login = async (req: Request, res: Response) => {
     });
 
     if (data.staySignedIn) {
-      // !: Bug exp and iat
       const exp = Math.floor(Date.now() / 1000) + moment.duration(1, "day").asSeconds();
       const iat = Math.floor(Date.now() / 1000);
       console.log({ exp, iat });
@@ -63,7 +62,9 @@ export const login = async (req: Request, res: Response) => {
         iat: iat,
       });
     }
-    return createResponse(res, true, { accessToken });
+
+    const payload = { accessToken: accessToken };
+    return createResponse(res, true, payload);
   } catch (error) {
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);

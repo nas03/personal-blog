@@ -1,7 +1,7 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
+import { isJSON } from "@/utilities";
 import { createClient, RedisClientType } from "redis";
-
 // Create a new Redis client
 const redisClient: RedisClientType = createClient();
 
@@ -15,26 +15,35 @@ const redisStart = async () => {
   });
 };
 
-// ! TODO: Fix Error
-const setCache = async <T>(key: string, values: string, exp?: number): Promise<boolean> => {
-  try {
-    const 
-    if (exp) {
-      await redisClient.setEx(setKey, exp, setValues);
-    } else {
-      await redisClient.set(setKey, setValues);
-    }
+const createObjectIndex = async <T>(data: T) => {
+  // TODO
+};
 
+const setCache = async <T>(key: string, values: T | T[], exp = Number(process.env.REDIS_DEFAULT_TTL)): Promise<boolean> => {
+  try {
+    let setValues = null;
+
+    switch (typeof values) {
+      case "object":
+        await redisClient.set(key, JSON.stringify(values));
+        break;
+      default:
+        await redisClient.set(key, String(values));
+    }
+    redisClient.expire(key, exp);
     return true;
   } catch (error) {
     throw new ErrorLog(code.ERROR, message.redis_error);
   }
 };
 
-const getCache = async (key: string) => {
+const getCache = async (key: string): Promise<object | string | null> => {
   try {
     const data = await redisClient.get(key);
     if (!data) return null;
+    if (isJSON(data)) {
+      return JSON.parse(data);
+    }
     return data;
   } catch (error) {
     console.log(error);

@@ -1,10 +1,10 @@
-import { CategoryRepo } from "@/constants/interfaces";
+import { CategoryRepo, PostRepo } from "@/constants/interfaces";
 import { db } from "@/helpers";
 
 export const createCategory = async (payload: Omit<CategoryRepo, "category_id">) => {
   try {
     const transaction = await db.transaction(async (trx) => {
-      const query = await trx<CategoryRepo>("categories").insert(payload);
+      const query = await trx<CategoryRepo>("categories").insert(payload).returning("*").first();
       return query;
     });
     return transaction;
@@ -35,8 +35,13 @@ export const updateCategory = async (payload: { category_id: number; data: Parti
 export const deleteCategory = async (category_id: number) => {
   try {
     const transaction = await db.transaction(async (trx) => {
-      const query = await trx<CategoryRepo>("categories").delete().where("category_id", category_id);
-      return query;
+      const result = await Promise.all([
+        await trx<CategoryRepo>("categories").where("category_id", category_id).delete(),
+        await trx<PostRepo>("posts")
+          .whereRaw(`? = ANY(categories)`, category_id)
+          .update({ categories: db.raw("array_remove(categories,?)", category_id) }),
+      ]);
+      return result;
     });
     return transaction;
   } catch (error) {

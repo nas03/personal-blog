@@ -1,6 +1,8 @@
-import { Application } from 'express';
-// import { ordersRoutes } from './ordersRoutes';
+import manageRouter from "@/app/post/api/manageRoute";
+import { Router } from "express";
 
-export const registerOrderRoutes = (app: Application) => {
-	//   app.use('/api/orders', ordersRoutes);
-};
+const postRoute = Router();
+
+postRoute.use("/post/manage", manageRouter);
+
+export default postRoute;

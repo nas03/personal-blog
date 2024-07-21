@@ -9,11 +9,11 @@ const RepositorySchema = z.object({
 export const UserBasicDataSchema = RepositorySchema.extend({
   user_id: z.string(),
   first_name: z.string(),
+  authorization_id: z.number().min(1).max(2),
   last_name: z.string(),
   email: z.string(),
   phone_number: z.string(),
   hashed_password: z.string(),
-  authorization_id: z.number().min(1).max(2),
 });
 
 export const UserProfileSchema = RepositorySchema.extend({
@@ -40,15 +40,10 @@ export const CategorySchema = RepositorySchema.extend({
 export const PostSchema = RepositorySchema.extend({
   post_id: z.number(),
   user_id: z.string(),
+  categories: z.array(z.number()),
   thumbnail_url: z.string().optional(),
   title: z.string(),
   content: z.string(),
-});
-
-export const Post_CategorySchema = RepositorySchema.extend({
-  id: z.number(),
-  post_id: z.number(),
-  category_id: z.number(),
 });
 
 export const UserAccessHistorySchema = RepositorySchema.extend({
@@ -71,6 +66,5 @@ export type UserProfileRepo = z.infer<typeof UserProfileSchema>;
 export type CommentRepo = z.infer<typeof CommentSchema>;
 export type CategoryRepo = z.infer<typeof CategorySchema>;
 export type PostRepo = z.infer<typeof PostSchema>;
-export type Post_CategoryRepo = z.infer<typeof Post_CategorySchema>;
 export type UserAccessHistoryRepo = z.infer<typeof UserAccessHistorySchema>;
 export type UserRefreshTokenRepo = z.infer<typeof UserRefreshTokenSchema>;

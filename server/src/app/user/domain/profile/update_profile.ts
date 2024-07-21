@@ -1,11 +1,11 @@
 // constants
-import { code, message, zodError } from "@/constants/consts";
+import { code, message, redisPath, zodError } from "@/constants/consts";
 import redis from "@/helpers/redis";
 // helpers
 // repository
 import { users_profile_repository } from "@/repositories";
 // utilities
-import { createResponse, getErrorMsg, getUserIdByToken, zodValidate } from "@/utilities";
+import { createRedisKey, createResponse, getErrorMsg, getUserIdByToken, zodValidate } from "@/utilities";
 // library
 import { Request, Response } from "express";
 import { z } from "zod";
@@ -33,7 +33,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     if (!responseUpdateUserProfile) {
       return createResponse(res, false, null, code.ERROR, message.system_error);
     }
-    const delPrevCache = await redis.deleteCacheObject({ user_id: user_id });
+    const deleteRedis = await redis.deleteCache(createRedisKey(redisPath.users_profile.user, user_id));
     return createResponse(res, true);
   } catch (error) {
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
