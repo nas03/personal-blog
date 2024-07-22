@@ -1,9 +1,10 @@
-import { CategoryRepo, PostRepo } from "@/constants/types";
+import { CategoryRepo, PostRepo } from "@/constants/schema";
 import { db } from "@/helpers";
+import { Knex } from "knex";
 
 export const createCategory = async (payload: Omit<CategoryRepo, "category_id">) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const query = await trx<CategoryRepo>("categories").insert(payload).returning("*").first();
       return query;
     });
@@ -21,7 +22,7 @@ export const getCategory = async (category_id: number) => {
 
 export const updateCategory = async (payload: { category_id: number; data: Partial<Omit<CategoryRepo, "category_id">> }) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const update = await trx<CategoryRepo>("categories").update(payload.data).where("category_id", payload.category_id);
       return update;
     });
@@ -34,7 +35,7 @@ export const updateCategory = async (payload: { category_id: number; data: Parti
 
 export const deleteCategory = async (category_id: number) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const result = await Promise.all([
         await trx<CategoryRepo>("categories").where("category_id", category_id).delete(),
         await trx<PostRepo>("posts")

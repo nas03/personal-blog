@@ -1,5 +1,5 @@
-import { UserProfileRepo } from "@/constants/types";
-import { db } from "@/helpers";
+import { UserProfileRepo } from "@/constants/schema";
+import db from "@/helpers/db";
 
 export const getUserProfile = async (user_id: string) => {
   const query = await db<UserProfileRepo>("users_profile")

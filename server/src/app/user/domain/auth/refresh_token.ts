@@ -1,5 +1,5 @@
 import { code, message } from "@/constants/consts";
-import { RefreshToken } from "@/constants/types";
+import { RefreshToken } from "@/constants/schema";
 import { user_refresh_tokens_repository, users_basic_data_repository } from "@/repositories";
 import { createAccessToken, createRefreshToken, createResponse, getErrorMsg, verifyToken } from "@/utilities";
 import { Request, Response } from "express";

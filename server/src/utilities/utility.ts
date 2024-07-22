@@ -1,6 +1,6 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
-import { Token } from "@/constants/types";
+import { Token } from "@/constants/schema";
 import { r2 } from "@/helpers";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";

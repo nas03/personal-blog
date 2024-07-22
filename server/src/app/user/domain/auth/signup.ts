@@ -6,7 +6,7 @@ import { createResponse, emailValidator, getErrorMsg, phoneNumberValidator, zodV
 // Constants
 import { authorization, code, message, zodError } from "@/constants/consts";
 // Interfaces
-import { UserBasicDataRepo } from "@/constants/types";
+import { UserBasicDataRepo } from "@/constants/schema";
 // Repository
 import { users_basic_data_repository } from "@/repositories";
 // library

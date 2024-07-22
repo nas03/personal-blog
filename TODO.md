@@ -1,0 +1,2 @@
+- [ ] Refactor Schema defined in constants
+- [ ] Check for logic error in database creating query

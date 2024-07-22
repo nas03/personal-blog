@@ -1,5 +1,6 @@
-import { UserRefreshTokenRepo } from "@/constants/types";
+import { UserRefreshTokenRepo } from "@/constants/schema";
 import { db } from "@/helpers";
+import { Knex } from "knex";
 
 export const getRefreshToken = async (user_id: string) => {
   const query = db<UserRefreshTokenRepo>("user_refresh_tokens").select("id", "user_id", "refresh_token", "exp", "iat").where("user_id", user_id).first();
@@ -8,7 +9,7 @@ export const getRefreshToken = async (user_id: string) => {
 
 export const addRefreshToken = async (payload: Omit<UserRefreshTokenRepo, "id">) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const query = await trx("user_refresh_tokens").insert({
         ...payload,
         iat: payload.iat,
@@ -27,7 +28,7 @@ export const addRefreshToken = async (payload: Omit<UserRefreshTokenRepo, "id">)
 
 export const deleteRefreshToken = async (user_id: string) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const query = await trx<UserRefreshTokenRepo>("user_refresh_tokens").where("user_id", user_id).delete();
 
       if (!query) return false;

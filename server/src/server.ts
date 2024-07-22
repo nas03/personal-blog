@@ -9,7 +9,7 @@ import morgan from "morgan";
 /* Router */
 import { route } from "@/app";
 /* Services */
-import { printRoute } from "@/helpers/logRoutes";
+import { printRoute } from "@/tools/log_routes";
 import redis from "@/helpers/redis";
 /* Config library */
 dotenv.config();

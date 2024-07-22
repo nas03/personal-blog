@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "generate-secret": "node -e console.log(require('crypto').randomBytes(16).toString('base64'))",
-    "introspect-db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts"
+    "introspect-db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
+    "generate-trigger": "ts-node src/tools/gen_trigger_db.ts"
   },
   "keywords": [],
   "author": "nas03",
@@ -23,6 +24,7 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
+    "knex-paginate": "^3.1.4",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "morgan": "^1.10.0",

@@ -2,14 +2,14 @@
 // helpers
 import { db, logger } from "@/helpers";
 // constants
-import { UserBasicDataRepo } from "@/constants/types";
+import { UserBasicDataRepo } from "@/constants/schema";
 // libraries
 import { Knex } from "knex";
 
 const getUserData = async (payload: Pick<UserBasicDataRepo, "user_id"> | Pick<UserBasicDataRepo, "email">) => {
   const query = await db<UserBasicDataRepo>("users_basic_data")
     .select("user_id", "authorization_id", "email", "first_name", "last_name", "hashed_password", "phone_number")
-    .where((builder) => {
+    .where((builder: Knex.QueryBuilder) => {
       if ("email" in payload && payload["email"]) {
         builder.where("email", payload.email);
       }
