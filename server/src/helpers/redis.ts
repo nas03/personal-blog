@@ -24,6 +24,12 @@ redisClient.on("error", async (err) => {
 
 const redisStart = async () => {
   await redisClient.connect();
+  redisClient.on("connect", () => {
+    console.log("Connected to Redis");
+  });
+  redisClient.on("error", async (err) => {
+    console.error("Error connecting to Redis:", err);
+  });
 };
 
 const createObjectIndex = async <T>(data: T) => {

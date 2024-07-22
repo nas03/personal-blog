@@ -37,14 +37,11 @@ server.use(morgan("dev"));
 server.use("/api/v1", route);
 
 const startup = async () => {
-  server.listen(PORT, () => {
-    console.log(`⚡️[server]: Started at port ${PORT}`);
+  server.listen(Number(PORT), HOST, () => {
+    console.log(`⚡️[server]: Started at port ${PORT}\n`);
   });
   await redis.redisStart();
-  console.log();
-  if (process.env.DEBUG_ROUTE == "true") {
-    server._router.stack.forEach(printRoute.bind(null, []));
-  }
+  server._router.stack.forEach(printRoute.bind(null, []));
 };
 
 startup();
