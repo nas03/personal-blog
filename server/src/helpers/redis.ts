@@ -1,18 +1,18 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { isJSON } from "@/utilities";
-import { createClient, RedisClientType } from "redis";
+import { createClient } from "redis";
 // Create a new Redis client
 const redisClient = createClient(
   process.env.NODE_ENV === "development"
     ? {
-        password: "hDGnmOjKLgQT9T5Gt45Zsvd6QZyzzLla",
+        password: process.env.REDIS_CLOUD_PASSWORD,
         socket: {
-          host: "redis-14364.c1.ap-southeast-1-1.ec2.redns.redis-cloud.com",
-          port: 14364,
+          host: process.env.REDIS_CLOUD_HOST,
+          port: Number(process.env.REDIS_CLOUD_PORT),
         },
       }
-    : {},
+    : {}
 );
 
 redisClient.on("connect", () => {
@@ -85,7 +85,6 @@ const updateCache = async <T>(key: object | string, values: object | string | T[
     throw new ErrorLog(code.ERROR, message.redis_error);
   }
 };
-
 
 const redis = { redisStart, deleteCache, getCache, setCache, updateCache };
 export default redis;
