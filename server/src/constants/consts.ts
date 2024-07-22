@@ -4,6 +4,7 @@ export const code = Object.freeze({
   UNAUTHORIZED: 401,
   INVALID: 402,
   FORBIDDEN: 403,
+  NOT_FOUND: 404,
   CONFLICT: 409,
   VALIDATOR: 422,
   ERROR: 500,
@@ -20,6 +21,7 @@ export const message = Object.freeze({
   update_failed: "update_failed",
   create_failed: "create_failed",
   redis_error: "redis_error",
+  data_not_exists: "data_not_exists",
 });
 
 export const zodError = Object.freeze({
@@ -45,6 +47,7 @@ export const redisPath = Object.freeze({
   }),
   categories: Object.freeze({
     category: "categories:category",
+    title: "categories:title",
   }),
   user_access_histories: Object.freeze({
     history: "user_access_histories:history",

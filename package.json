@@ -6,10 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "private": "true",
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

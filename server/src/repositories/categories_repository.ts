@@ -14,8 +14,34 @@ export const createCategory = async (payload: Omit<CategoryRepo, "category_id">)
   }
 };
 
-export const getCategory = async (category_id: number) => {
-  const query = await db<CategoryRepo>("categories").select("category_id", "description", "title").where("category_id", category_id);
+export const getCategoryById = async (category_id: number | number[]) => {
+  const query = await db<CategoryRepo>("categories")
+    .select("category_id", "description", "title")
+    .where((builder) => {
+      if (typeof category_id === "number") {
+        builder.where("category_id", category_id).first();
+      } else if (typeof category_id === "object") {
+        builder.whereIn("category_id", category_id);
+      }
+    });
+  return query;
+};
+
+export const getCategoryByTitle = async (title: string | string[]) => {
+  const query = await db<CategoryRepo>("categories")
+    .select("title", "description", "title")
+    .where((builder) => {
+      if (typeof title === "number") {
+        builder.where("title", title).first();
+      } else if (typeof title === "object") {
+        builder.whereIn("title", title);
+      }
+    });
+  return query;
+};
+
+export const getAllCategories = async () => {
+  const query = await db<CategoryRepo>("categories").select("*");
   return query;
 };
 

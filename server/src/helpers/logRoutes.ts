@@ -5,6 +5,8 @@ const colorCodes: { [key: string]: string } = Object.freeze({
   PUT: "\x1b[36m", // Cyan
   RESET: "\x1b[0m", // Reset
 });
+
+
 export function printRoute(path: any, layer: any) {
   if (layer.route) {
     layer.route.stack.forEach(printRoute.bind(null, path.concat(split(layer.route.path))));

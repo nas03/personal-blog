@@ -3,16 +3,27 @@ import { code, message } from "@/constants/consts";
 import { isJSON } from "@/utilities";
 import { createClient, RedisClientType } from "redis";
 // Create a new Redis client
-const redisClient: RedisClientType = createClient();
+const redisClient = createClient(
+  process.env.NODE_ENV === "development"
+    ? {
+        password: "hDGnmOjKLgQT9T5Gt45Zsvd6QZyzzLla",
+        socket: {
+          host: "redis-14364.c1.ap-southeast-1-1.ec2.redns.redis-cloud.com",
+          port: 14364,
+        },
+      }
+    : {},
+);
+
+redisClient.on("connect", () => {
+  console.log("⚡️[server]: Connected to Redis");
+});
+redisClient.on("error", async (err) => {
+  console.error("⚡️[server]: Error connecting to Redis:", err);
+});
 
 const redisStart = async () => {
   await redisClient.connect();
-  redisClient.on("connect", () => {
-    console.log("Connected to Redis");
-  });
-  redisClient.on("error", async (err) => {
-    console.error("Error connecting to Redis:", err);
-  });
 };
 
 const createObjectIndex = async <T>(data: T) => {
@@ -74,5 +85,7 @@ const updateCache = async <T>(key: object | string, values: object | string | T[
     throw new ErrorLog(code.ERROR, message.redis_error);
   }
 };
+
+
 const redis = { redisStart, deleteCache, getCache, setCache, updateCache };
 export default redis;
