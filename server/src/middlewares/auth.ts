@@ -1,5 +1,5 @@
 import { code, message } from "@/constants/consts";
-import { AccessToken } from "@/constants/interfaces";
+import { AccessToken } from "@/constants/types";
 import { createResponse } from "@/utilities";
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";

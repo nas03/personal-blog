@@ -1,4 +1,4 @@
-import { UserRefreshTokenRepo } from "@/constants/interfaces";
+import { UserRefreshTokenRepo } from "@/constants/types";
 import { db } from "@/helpers";
 
 export const getRefreshToken = async (user_id: string) => {

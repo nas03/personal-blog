@@ -1,4 +1,4 @@
-import { CategoryRepo, PostRepo } from "@/constants/interfaces";
+import { CategoryRepo, PostRepo } from "@/constants/types";
 import { db } from "@/helpers";
 
 export const createCategory = async (payload: Omit<CategoryRepo, "category_id">) => {

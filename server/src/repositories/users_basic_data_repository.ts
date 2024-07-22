@@ -2,7 +2,7 @@
 // helpers
 import { db, logger } from "@/helpers";
 // constants
-import { UserBasicDataRepo } from "@/constants/interfaces";
+import { UserBasicDataRepo } from "@/constants/types";
 // libraries
 import { Knex } from "knex";
 

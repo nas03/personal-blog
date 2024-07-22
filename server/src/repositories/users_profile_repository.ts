@@ -1,4 +1,4 @@
-import { UserProfileRepo } from "@/constants/interfaces";
+import { UserProfileRepo } from "@/constants/types";
 import { db } from "@/helpers";
 
 export const getUserProfile = async (user_id: string) => {

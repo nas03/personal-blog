@@ -1,4 +1,4 @@
-import { PostRepo } from "@/constants/interfaces";
+import { PostRepo } from "@/constants/types";
 import { db } from "@/helpers";
 
 export const getPostById = async (post_id: number) => {

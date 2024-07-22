@@ -1,5 +1,5 @@
 import { code, message, redisPath, zodError } from "@/constants/consts";
-import { PostSchema } from "@/constants/interfaces";
+import { PostSchema } from "@/constants/types";
 import redis from "@/helpers/redis";
 import { posts_repository } from "@/repositories";
 import { createRedisKey, createResponse, getErrorMsg, getUserIdByToken, zodValidate } from "@/utilities";

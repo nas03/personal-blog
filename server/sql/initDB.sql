@@ -16,20 +16,39 @@ CREATE TABLE IF NOT EXISTS "users_login_data"
     email           CHARACTER VARYING(255) UNIQUE NOT NULL,
     hashed_password CHARACTER VARYING(255) UNIQUE NOT NULL,
     ts_updated      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_created      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    ts_created      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "posts"
 (
     post_id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid                   NOT NULL,
     private       BOOLEAN                  DEFAULT TRUE,
-    categories    INTEGER[],
-    thumbnail_url CHARACTER VARYING(255),
+    status_code   INTEGER                NOT NULL,
+    thumbnail_url CHARACTER VARYING(255)   DEFAULT NULL,
     title         CHARACTER VARYING(255) NOT NULL,
     content       TEXT                   NOT NULL,
     ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "m_categories"
+(
+    category_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    title       CHARACTER VARYING(255) NOT NULL UNIQUE,
+    description TEXT                   NOT NULL,
+    ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE posts_category
+(
+    id          INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    post_id     INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES m_categories (category_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 CREATE TABLE "posts_analytic"
 (
@@ -41,14 +60,6 @@ CREATE TABLE "posts_analytic"
     ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
-);
-CREATE TABLE IF NOT EXISTS "categories"
-(
-    category_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    title       CHARACTER VARYING(255) NOT NULL UNIQUE,
-    description TEXT                   NOT NULL,
-    ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS "comments"
 (
@@ -87,9 +98,9 @@ CREATE TABLE IF NOT EXISTS "users_profile"
 (
     id                INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id           uuid NOT NULL UNIQUE,
-    profile_image_url TEXT,
+    profile_image_url TEXT                     DEFAULT NULL,
     country           CHARACTER VARYING(30)    DEFAULT NULL,
-    address           TEXT,
+    address           TEXT                     DEFAULT NULL,
     stars             INTEGER                  DEFAULT 0,
     ts_updated        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -105,17 +116,28 @@ CREATE TABLE IF NOT EXISTS "users_connection"
     FOREIGN KEY (follower_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY (following_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "notifications"
+CREATE TABLE IF NOT EXISTS "notifications_history"
 (
     id                INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id           uuid NOT NULL,
-    sender_id         uuid NOT NULL,
-    notification_type VARCHAR(50),
-    content           TEXT NOT NULL,
+    receiver_id       uuid    NOT NULL,
+    sender_id         uuid    NOT NULL,
+    notification_type INTEGER NOT NULL,
+    -- INFO: 10/NOTICE: 20/WARNING: 30/ERROR: 40/EMERGENCY: 50 --
+    content           TEXT    NOT NULL,
     ts_updated        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "sms_history"
+(
+    id                    INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    receiver_phone_number VARCHAR(255) NOT NULL,
+    content               TEXT         NOT NULL,
+    sms_type              INTEGER      NOT NULL,
+    -- OTP:1/NOTIFICATIONS:2--
+    ts_updated            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE "users_message"
 (
@@ -128,18 +150,69 @@ CREATE TABLE "users_message"
     FOREIGN KEY (sender_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY (receiver_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE "emails_template"
+CREATE TABLE "m_emails_template"
 (
-    id                INTEGER GENERATED ALWAYS AS IDENTITY,
-    email_code        INTEGER      NOT NULL,
-    title             VARCHAR(255) NOT NULL,
-    lang              VARCHAR(30)  NOT NULL,
-    template          TEXT         NOT NULL,
-    ts_updated        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_created        TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    id         INTEGER GENERATED ALWAYS AS IDENTITY,
+    email_code INTEGER      NOT NULL,
+    title      VARCHAR(255) NOT NULL,
+    lang       VARCHAR(30)  NOT NULL,
+    template   TEXT         NOT NULL,
+    ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE OR REPLACE FUNCTION update_ts_updated() RETURNS TRIGGER AS
+CREATE TABLE users_email_history
+(
+    id          INTEGER GENERATED ALWAYS AS IDENTITY,
+    email_code  INTEGER     NOT NULL,
+    lang        VARCHAR(30) NOT NULL,
+    sender_id   uuid        NOT NULL,
+    receiver_id uuid        NOT NULL,
+    ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE m_countries
+(
+    id             INTEGER GENERATED ALWAYS AS IDENTITY,
+    country_code   VARCHAR(255) NOT NULL,
+    country_name   VARCHAR(255) NOT NULL,
+    thumbnail      VARCHAR(255) NOT NULL,
+    country_number VARCHAR(255) NOT NULL,
+    ts_updated     TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created     TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE forums
+(
+    forum_id    INTEGER GENERATED ALWAYS AS IDENTITY,
+    title       VARCHAR(255) NOT NULL,
+    admin_id    uuid         NOT NULL,
+    description TEXT                     DEFAULT NULL,
+    forum_type  VARCHAR(255)             DEFAULT 'PUBLIC', --PUBLIC/PRIVATE--
+    members     uuid[]                   DEFAULT NULL,
+    status      INTEGER                  DEFAULT 1,        -- ACTIVE: 1, LOCK: 2, CLOSED: 3 --
+    ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE thread
+(
+    thread_id  INTEGER GENERATED ALWAYS AS IDENTITY,
+    forum_id   INTEGER NOT NULL,
+    title      TEXT                     DEFAULT NULL,
+    content    TEXT    NOT NULL,
+    ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+-- TABLE THREAD COMMENTS
+CREATE TABLE thread_comments
+(
+    id         INTEGER GENERATED ALWAYS AS IDENTITY,
+    thread_id  INTEGER NOT NULL,
+    user_id    uuid    NOT NULL,
+    comment    TEXT    NOT NULL,
+    ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE OR REPLACE FUNCTION update_ts_updated()
+    RETURNS TRIGGER AS
 $$
 BEGIN
     NEW.ts_updated = NOW();

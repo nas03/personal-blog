@@ -1,5 +1,5 @@
 import { code, message, redisPath } from "@/constants/consts";
-import { CategorySchema } from "@/constants/interfaces";
+import { CategorySchema } from "@/constants/types";
 import redis from "@/helpers/redis";
 import { categories_repository } from "@/repositories";
 import { createRedisKey, createResponse, getErrorMsg, getUserIdByToken, zodValidate } from "@/utilities";
