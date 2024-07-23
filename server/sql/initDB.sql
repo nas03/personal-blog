@@ -61,28 +61,29 @@ CREATE TABLE "posts_analytic"
     ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "comments"
+CREATE TABLE IF NOT EXISTS "posts_comment"
 (
-    comment_id    INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    post_id       INTEGER NOT NULL,
-    user_id       uuid    NOT NULL,
-    COMMENT       CHARACTER VARYING(200)   DEFAULT '',
-    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    comment_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    post_id    INTEGER                NOT NULL,
+    user_id    uuid                   NOT NULL,
+    comment    CHARACTER VARYING(200) NOT NULL,
+    ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts (post_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "user_access_histories"
+CREATE TABLE IF NOT EXISTS "users_access_history"
 (
-    id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id       uuid                   NOT NULL,
-    user_agent    CHARACTER VARYING(255) NOT NULL,
-    ip_address    inet                   NOT NULL,
-    ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    id         INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    user_id    uuid                   NOT NULL,
+    user_agent CHARACTER VARYING(255) NOT NULL,
+    ip_address inet                   NOT NULL,
+    platform   VARCHAR(255)           NOT NULL,
+    ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS "user_refresh_tokens"
+CREATE TABLE IF NOT EXISTS "users_refresh_token"
 (
     id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid   NOT NULL,
@@ -90,11 +91,9 @@ CREATE TABLE IF NOT EXISTS "user_refresh_tokens"
     exp           BIGINT NOT NULL,
     iat           BIGINT NOT NULL,
     ts_updated    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_registered TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    ts_created    TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX IF NOT EXISTS user_email_key ON users_basic_data USING btree (email);
-CREATE UNIQUE INDEX IF NOT EXISTS  user_phone_number_key ON users_basic_data USING btree (phone_number);
 CREATE TABLE IF NOT EXISTS "users_profile"
 (
     id                INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -134,11 +133,13 @@ CREATE TABLE IF NOT EXISTS "sms_history"
 (
     id                    INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     receiver_phone_number VARCHAR(255) NOT NULL,
+    receiver_id           uuid         NOT NULL,
     content               TEXT         NOT NULL,
     sms_type              INTEGER      NOT NULL,
     -- OTP:1/NOTIFICATIONS:2--
     ts_updated            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    ts_created            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    ts_created            TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (receiver_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 CREATE TABLE "users_message"
 (
@@ -151,7 +152,7 @@ CREATE TABLE "users_message"
     FOREIGN KEY (sender_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
     FOREIGN KEY (receiver_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
-CREATE TABLE "m_emails_template"
+CREATE TABLE "m_email_templates"
 (
     id         INTEGER GENERATED ALWAYS AS IDENTITY,
     email_code INTEGER      NOT NULL,
@@ -187,23 +188,25 @@ CREATE TABLE forums
     title       VARCHAR(255) NOT NULL,
     admin_id    uuid         NOT NULL,
     description TEXT                     DEFAULT NULL,
-    forum_type  VARCHAR(255)             DEFAULT 'PUBLIC', --PUBLIC/PRIVATE--
+    forum_type  INTEGER                  DEFAULT 0, -- PUBLIC: 0/PRIVATE: 1 --
     members     uuid[]                   DEFAULT NULL,
-    status      INTEGER                  DEFAULT 1,        -- ACTIVE: 1, LOCK: 2, CLOSED: 3 --
+    status      INTEGER                  DEFAULT 1, -- ACTIVE: 1, LOCK: 2, CLOSED: 3 --
     ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE thread
+CREATE TABLE forums_thread
 (
     thread_id  INTEGER GENERATED ALWAYS AS IDENTITY,
     forum_id   INTEGER NOT NULL,
+    up_vote    INTEGER                  DEFAULT 0,
+    down_vote  INTEGER                  DEFAULT 0,
     title      TEXT                     DEFAULT NULL,
     content    TEXT    NOT NULL,
     ts_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 -- TABLE THREAD COMMENTS
-CREATE TABLE thread_comments
+CREATE TABLE threads_comment
 (
     id         INTEGER GENERATED ALWAYS AS IDENTITY,
     thread_id  INTEGER NOT NULL,
@@ -244,27 +247,51 @@ CREATE TRIGGER comments
     ON comments
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
-CREATE TRIGGER post_category
-    BEFORE
-        UPDATE
-    ON post_category
-    FOR EACH ROW
-EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER user_access_histories
     BEFORE
         UPDATE
-    ON user_access_histories
+    ON users_access_history
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER user_refresh_tokens
     BEFORE
         UPDATE
-    ON user_refresh_tokens
+    ON users_refresh_token
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER users_profile
     BEFORE
         UPDATE
     ON users_profile
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER posts_analytic
+    BEFORE
+        UPDATE
+    ON posts_analytic
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER users_connection
+    BEFORE
+        UPDATE
+    ON users_connection
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER notifications
+    BEFORE
+        UPDATE
+    ON notifications
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER users_message
+    BEFORE
+        UPDATE
+    ON users_message
+    FOR EACH ROW
+EXECUTE FUNCTION update_ts_updated();
+CREATE TRIGGER emails_template
+    BEFORE
+        UPDATE
+    ON emails_template
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
