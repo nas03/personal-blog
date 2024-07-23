@@ -1,9 +1,14 @@
+import { flag } from "@/constants/consts";
 import { UsersRefreshTokenRepo } from "@/constants/schema";
 import { db } from "@/helpers";
 import { Knex } from "knex";
 
 export const getRefreshToken = async (user_id: string) => {
-  const query = db<UsersRefreshTokenRepo>("users_refresh_token").select("id", "user_id", "refresh_token", "exp", "iat").where("user_id", user_id).first();
+  const query = db<UsersRefreshTokenRepo>("users_refresh_token")
+    .select("id", "user_id", "refresh_token", "exp", "iat")
+    .where("user_id", user_id)
+    .where("delete_flag", flag.FALSE)
+    .first();
   return query;
 };
 

@@ -3,6 +3,17 @@ import { Knex } from "knex";
 import dotenv from "dotenv";
 dotenv.config();
 const knexConfig: { [key: string]: Knex.Config } = {
+  local: {
+    client: "pg",
+    connection: {
+      host: "localhost",
+      user: "postgres",
+      password: String(process.env.DB_LOCAL_PASSWORD),
+      database: "personal_blog",
+      port: 5432,
+    },
+    debug: true,
+  },
   development: {
     client: "pg",
     connection: {

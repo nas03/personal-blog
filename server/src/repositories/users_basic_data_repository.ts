@@ -59,13 +59,10 @@ const deleteUserData = async (user_id: string) => {
 const createUserData = async (payload: Omit<UsersBasicDataRepo, "user_id">) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UsersBasicDataRepo>("users_basic_data").insert(payload);
-
-      if (!query) return false;
+      const query = await trx<UsersBasicDataRepo>("users_basic_data").insert(payload).returning("*");
       return query;
     });
-    return transaction;
-    return transaction;
+    return transaction[0];
   } catch (error) {
     console.log(error);
     logger.error("Error inserting user");
@@ -73,3 +70,4 @@ const createUserData = async (payload: Omit<UsersBasicDataRepo, "user_id">) => {
   }
 };
 export { createUserData, deleteUserData, getUserData, updateUserData };
+

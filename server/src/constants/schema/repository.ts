@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const RepositorySchema = z.object({
-  delete_flag: z.number().min(0).max(1),
+  delete_flag: z.number().min(0).max(1).optional(),
   ts_updated: z.date().optional(),
   ts_created: z.date().optional(),
 });

@@ -1,10 +1,12 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { isJSON } from "@/utilities";
+import dotenv from "dotenv";
 import { createClient } from "redis";
 // Create a new Redis client
+dotenv.config();
 const redisClient = createClient(
-  process.env.NODE_ENV === "development"
+  process.env.NODE_ENV === "development" || "local"
     ? {
         password: process.env.REDIS_CLOUD_PASSWORD,
         socket: {

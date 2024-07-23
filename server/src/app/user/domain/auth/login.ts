@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import moment from "moment";
 import { z } from "zod";
 // Repository
-import { user_refresh_tokens_repository, users_basic_data_repository } from "@/repositories";
+import { users_login_data_repository, users_refresh_token_repository } from "@/repositories";
 // Constants
 import { code, message, zodError } from "@/constants/consts";
 // Utility
@@ -20,9 +20,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     const data = zodValidate(req.body, ValidateSchema);
 
-    const userData = await users_basic_data_repository.getUserData({
-      email: data.email,
-    });
+    const userData = await users_login_data_repository.getUserLoginData(data.email);
     if (!userData) {
       return createResponse(res, false, null, code.UNAUTHORIZED, message.user_not_exists);
     }
@@ -55,7 +53,7 @@ export const login = async (req: Request, res: Response) => {
         secure: true,
       });
 
-      await user_refresh_tokens_repository.addRefreshToken({
+      await users_refresh_token_repository.addRefreshToken({
         user_id: userData.user_id,
         refresh_token: refreshToken,
         exp: exp,
@@ -66,6 +64,7 @@ export const login = async (req: Request, res: Response) => {
     const payload = { accessToken: accessToken };
     return createResponse(res, true, payload);
   } catch (error) {
+    console.log(error);
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);
   }

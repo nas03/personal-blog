@@ -53,3 +53,8 @@ export const redisPath = Object.freeze({
     token: "user_refresh_tokens:token",
   }),
 });
+
+export const flag = Object.freeze({
+  TRUE: 1,
+  FALSE: 0,
+});
