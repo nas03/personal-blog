@@ -2,12 +2,12 @@
 // helpers
 import { db, logger } from "@/helpers";
 // constants
-import { UserBasicDataRepo } from "@/constants/schema";
+import { UsersBasicDataRepo } from "@/constants/schema";
 // libraries
 import { Knex } from "knex";
 
-const getUserData = async (payload: Pick<UserBasicDataRepo, "user_id"> | Pick<UserBasicDataRepo, "email">) => {
-  const query = await db<UserBasicDataRepo>("users_basic_data")
+const getUserData = async (payload: Pick<UsersBasicDataRepo, "user_id"> | Pick<UsersBasicDataRepo, "email">) => {
+  const query = await db<UsersBasicDataRepo>("users_basic_data")
     .select("user_id", "authorization_id", "email", "first_name", "last_name", "hashed_password", "phone_number")
     .where((builder: Knex.QueryBuilder) => {
       if ("email" in payload && payload["email"]) {
@@ -22,14 +22,14 @@ const getUserData = async (payload: Pick<UserBasicDataRepo, "user_id"> | Pick<Us
 };
 
 export const findAll = async () => {
-  const query = await db<UserBasicDataRepo>("users_basic_data").select("*");
+  const query = await db<UsersBasicDataRepo>("users_basic_data").select("*");
   return query;
 };
 
-const updateUserData = async (payload: { user_id: string; options: Partial<Omit<UserBasicDataRepo, "user_id">> }) => {
+const updateUserData = async (payload: { user_id: string; options: Partial<Omit<UsersBasicDataRepo, "user_id">> }) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      return await trx<UserBasicDataRepo>("users_basic_data")
+      return await trx<UsersBasicDataRepo>("users_basic_data")
         .select("user_id", "email", "first_name", "last_name", "phone_number")
         .update(payload.options)
         .where("user_id", payload.user_id);
@@ -44,7 +44,7 @@ const updateUserData = async (payload: { user_id: string; options: Partial<Omit<
 const deleteUserData = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UserBasicDataRepo>("users_basic_data").delete().where("user_id", user_id);
+      const query = await trx<UsersBasicDataRepo>("users_basic_data").delete().where("user_id", user_id);
 
       if (!query) return false;
       return query;
@@ -56,10 +56,10 @@ const deleteUserData = async (user_id: string) => {
   }
 };
 
-const createUserData = async (payload: Omit<UserBasicDataRepo, "user_id">) => {
+const createUserData = async (payload: Omit<UsersBasicDataRepo, "user_id">) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UserBasicDataRepo>("users_basic_data").insert(payload);
+      const query = await trx<UsersBasicDataRepo>("users_basic_data").insert(payload);
 
       if (!query) return false;
       return query;

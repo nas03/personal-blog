@@ -163,23 +163,3 @@ export const ThreadsCommentSchema = RepositorySchema.extend({
   user_id: z.string().uuid(),
   comment: z.string(),
 });
-export type UsersBasicDataRepo = z.infer<typeof UsersBasicDataSchema>;
-export type PostsRepo = z.infer<typeof PostsSchema>;
-export type UsersLoginDataRepo = z.infer<typeof UsersLoginDataSchema>;
-export type MCategoriesRepo = z.infer<typeof MCategoriesSchema>;
-export type PostsCategoryRepo = z.infer<typeof PostsCategorySchema>;
-export type PostsAnalyticRepo = z.infer<typeof PostsAnalyticSchema>;
-export type PostsCommentRepo = z.infer<typeof PostsCommentSchema>;
-export type UsersAccessHistoryRepo = z.infer<typeof UsersAccessHistorySchema>;
-export type UsersRefreshTokenRepo = z.infer<typeof UsersRefreshTokenSchema>;
-export type UsersProfileRepo = z.infer<typeof UsersProfileSchema>;
-export type UsersConnectionRepo = z.infer<typeof UsersConnection>;
-export type NotificationsHistoryRepo = z.infer<typeof NotificationsHistorySchema>;
-export type SmsHistoryRepo = z.infer<typeof SmsHistorySchema>;
-export type UsersMessageRepo = z.infer<typeof UsersMessageSchema>;
-export type MEmailTemplatesRepo = z.infer<typeof MEmailTemplatesSchema>;
-export type UsersEmailHistoryRepo = z.infer<typeof UsersEmailHistorySchema>;
-export type MCountriesRepo = z.infer<typeof MCountries>;
-export type ForumsRepo = z.infer<typeof ForumsSchema>;
-export type ForumsThreadRepo = z.infer<typeof ForumsThreadSchema>;
-export type ThreadsCommentRepo = z.infer<typeof ThreadsCommentSchema>;

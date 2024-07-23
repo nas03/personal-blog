@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
-    "generate-secret": "node -e console.log(require('crypto').randomBytes(16).toString('base64'))",
-    "introspect-db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
-    "generate-trigger": "ts-node src/tools/gen_trigger_db.ts"
+    "introspect:db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
+    "generate:secret": "node -e console.log(require('crypto').randomBytes(16).toString('base64'))",
+    "generate:triggers": "ts-node src/tools/trigger/gen_trigger_db.ts",
+    "generate:types": "ts-node src/tools/schema/gen_type_from_schema.ts"
   },
   "keywords": [],
   "author": "nas03",
