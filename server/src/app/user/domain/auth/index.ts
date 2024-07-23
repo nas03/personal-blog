@@ -1,5 +1,6 @@
+import { deleteAuth } from "./delete_auth";
 import { login } from "./login";
-import { signup } from "./signup";
 import { refreshToken } from "./refresh_token";
-const auth = { login, signup, refreshToken };
+import { signup } from "./signup";
+const auth = { login, signup, refreshToken, deleteAuth };
 export default auth;
