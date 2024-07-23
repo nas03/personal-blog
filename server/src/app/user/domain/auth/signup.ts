@@ -29,7 +29,7 @@ export const signup = async (req: Request, res: Response) => {
       return createResponse(res, false, null, code.BAD_REQUEST, message.fields_invalid);
     }
 
-    // CREATE USER BASIC DATA
+    // CREATE NEW USER BASIC DATA
     const hashed_password = await bcryptjs.hash(data.password, 10);
     const userPayload: Omit<UsersBasicDataRepo, "user_id"> & { hashed_password: string } = {
       first_name: data.first_name,
