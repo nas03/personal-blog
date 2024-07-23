@@ -24,12 +24,15 @@ export const refreshToken = async (req: Request, res: Response) => {
       return createResponse(res, false, null, code.UNAUTHORIZED, message.not_authorized);
     }
 
-    const userData = await users_basic_data_repository.getUserData({ user_id: user_id });
+    const userData = await users_basic_data_repository.getUserBasicData(user_id);
+    if (!userData) {
+      return createResponse(res, false, null, code.ERROR, message.user_not_exists);
+    }
 
     const accessToken = createAccessToken({
       user_id: user_id,
       email: email,
-      authorization_id: userData?.authorization_id,
+      authorization_id: userData.authorization_id,
     });
 
     const newRefreshToken = createRefreshToken({

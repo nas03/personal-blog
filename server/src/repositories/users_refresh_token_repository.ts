@@ -34,7 +34,7 @@ export const addRefreshToken = async (payload: Omit<UsersRefreshTokenRepo, "id">
 export const deleteRefreshToken = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UsersRefreshTokenRepo>("users_refresh_token").where("user_id", user_id).delete();
+      const query = await trx<UsersRefreshTokenRepo>("users_refresh_token").where("user_id", user_id).update({ delete_flag: flag.TRUE });
 
       if (!query) return false;
       return true;

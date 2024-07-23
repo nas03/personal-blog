@@ -24,3 +24,16 @@ export const createUserLoginData = async (payload: Omit<UsersLoginDataRepo, "id"
     return false;
   }
 };
+
+export const deleteUserLoginData = async (user_id: string) => {
+  try {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
+      const query = await trx<UsersLoginDataRepo>("users_login_data").update({ delete_flag: flag.TRUE }).where("user_id", user_id);
+      return query;
+    });
+    return transaction;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
