@@ -1,4 +1,4 @@
-import winston, { createLogger, format, transports } from 'winston';
+import { createLogger, format, transports } from 'winston';
 
 const { combine, timestamp, printf, colorize, align, json } = format;
 
@@ -13,7 +13,7 @@ const logger = createLogger({
 	format: myFormat,
 	transports: [
 		new transports.File({
-			filename: 'sys.log',
+			filename: 'log/sys.log',
 			level: 'error',
 		}),
 		new transports.Console({

@@ -1,13 +1,13 @@
 "use strict";
 // helpers
-import { db } from "@/helpers";
+import { db, logger } from "@/helpers";
 // constants
 import { UsersBasicDataRepo, UsersLoginDataRepo } from "@/constants/schema";
 // libraries
 import { flag } from "@/constants/consts";
 import { Knex } from "knex";
 
-const createNewUser = async (payload: Omit<UsersBasicDataRepo, "user_id"> & { hashed_password: string }) => {
+export const createNewUser = async (payload: Omit<UsersBasicDataRepo, "user_id"> & Omit<UsersLoginDataRepo, "id" | "user_id">) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       // CREATE NEW USER
@@ -26,13 +26,15 @@ const createNewUser = async (payload: Omit<UsersBasicDataRepo, "user_id"> & { ha
         user_id: newUser.user_id,
         hashed_password: payload.hashed_password,
         email: payload.email,
+        last_login_date: payload.last_login_date,
+        last_login_ip: payload.last_login_ip,
       };
       const loginData = await trx<UsersLoginDataRepo>("users_login_data").insert(loginDataPayload);
       return true;
     });
     return true;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -44,4 +46,24 @@ export const getUserBasicData = async (user_id: string) => {
     .first();
   return query;
 };
-export { createNewUser };
+
+export const listUsers = async () => {
+  // access_history && image_profile
+  const query = await db<UsersBasicDataRepo>("users_basic_data as ubd")
+    .leftJoin("users_access_history as uah", "uah.user_id", "ubd.user_id")
+    .leftJoin("users_profile", "users_profile.user_id", "ubd.user_id")
+    .leftJoin("users_login_data as uld", "uld.user_id", "ubd.user_id")
+    .select(
+      db.raw("CONCAT (ubd.first_name, ' ', ubd.last_name) AS full_name"),
+      "ubd.authorization_id",
+      "ubd.email",
+      "ubd.phone_number",
+      "users_profile.profile_image_url",
+      "users_profile.country",
+      "users_profile.address",
+      "users_profile.stars",
+      "uld.last_login_date",
+      "uld.last_login_ip"
+    );
+  return query;
+};

@@ -4,11 +4,13 @@ import { Request, Response } from "express";
 import moment from "moment";
 import { z } from "zod";
 // Repository
-import { users_login_data_repository, users_refresh_token_repository } from "@/repositories";
+import { users_access_history_repository, users_login_data_repository, users_refresh_token_repository } from "@/repositories";
 // Constants
 import { code, message, zodError } from "@/constants/consts";
 // Utility
-import { createAccessToken, createRefreshToken, createResponse, getErrorMsg, zodValidate } from "@/utilities";
+import { UsersAccessHistoryRepo } from "@/constants/schema";
+import { logger } from "@/helpers";
+import { createAccessToken, createRefreshToken, createResponse, getErrorMsg, getOsData, zodValidate } from "@/utilities";
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -64,10 +66,19 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
+    // LOG USER ACCESS HISTORY
+    const accessHistoryPayload: Omit<UsersAccessHistoryRepo, "id"> = {
+      ip_address: req.ip || "::1",
+      platform: getOsData(req) || "",
+      user_agent: req.headers["user-agent"] || "",
+      user_id: userData.user_id,
+    };
+    const createAccessHistory = await users_access_history_repository.createAccessHistory(accessHistoryPayload);
+
     const payload = { accessToken: accessToken };
     return createResponse(res, true, payload);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);
   }

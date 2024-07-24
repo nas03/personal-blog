@@ -1,4 +1,5 @@
 import { UsersProfileRepo } from "@/constants/schema";
+import { logger } from "@/helpers";
 import db from "@/helpers/db";
 import { Knex } from "knex";
 
@@ -19,7 +20,7 @@ export const createUserProfile = async (payload: Partial<UsersProfileRepo> & { u
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -33,7 +34,7 @@ export const updateUserProfile = async (payload: Partial<Omit<UsersProfileRepo, 
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -41,13 +42,13 @@ export const updateUserProfile = async (payload: Partial<Omit<UsersProfileRepo, 
 export const deleteUserProfile = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await db<UsersProfileRepo>("users_profile").delete().where("user_id", user_id);
+      const query = await db<UsersProfileRepo>("users_profile").where("user_id", user_id).softDelete();
       if (!query) return false;
       return query;
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };

@@ -1,6 +1,6 @@
 import { flag } from "@/constants/consts";
 import { UsersRefreshTokenRepo } from "@/constants/schema";
-import { db } from "@/helpers";
+import { db, logger } from "@/helpers";
 import { Knex } from "knex";
 
 export const getRefreshToken = async (user_id: string) => {
@@ -26,7 +26,7 @@ export const addRefreshToken = async (payload: Omit<UsersRefreshTokenRepo, "id">
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -34,14 +34,14 @@ export const addRefreshToken = async (payload: Omit<UsersRefreshTokenRepo, "id">
 export const deleteRefreshToken = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UsersRefreshTokenRepo>("users_refresh_token").where("user_id", user_id).update({ delete_flag: flag.TRUE });
+      const query = await trx<UsersRefreshTokenRepo>("users_refresh_token").where("user_id", user_id).softDelete()
 
       if (!query) return false;
       return true;
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };

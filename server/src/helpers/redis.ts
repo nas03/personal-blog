@@ -3,10 +3,11 @@ import { code, message } from "@/constants/consts";
 import { isJSON } from "@/utilities";
 import dotenv from "dotenv";
 import { createClient } from "redis";
+import logger from "./logger";
 // Create a new Redis client
 dotenv.config();
 const redisClient = createClient(
-  process.env.NODE_ENV === "development" || "local"
+  ["development", "local"].includes(String(process.env.NODE_ENV))
     ? {
         password: process.env.REDIS_CLOUD_PASSWORD,
         socket: {
@@ -65,7 +66,7 @@ const getCache = async (key: string): Promise<object | string | null> => {
     }
     return data;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     throw new ErrorLog(code.ERROR, message.redis_error);
   }
 };
@@ -76,7 +77,7 @@ const deleteCache = async (key: string) => {
     if (!delData) return false;
     return true;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     throw new ErrorLog(code.ERROR, message.redis_error);
   }
 };
@@ -89,7 +90,7 @@ const updateCache = async <T>(key: object | string, values: object | string | T[
     if (updateData !== "OK") return false;
     return true;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     throw new ErrorLog(code.ERROR, message.redis_error);
   }
 };

@@ -20,6 +20,8 @@ export const UsersLoginDataSchema = RepositorySchema.extend({
   user_id: z.string().uuid(),
   email: z.string().email(),
   hashed_password: z.string(),
+  last_login_date: z.date().nullable(),
+  last_login_ip: z.string().ip().nullable(),
 });
 
 export const PostsSchema = RepositorySchema.extend({

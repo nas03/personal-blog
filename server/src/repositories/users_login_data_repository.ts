@@ -1,6 +1,6 @@
 import { flag } from "@/constants/consts";
 import { UsersBasicDataRepo, UsersLoginDataRepo } from "@/constants/schema";
-import { db } from "@/helpers";
+import { db, logger } from "@/helpers";
 import { Knex } from "knex";
 
 export const getUserLoginData = async (email: string) => {
@@ -20,7 +20,7 @@ export const createUserLoginData = async (payload: Omit<UsersLoginDataRepo, "id"
     });
     return transaction[0];
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -29,14 +29,13 @@ export const deleteUserData = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const [users_basic_data, users_login_data] = await Promise.all([
-        // @ts-ignore
-        await trx<UsersBasicDataRepo>("users_basic_data").where("user_id", user_id).softDelete(),
-        await trx<UsersLoginDataRepo>("users_login_data").update("delete_flag", flag.TRUE).where("user_id", user_id),
+        trx<UsersBasicDataRepo>("users_basic_data").where("user_id", user_id).softDelete(),
+        trx<UsersLoginDataRepo>("users_login_data").where("user_id", user_id).softDelete(),
       ]);
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -47,7 +46,7 @@ export const deleteUserLoginData = async (user_id: string) => {
     });
     return transaction;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };

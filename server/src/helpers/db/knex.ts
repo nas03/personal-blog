@@ -12,8 +12,6 @@ const knexConfig: { [key: string]: Knex.Config } = {
       database: "personal_blog",
       port: 5432,
     },
-    debug: true,
-    
   },
   development: {
     client: "pg",

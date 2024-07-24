@@ -6,7 +6,7 @@ import { createResponse, emailValidator, getErrorMsg, phoneNumberValidator, zodV
 // Constants
 import { authorization, code, message, zodError } from "@/constants/consts";
 // Interfaces
-import { UsersBasicDataRepo } from "@/constants/schema";
+import { UsersBasicDataRepo, UsersLoginDataRepo } from "@/constants/schema";
 // Repository
 import { users_basic_data_repository } from "@/repositories";
 // library
@@ -31,13 +31,15 @@ export const signup = async (req: Request, res: Response) => {
 
     // CREATE NEW USER BASIC DATA
     const hashed_password = await bcryptjs.hash(data.password, 10);
-    const userPayload: Omit<UsersBasicDataRepo, "user_id"> & { hashed_password: string } = {
+    const userPayload: Omit<UsersBasicDataRepo, "user_id"> & Omit<UsersLoginDataRepo, "id" | "user_id"> = {
       first_name: data.first_name,
       last_name: data.last_name,
       email: data.email,
       authorization_id: authorization.USER,
       phone_number: data.phone_number,
       hashed_password: hashed_password,
+      last_login_date: new Date(),
+      last_login_ip: req.ip || "::1",
     };
     const newUser = await users_basic_data_repository.createNewUser(userPayload);
     if (!newUser) {

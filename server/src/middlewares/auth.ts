@@ -23,7 +23,7 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
     }
     next();
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return createResponse(res, false, error, code.UNAUTHORIZED);
   }
 };
