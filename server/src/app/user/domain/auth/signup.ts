@@ -6,9 +6,9 @@ import { createResponse, emailValidator, getErrorMsg, phoneNumberValidator, zodV
 // Constants
 import { authorization, code, message, zodError } from "@/constants/consts";
 // Interfaces
-import { UsersBasicDataRepo, UsersLoginDataRepo } from "@/constants/schema";
+import { UsersBasicDataRepo } from "@/constants/schema";
 // Repository
-import { users_basic_data_repository, users_login_data_repository } from "@/repositories";
+import { users_basic_data_repository } from "@/repositories";
 // library
 import { z } from "zod";
 // helper
@@ -29,37 +29,20 @@ export const signup = async (req: Request, res: Response) => {
       return createResponse(res, false, null, code.BAD_REQUEST, message.fields_invalid);
     }
 
-    // CREATE USER BASIC DATA
-    const userPayload: Omit<UsersBasicDataRepo, "user_id"> = {
+    // CREATE NEW USER BASIC DATA
+    const hashed_password = await bcryptjs.hash(data.password, 10);
+    const userPayload: Omit<UsersBasicDataRepo, "user_id"> & { hashed_password: string } = {
       first_name: data.first_name,
       last_name: data.last_name,
       email: data.email,
       authorization_id: authorization.USER,
       phone_number: data.phone_number,
+      hashed_password: hashed_password,
     };
-    await users_basic_data_repository
-      .createUserData(userPayload)
-      .then(async (newUser) => {
-        if (!newUser) {
-          return createResponse(res, false, null, code.ERROR, message.system_error);
-        }
-
-        // CREATE LOGIN DATA
-        const user_id = newUser.user_id;
-        const hashed_password = await bcryptjs.hash(data.password, 10);
-        const loginPayload: Omit<UsersLoginDataRepo, "id"> = {
-          user_id: user_id,
-          hashed_password: hashed_password,
-          email: newUser.email,
-        };
-        const newLoginData = await users_login_data_repository.createUserLoginData(loginPayload);
-        if (!newLoginData) {
-          return createResponse(res, false, null, code.ERROR, message.system_error);
-        }
-      })
-      .catch((error) => {
-        return createResponse(res, false, null, code.ERROR, message.system_error);
-      });
+    const newUser = await users_basic_data_repository.createNewUser(userPayload);
+    if (!newUser) {
+      return createResponse(res, false, null, code.ERROR, message.system_error);
+    }
 
     return createResponse(res, true);
   } catch (error) {

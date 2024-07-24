@@ -1,73 +1,47 @@
 "use strict";
 // helpers
-import { db, logger } from "@/helpers";
+import { db } from "@/helpers";
 // constants
-import { UsersBasicDataRepo } from "@/constants/schema";
+import { UsersBasicDataRepo, UsersLoginDataRepo } from "@/constants/schema";
 // libraries
+import { flag } from "@/constants/consts";
 import { Knex } from "knex";
 
-const getUserData = async (payload: Pick<UsersBasicDataRepo, "user_id"> | Pick<UsersBasicDataRepo, "email">) => {
+const createNewUser = async (payload: Omit<UsersBasicDataRepo, "user_id"> & { hashed_password: string }) => {
+  try {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
+      // CREATE NEW USER
+      const newUserPayload: Omit<UsersBasicDataRepo, "user_id"> = {
+        first_name: payload.first_name,
+        last_name: payload.last_name,
+        authorization_id: payload.authorization_id,
+        email: payload.email,
+        phone_number: payload.phone_number,
+      };
+      const newUser = (await trx<UsersBasicDataRepo>("users_basic_data").insert(newUserPayload).returning("*")).at(0);
+      if (!newUser) throw Error();
+
+      // CREATE LOGIN DATA FOR NEW USER
+      const loginDataPayload: Omit<UsersLoginDataRepo, "id"> = {
+        user_id: newUser.user_id,
+        hashed_password: payload.hashed_password,
+        email: payload.email,
+      };
+      const loginData = await trx<UsersLoginDataRepo>("users_login_data").insert(loginDataPayload);
+      return true;
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+export const getUserBasicData = async (user_id: string) => {
   const query = await db<UsersBasicDataRepo>("users_basic_data")
-    .select("user_id", "authorization_id", "email", "first_name", "last_name", "hashed_password", "phone_number")
-    .where((builder: Knex.QueryBuilder) => {
-      if ("email" in payload && payload["email"]) {
-        builder.where("email", payload.email);
-      }
-      if ("user_id" in payload && payload["user_id"]) {
-        builder.where("user_id", payload.user_id);
-      }
-    })
+    .select("first_name", "last_name", "phone_number", "authorization_id", "user_id")
+    .where("delete_flag", flag.FALSE)
     .first();
   return query;
 };
-
-export const findAll = async () => {
-  const query = await db<UsersBasicDataRepo>("users_basic_data").select("*");
-  return query;
-};
-
-const updateUserData = async (payload: { user_id: string; options: Partial<Omit<UsersBasicDataRepo, "user_id">> }) => {
-  try {
-    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      return await trx<UsersBasicDataRepo>("users_basic_data")
-        .select("user_id", "email", "first_name", "last_name", "phone_number")
-        .update(payload.options)
-        .where("user_id", payload.user_id);
-    });
-    return transaction;
-  } catch (error) {
-    logger.error("Error updating user");
-    return false;
-  }
-};
-
-const deleteUserData = async (user_id: string) => {
-  try {
-    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UsersBasicDataRepo>("users_basic_data").delete().where("user_id", user_id);
-
-      if (!query) return false;
-      return query;
-    });
-    return transaction;
-  } catch (error) {
-    logger.error("Error deleting user");
-    return false;
-  }
-};
-
-const createUserData = async (payload: Omit<UsersBasicDataRepo, "user_id">) => {
-  try {
-    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UsersBasicDataRepo>("users_basic_data").insert(payload).returning("*");
-      return query;
-    });
-    return transaction[0];
-  } catch (error) {
-    console.log(error);
-    logger.error("Error inserting user");
-    return false;
-  }
-};
-export { createUserData, deleteUserData, getUserData, updateUserData };
-
+export { createNewUser };

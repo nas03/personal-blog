@@ -350,7 +350,7 @@ EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER update_m_countries
     BEFORE
         UPDATE
-    ON m_countries\
+    ON m_countries
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER update_forums_thread

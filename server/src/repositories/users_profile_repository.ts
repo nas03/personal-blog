@@ -1,5 +1,6 @@
 import { UsersProfileRepo } from "@/constants/schema";
 import db from "@/helpers/db";
+import { Knex } from "knex";
 
 export const getUserProfile = async (user_id: string) => {
   const query = await db<UsersProfileRepo>("users_profile")
@@ -11,7 +12,7 @@ export const getUserProfile = async (user_id: string) => {
 
 export const createUserProfile = async (payload: Partial<UsersProfileRepo> & { user_id: string }) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const query = await trx<UsersProfileRepo>("users_profile").insert(payload);
       if (!query) return false;
       return query;
@@ -25,7 +26,7 @@ export const createUserProfile = async (payload: Partial<UsersProfileRepo> & { u
 
 export const updateUserProfile = async (payload: Partial<Omit<UsersProfileRepo, "id">>) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const query = await trx<UsersProfileRepo>("users_profile").update(payload).where("user_id", payload.user_id);
       if (!query) return false;
       return query;
@@ -39,7 +40,7 @@ export const updateUserProfile = async (payload: Partial<Omit<UsersProfileRepo, 
 
 export const deleteUserProfile = async (user_id: string) => {
   try {
-    const transaction = await db.transaction(async (trx) => {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
       const query = await db<UsersProfileRepo>("users_profile").delete().where("user_id", user_id);
       if (!query) return false;
       return query;
