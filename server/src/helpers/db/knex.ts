@@ -7,12 +7,13 @@ const knexConfig: { [key: string]: Knex.Config } = {
     client: "pg",
     connection: {
       host: "localhost",
-      user: "anhson",
+      user: "postgres",
       password: String(process.env.DB_LOCAL_PASSWORD),
       database: "personal_blog",
       port: 5432,
     },
     debug: true,
+    
   },
   development: {
     client: "pg",

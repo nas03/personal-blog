@@ -13,7 +13,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     const user_id = validate.user_id;
     
     // DELETE USER DATA
-    const deleteUser = await users_login_data_repository.deleteUserLoginData(user_id);
+    const deleteUser = await users_login_data_repository.deleteUserData(user_id);
     return createResponse(res, true);
   } catch (error) {
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
