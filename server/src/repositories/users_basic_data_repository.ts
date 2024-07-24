@@ -67,3 +67,18 @@ export const listUsers = async () => {
     );
   return query;
 };
+
+export const deleteUserData = async (user_id: string) => {
+  try {
+    const transaction = await db.transaction(async (trx: Knex.Transaction) => {
+      const [users_basic_data, users_login_data] = await Promise.all([
+        trx<UsersBasicDataRepo>("users_basic_data").where("user_id", user_id).softDelete(),
+        trx<UsersLoginDataRepo>("users_login_data").where("user_id", user_id).softDelete(),
+      ]);
+    });
+    return transaction;
+  } catch (error) {
+    logger.error(error);
+    return false;
+  }
+};

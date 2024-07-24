@@ -1,5 +1,5 @@
 import { authorization, code, message, zodError } from "@/constants/consts";
-import { users_basic_data_repository, users_login_data_repository } from "@/repositories";
+import { users_basic_data_repository } from "@/repositories";
 import { createResponse, getErrorMsg, zodValidate } from "@/utilities";
 import { Request, Response } from "express";
 import { z } from "zod";
@@ -18,7 +18,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
     
     // DELETE USER DATA
-    const deleteUser = await users_login_data_repository.deleteUserData(user_id);
+    const deleteUser = await users_basic_data_repository.deleteUserData(user_id);
     return createResponse(res, true);
   } catch (error) {
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
