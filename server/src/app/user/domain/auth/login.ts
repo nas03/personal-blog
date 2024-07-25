@@ -2,9 +2,10 @@
 import bcryptjs from "bcryptjs";
 import { Request, Response } from "express";
 import moment from "moment";
+import { v4 as uuidV4 } from "uuid";
 import { z } from "zod";
 // Repository
-import { users_access_history_repository, users_login_data_repository, users_refresh_token_repository } from "@/repositories";
+import { users_access_history_repository, users_login_data_repository, users_login_token_repository } from "@/repositories";
 // Constants
 import { code, message, zodError } from "@/constants/consts";
 // Utility
@@ -34,11 +35,19 @@ export const login = async (req: Request, res: Response) => {
       return createResponse(res, false, null, code.UNAUTHORIZED, message.not_authorized);
     }
 
+    // VERIFY IF REQUEST IS DUPLICATED
+    const existedToken = await users_login_token_repository.getLoginToken(userData.user_id);
+    console.log({ session_id: existedToken?.session_id, accessToken: existedToken?.access_token });
+    if (existedToken && existedToken.exp > Math.floor(Date.now() / 1000)) {
+      const payload = { session_id: existedToken.session_id, accessToken: existedToken.access_token };
+      return createResponse(res, true, payload);
+    }
     // CREATE LOGIN TOKENS
-    const accessToken = createAccessToken({
+    const access_token = createAccessToken({
       user_id: userData.user_id,
       email: userData.email,
     });
+    const session_id = uuidV4();
 
     if (data.staySignedIn) {
       const exp = Math.floor(Date.now() / 1000) + moment.duration(1, "day").asSeconds();
@@ -53,13 +62,15 @@ export const login = async (req: Request, res: Response) => {
 
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
         httpOnly: true,
-        maxAge: moment.duration(1, "day").asSeconds(),
+        maxAge: moment.duration(1, "day").asMilliseconds(),
         sameSite: "strict",
         secure: true,
       });
 
-      await users_refresh_token_repository.addRefreshToken({
+      await users_login_token_repository.addLoginToken({
         user_id: userData.user_id,
+        session_id: session_id,
+        access_token: access_token,
         refresh_token: refreshToken,
         exp: exp,
         iat: iat,
@@ -75,7 +86,7 @@ export const login = async (req: Request, res: Response) => {
     };
     const createAccessHistory = await users_access_history_repository.createAccessHistory(accessHistoryPayload);
 
-    const payload = { accessToken: accessToken };
+    const payload = { sessionId: session_id, accessToken: access_token };
     return createResponse(res, true, payload);
   } catch (error) {
     logger.error(error);

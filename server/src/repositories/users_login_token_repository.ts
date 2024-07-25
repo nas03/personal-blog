@@ -1,21 +1,22 @@
 import { flag } from "@/constants/consts";
-import { UsersRefreshTokenRepo } from "@/constants/schema";
+import { UsersLoginTokenRepo } from "@/constants/schema";
 import { db, logger } from "@/helpers";
 import { Knex } from "knex";
 
-export const getRefreshToken = async (user_id: string) => {
-  const query = db<UsersRefreshTokenRepo>("users_refresh_token")
-    .select("id", "user_id", "refresh_token", "exp", "iat")
+export const getLoginToken = async (user_id: string) => {
+  const query = db<UsersLoginTokenRepo>("users_login_token")
+    .select("id", "user_id", "session_id", "access_token", "refresh_token", "exp", "iat")
     .where("user_id", user_id)
     .where("delete_flag", flag.FALSE)
+    .orderBy("iat", "desc")
     .first();
   return query;
 };
 
-export const addRefreshToken = async (payload: Omit<UsersRefreshTokenRepo, "id">) => {
+export const addLoginToken = async (payload: Omit<UsersLoginTokenRepo, "id">) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx("users_refresh_token").insert({
+      const query = await trx("users_login_token").insert({
         ...payload,
         iat: payload.iat,
         exp: payload.exp,
@@ -31,10 +32,10 @@ export const addRefreshToken = async (payload: Omit<UsersRefreshTokenRepo, "id">
   }
 };
 
-export const deleteRefreshToken = async (user_id: string) => {
+export const deleteLoginToken = async (user_id: string) => {
   try {
     const transaction = await db.transaction(async (trx: Knex.Transaction) => {
-      const query = await trx<UsersRefreshTokenRepo>("users_refresh_token").where("user_id", user_id).softDelete()
+      const query = await trx<UsersLoginTokenRepo>("users_login_token").where("user_id", user_id).softDelete();
 
       if (!query) return false;
       return true;

@@ -2,8 +2,8 @@ import { z } from "zod";
 
 const RepositorySchema = z.object({
   delete_flag: z.number().min(0).max(1).optional(),
-  ts_updated: z.date().optional(),
-  ts_created: z.date().optional(),
+  ts_updated: z.string().datetime().optional(),
+  ts_created: z.string().datetime().optional(),
 });
 
 export const UsersBasicDataSchema = RepositorySchema.extend({
@@ -20,7 +20,7 @@ export const UsersLoginDataSchema = RepositorySchema.extend({
   user_id: z.string().uuid(),
   email: z.string().email(),
   hashed_password: z.string(),
-  last_login_date: z.date().nullable(),
+  last_login_date: z.string().datetime().nullable(),
   last_login_ip: z.string().ip().nullable(),
 });
 
@@ -70,9 +70,11 @@ export const UsersAccessHistorySchema = RepositorySchema.extend({
   platform: z.string(),
 });
 
-export const UsersRefreshTokenSchema = RepositorySchema.extend({
+export const UsersLoginTokenSchema = RepositorySchema.extend({
   id: z.number(),
   user_id: z.string().uuid(),
+  session_id: z.string().uuid(),
+  access_token: z.string(),
   refresh_token: z.string(),
   exp: z.number(),
   iat: z.number(),
@@ -173,7 +175,7 @@ export type PostsCategoryRepo = z.infer<typeof PostsCategorySchema>;
 export type PostsAnalyticRepo = z.infer<typeof PostsAnalyticSchema>;
 export type PostsCommentRepo = z.infer<typeof PostsCommentSchema>;
 export type UsersAccessHistoryRepo = z.infer<typeof UsersAccessHistorySchema>;
-export type UsersRefreshTokenRepo = z.infer<typeof UsersRefreshTokenSchema>;
+export type UsersLoginTokenRepo = z.infer<typeof UsersLoginTokenSchema>;
 export type UsersProfileRepo = z.infer<typeof UsersProfileSchema>;
 export type UsersConnectionRepo = z.infer<typeof UsersConnection>;
 export type NotificationsHistoryRepo = z.infer<typeof NotificationsHistorySchema>;

@@ -1,6 +1,6 @@
 import { code, message } from "@/constants/consts";
 import { RefreshToken } from "@/constants/schema";
-import { users_basic_data_repository, users_refresh_token_repository } from "@/repositories";
+import { users_basic_data_repository, users_login_data_repository } from "@/repositories";
 import { createAccessToken, createRefreshToken, createResponse, getErrorMsg, verifyToken } from "@/utilities";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
@@ -14,7 +14,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     }
     const { user_id, email, exp } = jwt.decode(token, { json: true }) as RefreshToken;
 
-    const dbToken = await users_refresh_token_repository.getRefreshToken(user_id);
+    const dbToken = await users_login_data_repository.getUserLoginData(user_id);
     if (!dbToken || dbToken.refresh_token !== token) {
       return createResponse(res, false, null, code.ERROR, message.system_error);
     }

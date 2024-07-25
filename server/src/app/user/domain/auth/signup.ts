@@ -8,7 +8,7 @@ import { authorization, code, message, zodError } from "@/constants/consts";
 // Interfaces
 import { UsersBasicDataRepo, UsersLoginDataRepo } from "@/constants/schema";
 // Repository
-import { users_basic_data_repository } from "@/repositories";
+import { users_basic_data_repository, users_login_data_repository } from "@/repositories";
 // library
 import { z } from "zod";
 // helper
@@ -29,6 +29,11 @@ export const signup = async (req: Request, res: Response) => {
       return createResponse(res, false, null, code.BAD_REQUEST, message.fields_invalid);
     }
 
+    const userData = await users_login_data_repository.getUserLoginData(data.email);
+    if (userData) {
+      return createResponse(res, false, null, code.BAD_REQUEST, message.user_existed);
+    }
+
     // CREATE NEW USER BASIC DATA
     const hashed_password = await bcryptjs.hash(data.password, 10);
     const userPayload: Omit<UsersBasicDataRepo, "user_id"> & Omit<UsersLoginDataRepo, "id" | "user_id"> = {
@@ -38,7 +43,7 @@ export const signup = async (req: Request, res: Response) => {
       authorization_id: authorization.USER,
       phone_number: data.phone_number,
       hashed_password: hashed_password,
-      last_login_date: new Date(),
+      last_login_date: new Date().toISOString(),
       last_login_ip: req.ip || "::1",
     };
     const newUser = await users_basic_data_repository.createNewUser(userPayload);

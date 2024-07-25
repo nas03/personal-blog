@@ -14,6 +14,7 @@ export const message = Object.freeze({
   fields_cannot_blank: "fields_cannot_blank",
   not_authorized: "not_authorized",
   user_not_exists: "user_not_exists",
+  user_existed: "user_existed",
   fields_invalid: "fields_invalid",
   token_expired: "token_expired",
   user_forbidden: "user_forbidden",
@@ -57,4 +58,8 @@ export const redisPath = Object.freeze({
 export const flag = Object.freeze({
   TRUE: 1,
   FALSE: 0,
+});
+
+export const authStrategy = Object.freeze({
+  LOCAL: "local",
 });

@@ -16,6 +16,8 @@ CREATE TABLE "users_login_data"
     user_id         uuid                          NOT NULL UNIQUE,
     email           CHARACTER VARYING(255) UNIQUE NOT NULL,
     hashed_password CHARACTER VARYING(255)        NOT NULL,
+    last_login_date DATE,
+    last_login_ip   inet,
     delete_flag     INTEGER                  DEFAULT 0,
     ts_updated      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created      TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -26,7 +28,8 @@ CREATE TABLE "posts"
     post_id       INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid,
     private       BOOLEAN                         DEFAULT TRUE,
-    status_code   INTEGER                NOT NULL DEFAULT 10, -- PENDING: 10/APPROVED: 20 --
+    status_code   INTEGER                NOT NULL DEFAULT 10,
+    -- PENDING: 10/APPROVED: 20 --
     thumbnail_url CHARACTER VARYING(255)          DEFAULT NULL,
     title         CHARACTER VARYING(255) NOT NULL,
     content       TEXT,
@@ -92,11 +95,13 @@ CREATE TABLE "users_access_history"
     ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_basic_data (user_id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
 );
-CREATE TABLE "users_refresh_token"
+CREATE TABLE "users_login_token"
 (
     id            INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     user_id       uuid   NOT NULL,
+    session_id    uuid   NOT NULL,
     refresh_token TEXT   NOT NULL,
+    access_token  TEXT   NOT NULL,
     exp           BIGINT NOT NULL,
     iat           BIGINT NOT NULL,
     delete_flag   INTEGER                  DEFAULT 0,
@@ -166,7 +171,6 @@ CREATE TABLE "users_message"
     ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (receiver_id) REFERENCES users_basic_data (user_id) ON DELETE NO ACTION,
     FOREIGN KEY (sender_id) REFERENCES users_basic_data (user_id) ON DELETE NO ACTION
-
 );
 CREATE TABLE "m_email_templates"
 (
@@ -209,9 +213,11 @@ CREATE TABLE "forums"
     title       VARCHAR(255) NOT NULL,
     admin_id    uuid,
     description TEXT                     DEFAULT NULL,
-    forum_type  INTEGER                  DEFAULT 0, -- PUBLIC: 0/PRIVATE: 1 --
+    forum_type  INTEGER                  DEFAULT 0,
+    -- PUBLIC: 0/PRIVATE: 1 --
     members     uuid[]                   DEFAULT NULL,
-    status      INTEGER                  DEFAULT 1, -- ACTIVE: 1, LOCK: 2, CLOSED: 3 --
+    status      INTEGER                  DEFAULT 1,
+    -- ACTIVE: 1, LOCK: 2, CLOSED: 3 --
     delete_flag INTEGER                  DEFAULT 0,
     ts_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -242,15 +248,13 @@ CREATE TABLE "threads_comment"
     ts_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES forums_thread (thread_id) MATCH SIMPLE ON DELETE NO ACTION
 );
-CREATE OR REPLACE FUNCTION update_ts_updated()
-    RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION update_ts_updated() RETURNS TRIGGER AS
 $$
 BEGIN
     NEW.ts_updated = NOW();
     RETURN NEW;
 END;
 $$ LANGUAGE 'plpgsql';
-
 CREATE TRIGGER update_users_basic_data
     BEFORE
         UPDATE
@@ -281,10 +285,10 @@ CREATE TRIGGER update_posts_category
     ON posts_category
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
-CREATE TRIGGER update_users_refresh_token
+CREATE TRIGGER update_users_login_token
     BEFORE
         UPDATE
-    ON users_refresh_token
+    ON users_login_token
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER update_posts_analytic
@@ -350,7 +354,7 @@ EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER update_m_countries
     BEFORE
         UPDATE
-    ON m_countries\
+    ON m_countries
     FOR EACH ROW
 EXECUTE FUNCTION update_ts_updated();
 CREATE TRIGGER update_forums_thread
