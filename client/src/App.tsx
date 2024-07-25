@@ -5,6 +5,7 @@ import "./App.css";
 
 function App() {
   const routes = [...appRoutes];
+  // axios.defaults.headers['Authorization'] =
   return (
     <BrowserRouter>
       <Routes>

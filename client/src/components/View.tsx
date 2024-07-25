@@ -12,7 +12,7 @@ const View: React.FC<IPropsView> = (props) => {
   const layouts: { [key: string]: React.FC<{ children: React.ReactNode }> } = {
     app: AppLayout,
   };
-
+  document.title = props.title;
   const Layout = props.layout ? layouts[props.layout] : BlankLayout;
 
   return <Layout>{props.component}</Layout>;

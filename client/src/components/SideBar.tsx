@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import React, { useRef, useState } from "react";
-import { GrAnalytics } from "react-icons/gr";
 import { Link, useSearchParams } from "react-router-dom";
 
 interface IPropsTab {
@@ -19,27 +18,16 @@ interface IPropsCursor {
   };
 }
 
-const SideBar = () => {
+interface IPropsSideBar {
+  items: {
+    title: string;
+    icon: JSX.Element;
+  }[];
+}
+
+const SideBar: React.FC<IPropsSideBar> = ({ items }) => {
   const selected = useSearchParams()[0].get("tab");
 
-  const items = [
-    {
-      title: "weather",
-      icon: <GrAnalytics style={{ fontSize: "1.3rem" }} />,
-    },
-    {
-      title: "forum",
-      icon: <GrAnalytics style={{ fontSize: "1.3rem" }} />,
-    },
-    {
-      title: "posts",
-      icon: <GrAnalytics style={{ fontSize: "1.3rem" }} />,
-    },
-    {
-      title: "analytics",
-      icon: <GrAnalytics style={{ fontSize: "1.3rem" }} />,
-    },
-  ];
   const idx = selected ? items.findIndex((item) => item.title === selected) : 0;
   const [position, setPosition] = useState(
     selected
