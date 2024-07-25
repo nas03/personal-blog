@@ -7,6 +7,7 @@ function App() {
   const routes = [...appRoutes];
   // axios.defaults.headers['Authorization'] =
   return (
+    // <AuthProvider></AuthProvider>
     <BrowserRouter>
       <Routes>
         {routes.map((route) => {
