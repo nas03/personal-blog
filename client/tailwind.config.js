@@ -19,6 +19,9 @@ export default {
     },
     extend: {
       colors: {
+        cwhite: "var(--cwhite)",
+        cgreen: "var(--cgreen)",
+        cblue: "var(--cblue)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -138,7 +138,7 @@ export const MCountries = RepositorySchema.extend({
   id: z.number(),
   country_code: z.string().max(255),
   country_name: z.string().max(255),
-  thumbail: z.string().max(255),
+  thumbnail: z.string().max(255),
   country_number: z.string().max(255),
 });
 
