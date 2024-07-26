@@ -1,15 +1,6 @@
-import { Spin } from "antd";
-
+import { Spin } from 'antd';
 const Loader = () => {
-  return (
-    <Spin
-      className="bg-white"
-      size="large"
-      tip="Loading..."
-      spinning={true}
-      fullscreen
-    ></Spin>
-  );
+  return <Spin size="large" tip="Loading..." fullscreen />;
 };
 
 export default Loader;
