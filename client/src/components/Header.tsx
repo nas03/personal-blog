@@ -11,7 +11,7 @@ interface IPropsHeader {
 
 const Header: React.FC<IPropsHeader> = (props) => {
   return (
-    <>
+    <div className="sticky top-0 grow-0">
       <nav className="z-20 grid w-full grid-cols-3 px-5 pt-10">
         <div className="flex w-full flex-row items-center gap-24">
           <div className="flex flex-row items-center justify-center gap-2">
@@ -78,7 +78,7 @@ const Header: React.FC<IPropsHeader> = (props) => {
           boxShadow: "revert",
         }}
       />
-    </>
+    </div>
   );
 };
 export default Header;

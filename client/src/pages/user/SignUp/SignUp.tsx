@@ -23,7 +23,7 @@ export default function SignUp() {
 
   // FORM HANDLING
   const { mutate } = useMutation({
-    mutationFn: api.user.createNewUser,
+    mutationFn: api.user.signUp,
     onSuccess: (res) => {
       if (_.isBoolean(res)) return;
       console.log(res);
@@ -106,7 +106,7 @@ export default function SignUp() {
                             src={`/flags/${country.country_code}.svg`}
                             className="w-[32px] rounded-sm"
                           />
-                          {`   +${country.country_number}`}
+                          {country.country_number}
                         </span>
                       </Select.Option>
                     ))}
