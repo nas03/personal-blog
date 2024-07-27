@@ -31,7 +31,7 @@ export const signup = async (req: Request, res: Response) => {
 
     const userData = await users_login_data_repository.getUserLoginData(data.email);
     if (userData) {
-      return createResponse(res, false, null, code.BAD_REQUEST, message.user_existed);
+      return createResponse(res, false, null, code.CONFLICT, message.user_existed);
     }
 
     // CREATE NEW USER BASIC DATA

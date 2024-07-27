@@ -59,12 +59,14 @@ export const login = async (req: Request, res: Response) => {
         exp: exp,
         iat: iat,
       });
-
+      //
+      console.log({ refreshToken });
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
         httpOnly: true,
         maxAge: moment.duration(1, "day").asMilliseconds(),
         sameSite: "strict",
-        secure: true,
+        // Only set secure = true when communicate through https
+        // secure: true,
       });
 
       await users_login_token_repository.addLoginToken({
@@ -85,7 +87,7 @@ export const login = async (req: Request, res: Response) => {
       user_id: userData.user_id,
     };
     const createAccessHistory = await users_access_history_repository.createAccessHistory(accessHistoryPayload);
-
+    console.log({ createAccessHistory });
     const payload = { sessionId: session_id, accessToken: access_token };
     return createResponse(res, true, payload);
   } catch (error) {

@@ -22,6 +22,8 @@ export const createResponse = (res: Response, isSuccess: boolean, data?: any, co
 
   response["message"] = message;
   response["data"] = data || null;
+  res.set("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.set("Access-Control-Allow-Credentials", "true");
   return res.status(code).json(response);
 };
 
@@ -111,7 +113,7 @@ export const getOsData = (req: Request) => {
 
     const userAgent = req.headers["user-agent"];
     if (!userAgent) throw Error();
-    if(userAgent.includes('Postman')) return 'Postman'
+    if (userAgent.includes("Postman")) return "Postman";
     return userAgent.slice(userAgent.indexOf("("), userAgent.indexOf(")") + 1);
   } catch (error) {
     logger.error(error);

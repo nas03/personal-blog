@@ -1,22 +1,22 @@
-import { BellOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
-import { Divider } from "antd";
-import { CiLocationOn } from "react-icons/ci";
-import { SiClevercloud } from "react-icons/si";
-import { Link } from "react-router-dom";
+import { BellOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Divider } from 'antd';
+import { CiLocationOn } from 'react-icons/ci';
+import { SiClevercloud } from 'react-icons/si';
+import { Link } from 'react-router-dom';
 interface IPropsHeader {
   title: string;
-  variants?: "default" | "auth";
+  variants?: 'default' | 'auth';
   geoLocation: string;
 }
 
 const Header: React.FC<IPropsHeader> = (props) => {
   return (
-    <div className="sticky top-0 grow-0">
+    <div className="grow-0">
       <nav className="z-20 grid w-full grid-cols-3 px-5 pt-10">
         <div className="flex w-full flex-row items-center gap-24">
           <div className="flex flex-row items-center justify-center gap-2">
-            <Link to={"/home"}>
-              <SiClevercloud style={{ color: "white", fontSize: "2rem" }} />
+            <Link to={'/home'}>
+              <SiClevercloud style={{ color: 'white', fontSize: '2rem' }} />
             </Link>
             <h1 className="text-2xl font-bold capitalize text-[#eef1f6] hover:cursor-pointer">
               {props.title}
@@ -26,8 +26,8 @@ const Header: React.FC<IPropsHeader> = (props) => {
           <div className="flex flex-row items-end justify-around gap-1">
             <CiLocationOn
               style={{
-                color: "white",
-                fontSize: "1.3rem",
+                color: 'white',
+                fontSize: '1.3rem',
               }}
             />
             <p className="text-[#e6e6e6]">{props.geoLocation}</p>
@@ -41,20 +41,20 @@ const Header: React.FC<IPropsHeader> = (props) => {
           />
           <SearchOutlined className="grow-0 cursor-pointer rounded-full p-3 hover:bg-white hover:transition-colors" />
         </div>
-        {!props.variants || props.variants === "default" ? (
+        {!props.variants || props.variants === 'default' ? (
           <div className="flex flex-row items-center justify-end gap-7 pr-5">
             <BellOutlined
               className="hover:cursor-pointer"
               style={{
-                color: "white",
-                fontSize: "1.3rem",
+                color: 'white',
+                fontSize: '1.3rem',
               }}
             />
             <UserOutlined
               className="hover:cursor-pointer"
               style={{
-                color: "white",
-                fontSize: "1.3rem",
+                color: 'white',
+                fontSize: '1.3rem',
               }}
             />
           </div>
@@ -62,12 +62,12 @@ const Header: React.FC<IPropsHeader> = (props) => {
           <div className="flex flex-row items-center justify-end gap-7 pr-5">
             <Link
               className="rounded-md border-2 border-[#e6ecf2] px-5 py-2 font-bold text-[#e6ecf2] hover:bg-[#94bdbc]"
-              to={"/signin"}>
+              to={'/signin'}>
               Login
             </Link>
             <Link
               className="rounded-md border-2 border-[#e6ecf2] px-5 py-2 font-bold text-[#e6ecf2] hover:bg-[#94bdbc]"
-              to={"/signup"}>
+              to={'/signup'}>
               Sign Up
             </Link>
           </div>
@@ -75,7 +75,7 @@ const Header: React.FC<IPropsHeader> = (props) => {
       </nav>
       <Divider
         style={{
-          boxShadow: "revert",
+          boxShadow: 'revert',
         }}
       />
     </div>

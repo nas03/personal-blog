@@ -8,12 +8,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { noSpecialCharacterRegex, phoneNumberRegex } from '@/constants/regex';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Form, Select } from 'antd';
+import { Alert, Form, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import _ from 'lodash';
+import { useState } from 'react';
 export default function SignUp() {
   // DECLARE
   const [signUpForm] = useForm();
+  const [alertMessage, setAlertMessage] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info' | 'warning' | undefined;
+  }>({
+    message: '',
+    type: undefined,
+  });
   // const [password, setPassword] = useState('');
   // DATA-ACCESS HANDLING
   const { data, isLoading } = useQuery({
@@ -25,8 +32,7 @@ export default function SignUp() {
   const { mutate } = useMutation({
     mutationFn: api.user.signUp,
     onSuccess: (res) => {
-      if (_.isBoolean(res)) return;
-      console.log(res);
+      setAlertMessage(res);
     },
   });
 
@@ -38,6 +44,9 @@ export default function SignUp() {
         <CardHeader>
           <CardTitle className="text-xl">Sign Up</CardTitle>
           <CardDescription>Enter your information to create an account</CardDescription>
+          {alertMessage.message !== '' && (
+            <Alert message={alertMessage.message} type={alertMessage.type} showIcon />
+          )}
         </CardHeader>
         <CardContent>
           <Form
@@ -55,10 +64,12 @@ export default function SignUp() {
                     rules={[
                       {
                         required: true,
-                        message: 'Please enter your first name',
                         pattern: noSpecialCharacterRegex,
+                        message: 'Your name cannot include special characters',
                       },
-                    ]}>
+                    ]}
+                    validateTrigger={['onChange']}
+                    hasFeedback>
                     <Input id="first-name" className="bg-cwhite" placeholder="Max" required />
                   </Form.Item>
                 </div>
@@ -67,10 +78,12 @@ export default function SignUp() {
                   <Form.Item<string>
                     initialValue={''}
                     name="last_name"
+                    validateTrigger={['onChange']}
+                    hasFeedback
                     rules={[
                       {
                         required: true,
-                        message: 'Please input your last name',
+                        message: 'Your name cannot include special characters',
                         pattern: noSpecialCharacterRegex,
                       },
                     ]}>

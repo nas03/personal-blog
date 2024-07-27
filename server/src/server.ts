@@ -21,8 +21,12 @@ const HOST = process.env.HOST || "::";
 /* Config server */
 const server = express();
 // Enable Cross-Origin Resource Sharing (CORS)
-server.use(cors());
-
+server.use(
+  cors({
+    origin: "http://localhost:5173", // Client origin
+    credentials: true, // Allow credentials (cookies) to be sent
+  })
+);
 // Parse URL-encoded request bodies (form submissions)
 server.use(bodyParser.urlencoded({ extended: true }));
 
