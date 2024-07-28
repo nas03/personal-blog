@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import api from '@/api';
+import { IResponseMessage } from '@/api/types/common';
 import Loader from '@/components/Loader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,17 +13,17 @@ import { Alert, Form, Select } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
 export default function SignUp() {
-  // DECLARE
+  // Form
   const [signUpForm] = useForm();
-  const [alertMessage, setAlertMessage] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info' | 'warning' | undefined;
-  }>({
+
+  // States
+  const [responseMessage, setResponseMessage] = useState<IResponseMessage>({
     message: '',
     type: undefined,
+    data: null,
   });
-  // const [password, setPassword] = useState('');
-  // DATA-ACCESS HANDLING
+
+  // Form submission handling
   const { data, isLoading } = useQuery({
     queryKey: ['m_countries', 'all'],
     queryFn: api.m_countries.getCountriesData,
@@ -32,7 +33,7 @@ export default function SignUp() {
   const { mutate } = useMutation({
     mutationFn: api.user.signUp,
     onSuccess: (res) => {
-      setAlertMessage(res);
+      setResponseMessage(res);
     },
   });
 
@@ -44,8 +45,8 @@ export default function SignUp() {
         <CardHeader>
           <CardTitle className="text-xl">Sign Up</CardTitle>
           <CardDescription>Enter your information to create an account</CardDescription>
-          {alertMessage.message !== '' && (
-            <Alert message={alertMessage.message} type={alertMessage.type} showIcon />
+          {responseMessage.message !== '' && (
+            <Alert message={responseMessage.message} type={responseMessage.type} showIcon />
           )}
         </CardHeader>
         <CardContent>

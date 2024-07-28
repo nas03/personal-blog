@@ -12,3 +12,5 @@
 - [x] ~~Migrate to Drizzle ORM?~~
 - [x] App feature google sheet
 - [x] Redis for caching
+- [ ] Mail services
+- [ ] User information

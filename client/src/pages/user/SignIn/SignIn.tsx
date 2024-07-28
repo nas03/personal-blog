@@ -1,4 +1,5 @@
 import api from '@/api';
+import { IResponseMessage } from '@/api/types/common';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,18 +10,21 @@ import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 export default function SignIn() {
+  // Form
   const [signInForm] = useForm();
-  const [alertMessage, setAlertMessage] = useState<{
-    message: string;
-    type: 'success' | 'error' | 'info' | 'warning' | undefined;
-  }>({
+  
+  // States
+  const [responseMessage, setResponseMessage] = useState<IResponseMessage>({
     message: '',
     type: undefined,
+    data: null,
   });
+
+  // Handle form submit
   const { mutate } = useMutation({
     mutationFn: api.user.signIn,
     onSuccess: (res) => {
-      setAlertMessage(res);
+      setResponseMessage(res);
     },
   });
 
@@ -29,8 +33,8 @@ export default function SignIn() {
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>
-        {alertMessage.message !== '' && (
-          <Alert message={alertMessage.message} type={alertMessage.type} showIcon />
+        {responseMessage.message !== '' && (
+          <Alert message={responseMessage.message} type={responseMessage.type} showIcon />
         )}
       </CardHeader>
       <CardContent>

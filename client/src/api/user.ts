@@ -1,28 +1,15 @@
+import { IAccessTokenPayload, IResponseMessage } from '@/api/types/common';
+import { ISignInData, ISignInResponse, ISignUpData } from '@/api/types/user_types';
 import { JsonResponse } from '@/constants/common';
-import { Prettify, UsersBasicDataRepo } from '@/constants/schema';
 import axios from '@/helper/axios';
 import { AxiosError } from 'axios';
-
-type IDataSignUp = Prettify<
-  Omit<UsersBasicDataRepo, 'user_id' | 'authorization_id'> & {
-    password: string;
-    confirm_password: string;
-  }
->;
-
-type IDataSignIn = {
-  email: string;
-  password: string;
-};
-
-export const signUp = async (
-  data: IDataSignUp,
-): Promise<{ message: string; type: 'success' | 'error' }> => {
+import jwt from 'jsonwebtoken';
+export const signUp = async (data: ISignUpData): Promise<IResponseMessage> => {
   try {
     if (data.password !== data.confirm_password)
-      return { message: 'Confirm password does not match Password', type: 'error' };
+      return { message: 'Confirm password does not match Password', type: 'error', data: null };
 
-    const payload: Omit<IDataSignUp, 'confirm_password'> = {
+    const payload: Omit<ISignUpData, 'confirm_password'> = {
       password: data.password,
       first_name: data.first_name,
       last_name: data.last_name,
@@ -34,12 +21,14 @@ export const signUp = async (
     return {
       message: 'Success',
       type: 'success',
+      data: null,
     };
   } catch (error) {
     const err = error as AxiosError;
-    const response: { message: string; type: 'success' | 'error' } = {
+    const response: IResponseMessage = {
       message: '',
       type: 'error',
+      data: null,
     };
     // Network error
     if (!err.response) {
@@ -66,35 +55,60 @@ export const signUp = async (
   }
 };
 
-export const signIn = async (
-  data: IDataSignIn,
-): Promise<{ message: string; type: 'success' | 'error' }> => {
+export const signIn = async (data: ISignInData): Promise<IResponseMessage> => {
   try {
     const responseSignIn = await axios.post('/user/auth/login', data, {
       withCredentials: true,
     });
 
-    const isSuccess = responseSignIn.status === 200;
-    const responseData: JsonResponse = responseSignIn.data;
-    if (!isSuccess) return { message: responseData.message, type: 'error' };
+    const responseData: ISignInResponse = responseSignIn.data;
+
+    // Save data to local
+    const { session_id, access_token } = responseData.data;
+    const decodeToken = jwt.decode(access_token) as IAccessTokenPayload;
+
+    localStorage.setItem('__SSID__', session_id);
+    localStorage.setItem('auth._token._local', access_token);
+    localStorage.setItem('auth._token_exp._local', String(decodeToken.exp));
+    localStorage.setItem('auth.strategy', 'local');
+
     return {
       message: 'Success',
       type: 'success',
+      data: null,
     };
   } catch (error) {
     const err = error as AxiosError;
-
+    const errResponse: IResponseMessage = {
+      message: '',
+      type: 'error',
+      data: null,
+    };
     // Error 401: user_not_exists
     if (err.response?.status === 401) {
-      return {
-        message: 'Username or Password is incorrect!',
-        type: 'error',
-      };
+      errResponse.message = 'Username or Password is incorrect!';
+      return errResponse;
     }
-
-    return {
-      message: (error as Error).message,
-      type: 'error',
-    };
+    errResponse.message = (error as Error).message;
+    return errResponse;
   }
 };
+
+/* export const auth = async (): Promise<IResponseMessage> => {
+  try {
+    const responseAuth = await axios.post('/user/auth/auth');
+    const response: IResponseMessage = {
+      message: 'Success',
+      type: 'error',
+      data: null,
+    };
+    return response;
+  } catch (error) {
+    const errResponse: IResponseMessage = {
+      message: '',
+      type: undefined,
+      data: null,
+    };
+    return errResponse;
+  }
+}; */

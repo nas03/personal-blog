@@ -9,6 +9,16 @@ function App() {
   const queryClient = new QueryClient();
   const routes = [...appRoutes];
 
+  // SESSION HANDLING
+  // const [auth, setAuth] = useState(false);
+  const access_token = localStorage.getItem('auth._token._local');
+  const session_id = localStorage.getItem('__SSID__');
+  const exp = localStorage.getItem('auth._token_exp._local');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const isAuth =
+    (access_token && session_id && Number(exp) > Math.floor(Date.now() / 1000)) || false;
+
+  // const
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

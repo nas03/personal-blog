@@ -37,7 +37,7 @@ export const login = async (req: Request, res: Response) => {
 
     // VERIFY IF REQUEST IS DUPLICATED
     const existedToken = await users_login_token_repository.getLoginToken(userData.user_id);
-    console.log({ session_id: existedToken?.session_id, accessToken: existedToken?.access_token });
+
     if (existedToken && existedToken.exp > Math.floor(Date.now() / 1000)) {
       const payload = { session_id: existedToken.session_id, accessToken: existedToken.access_token };
       return createResponse(res, true, payload);
@@ -87,7 +87,7 @@ export const login = async (req: Request, res: Response) => {
       user_id: userData.user_id,
     };
     const createAccessHistory = await users_access_history_repository.createAccessHistory(accessHistoryPayload);
-    console.log({ createAccessHistory });
+
     const payload = { sessionId: session_id, accessToken: access_token };
     return createResponse(res, true, payload);
   } catch (error) {
