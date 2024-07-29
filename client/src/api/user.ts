@@ -1,9 +1,10 @@
-import { IAccessTokenPayload, IResponseMessage } from '@/api/types/common';
+import { IResponseMessage } from '@/api/types/common';
 import { ISignInData, ISignInResponse, ISignUpData } from '@/api/types/user_types';
 import { JsonResponse } from '@/constants/common';
 import axios from '@/helper/axios';
 import { AxiosError } from 'axios';
-import jwt from 'jsonwebtoken';
+import { jwtDecode } from 'jwt-decode';
+
 export const signUp = async (data: ISignUpData): Promise<IResponseMessage> => {
   try {
     if (data.password !== data.confirm_password)
@@ -62,16 +63,16 @@ export const signIn = async (data: ISignInData): Promise<IResponseMessage> => {
     });
 
     const responseData: ISignInResponse = responseSignIn.data;
-
+    console.log(responseData)
     // Save data to local
     const { session_id, access_token } = responseData.data;
-    const decodeToken = jwt.decode(access_token) as IAccessTokenPayload;
-
+    const decodeToken = jwtDecode(access_token);
     localStorage.setItem('__SSID__', session_id);
     localStorage.setItem('auth._token._local', access_token);
     localStorage.setItem('auth._token_exp._local', String(decodeToken.exp));
     localStorage.setItem('auth.strategy', 'local');
 
+    console.log({session_id, access_token, decodeToken})
     return {
       message: 'Success',
       type: 'success',

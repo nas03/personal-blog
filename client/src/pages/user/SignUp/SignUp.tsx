@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 
 import api from '@/api';
 import { IResponseMessage } from '@/api/types/common';
@@ -34,7 +34,11 @@ export default function SignUp() {
     mutationFn: api.user.signUp,
     onSuccess: (res) => {
       setResponseMessage(res);
+      if (res.type === 'success') {
+        return redirect('/login');
+      }
     },
+    
   });
 
   if (isLoading) return <Loader />;
@@ -53,7 +57,12 @@ export default function SignUp() {
           <Form
             form={signUpForm}
             onFinish={() =>
-              mutate(signUpForm.getFieldsValue(), { onSuccess: () => signUpForm.resetFields() })
+              mutate(signUpForm.getFieldsValue(), {
+                onSuccess: (res) => {
+                  console.log({res})
+                  if (res.type === 'success') redirect('/login');
+                },
+              })
             }>
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
