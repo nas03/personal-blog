@@ -42,13 +42,12 @@ export const login = async (req: Request, res: Response) => {
       const payload = { session_id: existedToken.session_id, access_token: existedToken.access_token };
       return createResponse(res, true, payload);
     }
+
     // CREATE LOGIN TOKENS
-    const access_token = createAccessToken({
-      user_id: userData.user_id,
-      email: userData.email,
-    });
+    const access_token = createAccessToken({ user_id: userData.user_id, email: userData.email });
     const session_id = uuidV4();
 
+    // GENERATE REFRESH_TOKEN IF STAYED SIGN IN
     if (data.staySignedIn) {
       const exp = Math.floor(Date.now() / 1000) + moment.duration(1, "day").asSeconds();
       const iat = Math.floor(Date.now() / 1000);
@@ -59,8 +58,7 @@ export const login = async (req: Request, res: Response) => {
         exp: exp,
         iat: iat,
       });
-      //
-      console.log({ refreshToken });
+    
       res.cookie(String(process.env.REFRESH_COOKIE_NAME), refreshToken, {
         httpOnly: true,
         maxAge: moment.duration(1, "day").asMilliseconds(),
@@ -86,8 +84,9 @@ export const login = async (req: Request, res: Response) => {
       user_agent: req.headers["user-agent"] || "",
       user_id: userData.user_id,
     };
-    const createAccessHistory = await users_access_history_repository.createAccessHistory(accessHistoryPayload);
+    await users_access_history_repository.createAccessHistory(accessHistoryPayload);
 
+    // RETURN
     const payload = { session_id: session_id, access_token: access_token };
     return createResponse(res, true, payload);
   } catch (error) {
