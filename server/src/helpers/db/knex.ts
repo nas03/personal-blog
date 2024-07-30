@@ -2,12 +2,13 @@ import { Knex } from "knex";
 
 import dotenv from "dotenv";
 dotenv.config();
+const platform = String(process.env.DEV_PLATFORM) || "macOS";
 const knexConfig: { [key: string]: Knex.Config } = {
   local: {
     client: "pg",
     connection: {
       host: "localhost",
-      user: "anhson",
+      user: platform === "macOS" ? "anhson" : "postgres",
       password: String(process.env.DB_LOCAL_PASSWORD),
       database: "personal_blog",
       port: 5432,

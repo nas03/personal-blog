@@ -39,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
     const existedToken = await users_login_token_repository.getLoginToken(userData.user_id);
 
     if (existedToken && existedToken.exp > Math.floor(Date.now() / 1000)) {
-      const payload = { session_id: existedToken.session_id, accessToken: existedToken.access_token };
+      const payload = { session_id: existedToken.session_id, access_token: existedToken.access_token };
       return createResponse(res, true, payload);
     }
     // CREATE LOGIN TOKENS
@@ -88,7 +88,7 @@ export const login = async (req: Request, res: Response) => {
     };
     const createAccessHistory = await users_access_history_repository.createAccessHistory(accessHistoryPayload);
 
-    const payload = { sessionId: session_id, accessToken: access_token };
+    const payload = { session_id: session_id, access_token: access_token };
     return createResponse(res, true, payload);
   } catch (error) {
     logger.error(error);
