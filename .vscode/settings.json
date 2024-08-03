@@ -11,11 +11,4 @@
             "source.addMissingImports.ts": "always"
         }
     },
-    "[go]": {
-        "editor.formatOnSave": false,
-        "editor.defaultFormatter": "golang.go",
-    },
-    "gopls": {
-        "formatting.gofumpt": true
-    }
 }

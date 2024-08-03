@@ -8,31 +8,14 @@ const knexConfig: { [key: string]: Knex.Config } = {
     client: "pg",
     connection: {
       host: "localhost",
-      user: platform === "macOS" ? "anhson" : "postgres",
-      password: String(process.env.DB_LOCAL_PASSWORD),
-      database: "personal_blog",
+      user: process.env.LOCAL_DB_USERNAME,
+      password: process.env.LOCAL_DB_PASSWORD,
+      database: process.env.LOCAL_DB_NAME,
       port: 5432,
-    },
-  },
-  development: {
-    client: "pg",
-    connection: {
-      host: String(process.env.DB_HOST),
-      user: String(process.env.DB_USER),
-      password: String(process.env.DB_PASSWORD),
-      database: String(process.env.DB_NAME),
-      port: Number(process.env.DB_PORT),
-      debug: true,
-    },
-    debug: true,
-    searchPath: "public",
-    pool: {
-      min: 0,
-      max: 10,
-      /* afterCreate: (conn: any, done: any) => {
-        console.log(conn);
-        done(conn);
-      }, */
+      ssl: {
+        requestCert: false,
+        rejectUnauthorized: false,
+      },
     },
   },
   production: {

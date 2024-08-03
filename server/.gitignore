@@ -28,3 +28,6 @@ dist-ssr
 
 .env
 .env.local
+
+# Credentials file
+personal_blog.pem

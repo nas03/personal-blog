@@ -9,9 +9,9 @@ import morgan from "morgan";
 /* Router */
 import { route } from "@/app";
 /* Services */
+import { awsStartUp } from "@/helpers/aws";
 import redis from "@/helpers/redis";
 import { printRoute } from "@/tools/log_routes";
-import { testDBConnection } from "./helpers/db/db";
 /* Config library */
 dotenv.config();
 
@@ -42,10 +42,13 @@ server.use(morgan("dev"));
 server.use("/api/v1", route);
 
 const startup = async () => {
-  server.listen(Number(PORT), HOST, () => {
+  // STARTUP SERVER
+  server.listen(Number(PORT), () => {
     console.log(`⚡️[server]: Started at port ${PORT}`);
   });
-  await Promise.all([await redis.redisStart(), await testDBConnection()]);
+
+  // VERIFY CONNECTIONS
+  await Promise.all([redis.redisStart(), awsStartUp()]);
   if (["development", "local"].includes(String(process.env.NODE_ENV))) {
     server._router.stack.forEach(printRoute.bind(null, []));
   }

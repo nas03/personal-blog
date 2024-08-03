@@ -1,6 +1,7 @@
 {
-  "singleAttributePerLine": false,
+  "singleAttributePerLine": true,
+  "bracketSpacing": true,
   "bracketSameLine": true,
   "proseWrap": "preserve",
-  "printWidth": 153
+  "printWidth": 130
 }
