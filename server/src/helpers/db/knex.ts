@@ -21,11 +21,11 @@ const knexConfig: { [key: string]: Knex.Config } = {
   production: {
     client: "pg",
     connection: {
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      port: Number(process.env.DB_PORT),
+      host: process.env.AWS_RDS_ENDPOINT,
+      user: process.env.AWS_RDS_USERNAME,
+      password: process.env.AWS_RDS_PASSWORD,
+      database: process.env.AWS_RDS_DB_NAME,
+      port: Number(process.env.AWS_RDS_PORT),
     },
   },
 };

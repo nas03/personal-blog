@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "main": "src/server.ts",
   "scripts": {
+    "build": "tsc && tsc-alias && docker-compose --project-name personal-blog-server up --build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "introspect:db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
@@ -35,6 +36,8 @@
     "morgan": "^1.10.0",
     "pg": "^8.12.0",
     "redis": "^4.6.15",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.4",
     "uuid": "^10.0.0",
     "winston": "^3.13.0",
     "zod": "^3.23.8"
@@ -58,12 +61,8 @@
     "nodemon": "^3.1.4",
     "ssh2": "^1.15.0",
     "ts-node": "^10.9.2",
-    "tsc": "^2.0.4",
-    "tsconfig-paths": "^4.2.0",
+    "tsc-alias": "^1.8.10",
     "tunnel-ssh": "^5.1.2"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
   },
   "trustedDependencies": [
     "aws-sdk"

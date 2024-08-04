@@ -11,7 +11,7 @@ import { route } from "@/app";
 /* Services */
 import { awsStartUp } from "@/helpers/aws";
 import redis from "@/helpers/redis";
-import { printRoute } from "@/tools/log_routes";
+import { printRoute } from "@/tools/debug/log_routes";
 /* Config library */
 dotenv.config();
 

@@ -7,7 +7,7 @@ import logger from "./logger";
 // Create a new Redis client
 dotenv.config();
 const redisClient = createClient(
-  ["development", "local"].includes(String(process.env.NODE_ENV))
+  ["development", "local", 'production'].includes(String(process.env.NODE_ENV))
     ? {
         password: process.env.REDIS_CLOUD_PASSWORD,
         socket: {

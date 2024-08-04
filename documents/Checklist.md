@@ -13,4 +13,6 @@
 - [x] App feature google sheet
 - [x] Redis for caching
 - [ ] Mail services
-- [ ] User information
+- [x] User information
+- [ ] Deploy to EC2
+- [ ] CI/CD with Github Actions and EC2
