@@ -11,7 +11,7 @@ import { route } from "@/app";
 /* Services */
 import { awsStartUp } from "@/helpers/aws";
 import redis from "@/helpers/redis";
-import { printRoute } from "@/tools/debug/log_routes";
+import { printRoute } from "./tools/debug/log_routes";
 /* Config library */
 dotenv.config();
 
@@ -48,9 +48,12 @@ const startup = async () => {
   });
 
   // VERIFY CONNECTIONS
-  await Promise.all([redis.redisStart(), awsStartUp()]);
-  if (["development", "local"].includes(String(process.env.NODE_ENV))) {
-    server._router.stack.forEach(printRoute.bind(null, []));
+  await redis.redisStart();
+  const aws = await awsStartUp();
+  if (aws) {
+    if (["development", "local"].includes(String(process.env.NODE_ENV))) {
+      server._router.stack.forEach(printRoute.bind(null, []));
+    }
   }
 };
 

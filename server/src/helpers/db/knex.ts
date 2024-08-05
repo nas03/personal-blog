@@ -11,11 +11,12 @@ const knexConfig: { [key: string]: Knex.Config } = {
       user: process.env.LOCAL_DB_USERNAME,
       password: process.env.LOCAL_DB_PASSWORD,
       database: process.env.LOCAL_DB_NAME,
-      port: 5432,
+      port: 5433,
       ssl: {
-        requestCert: false,
         rejectUnauthorized: false,
+
       },
+      
     },
   },
   production: {

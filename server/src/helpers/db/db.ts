@@ -45,13 +45,16 @@ export function attachSoftDelete(): void;
 const environment = process.env.NODE_ENV || "development";
 const config = knexConfig[environment];
 const db = knex(config);
-export const testDBConnection = async () => {
+export const demoQuery = async () => {
   try {
     await db.raw("SELECT 1");
-    console.log(`⚡️[server]: Database is connected at ${config.connection.host}:${config.connection.port}:${config.connection.database}`);
+    console.log(
+      `⚡️[server]: Database is connected at ${config.connection.host}:${config.connection.port}:${config.connection.database}`
+    );
+    return true;
   } catch (error) {
-    console.log("⚡️[server]: PostgreSQL not connected");
-    console.error(error);
+    console.log(error);
+    return false;
   }
 };
 export default db;
