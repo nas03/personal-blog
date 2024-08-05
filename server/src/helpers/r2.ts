@@ -1,18 +1,19 @@
 import logger from "@/helpers/logger";
 import {
-	CopyObjectCommand,
-	DeleteObjectCommand,
-	GetObjectCommand,
-	HeadObjectCommand,
-	ListObjectsCommand,
-	PutObjectCommand,
-	S3Client,
-	S3ClientConfig,
+  CopyObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+  ListObjectsCommand,
+  PutObjectCommand,
+  S3Client,
+  S3ClientConfig,
 } from "@aws-sdk/client-s3";
 
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config()
+;
 
 const s3Client = new S3Client({
   region: "auto",

@@ -1,9 +1,9 @@
 import { ListBucketsCommand, S3Client, S3ClientConfig } from "@aws-sdk/client-s3";
 import { exec } from "child_process";
 import dotenv from "dotenv";
-import { demoQuery } from "./db/db";
-import { promise } from "zod";
-dotenv.config();
+import { demoQuery } from "./db";
+dotenv.config()
+;
 
 const awsConfig = {
   region: process.env.AWS_REGION,
@@ -15,29 +15,29 @@ const awsConfig = {
 
 const s3Client = new S3Client(awsConfig as S3ClientConfig);
 
-const testDBConnection = async (retry: number) => {
-  while (retry >= 0 && retry < 10) {
-    let conn;
+const retryDbConnection = async (maxRetries: number, delay: number) => {
+  let retry = 0;
 
-    setTimeout(async () => {
-      console.log(`⚡️[server]: Retry DB connection: ${++retry} times`);
-      conn = demoQuery();
-    }, 1000);
-    await promise;
-    if (conn) break;
-  }
-  /* if (!dbConn) {
-    if (retry <= 10 && retry >= 0) {
+  const attemptConnection = () => {
+    return new Promise((resolve) => {
       setTimeout(async () => {
-        return await testDBConnection(retry);
-      }, 500);
-    } else {
-      console.log("⚡️[server]: PostgreSQL not connected");
-      console.error(error);
-      return false;
-    }
-  } */
-  return true;
+        console.log(`⚡️[server]: Retry DB connection: ${++retry} times`);
+        try {
+          const conn = await demoQuery();
+          resolve(conn);
+        } catch (error) {
+          console.error("⚡️[server]: Failed to connect to the database:", error);
+          if (retry < maxRetries) {
+            resolve(attemptConnection());
+          } else {
+            resolve(null);
+          }
+        }
+      }, delay);
+    });
+  };
+
+  return attemptConnection();
 };
 
 const awsStartUp = async () => {
@@ -48,11 +48,7 @@ const awsStartUp = async () => {
     console.log(`⚡️[server]: Port forwarding to AWS RDS success`);
   }
 
-  // TEST DB CONNECTION
-  while (true) {
-    const conn = await testDBConnection(0);
-    if (conn) break;
-  }
+  await retryDbConnection(10, 1000);
 
   // TEST AWS S3 CONNECTION
   await listBuckets().then((response) => {
@@ -71,4 +67,3 @@ const listBuckets = async () => {
   }
 };
 export { awsStartUp, listBuckets };
-

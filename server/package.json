@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc && tsc-alias && docker-compose --project-name personal-blog-server up --build",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "introspect:db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
     "generate:secret": "node -e console.log(require('crypto').randomBytes(16).toString('base64'))",

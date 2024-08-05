@@ -1,7 +1,8 @@
 import { Knex } from "knex";
 
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config()
+;
 const platform = String(process.env.DEV_PLATFORM) || "macOS";
 const knexConfig: { [key: string]: Knex.Config } = {
   local: {
@@ -14,9 +15,7 @@ const knexConfig: { [key: string]: Knex.Config } = {
       port: 5433,
       ssl: {
         rejectUnauthorized: false,
-
-      },
-      
+      },  
     },
   },
   production: {

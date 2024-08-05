@@ -5,8 +5,8 @@ import knex from "knex";
 import { flag } from "@/constants/consts";
 import { attachPaginate } from "knex-paginate";
 import knexConfig from "./knex";
-dotenv.config();
-
+console.log(`.env.${process.env.NODE_ENV}`)
+dotenv.config()
 attachPaginate();
 
 function attachSoftDelete() {

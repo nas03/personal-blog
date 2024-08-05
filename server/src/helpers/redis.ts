@@ -5,7 +5,8 @@ import dotenv from "dotenv";
 import { createClient } from "redis";
 import logger from "./logger";
 // Create a new Redis client
-dotenv.config();
+dotenv.config()
+;
 const redisClient = createClient(
   ["development", "local", 'production'].includes(String(process.env.NODE_ENV))
     ? {

@@ -4,7 +4,8 @@ import fs from "fs";
 import knex, { Knex } from "knex";
 import argv from "minimist";
 import readLine from "readline";
-dotenv.config();
+dotenv.config()
+;
 const knexConfig: Knex.Config = {
   client: "pg",
   connection: {
