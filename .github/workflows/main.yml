@@ -23,7 +23,7 @@ jobs:
               env:
                  HOSTNAME: ${{secrets.AWS_EC2_ENDPOINT}}
                  USER_NAME: ${{secrets.AWS_EC2_USERNAME}}
-            - run: echo "${{secrets.SSH_PRIVATE_KEY}}" >> personal_blog.pem && chmod 600 personal_blog.pem"
+            - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" >> personal_blog.pem && chmod 600 personal_blog.pem"
             - run: ssh -i personal_blog.pem ${USER_NAME}@${HOSTNAME} '
                     cd /home/ubuntu/Projects/personal_blog &&
                     git fetch --all &&
