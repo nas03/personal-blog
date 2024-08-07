@@ -49,7 +49,7 @@ const awsStartUp = async () => {
   }
 
   await retryDbConnection(10, 1000);
-
+  console.log("⚡️[server]: Connected to Database");
   // TEST AWS S3 CONNECTION
   await listBuckets().then((response) => {
     if (!response) console.log("⚡️[server]: Connect to S3");
