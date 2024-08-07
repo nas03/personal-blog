@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN bun install
 # If you're using Yarn, you can use `RUN yarn install`
 
 # Copy the rest of the application code to the working directory
