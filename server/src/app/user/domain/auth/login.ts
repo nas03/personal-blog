@@ -91,6 +91,7 @@ export const login = async (req: Request, res: Response) => {
     return createResponse(res, true, payload);
   } catch (error) {
     logger.error(error);
+    console.log(error)
     const { responseCode, responseMessage } = getErrorMsg(error as Error);
     return createResponse(res, false, null, responseCode, responseMessage);
   }

@@ -51,9 +51,7 @@ const startup = async () => {
   await redis.redisStart();
   const aws = await awsStartUp();
   if (aws) {
-    if (["development", "local"].includes(String(process.env.NODE_ENV))) {
-      server._router.stack.forEach(printRoute.bind(null, []));
-    }
+    server._router.stack.forEach(printRoute.bind(null, []));
   }
 };
 
