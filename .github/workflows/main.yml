@@ -13,7 +13,7 @@ jobs:
                 aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
                 aws-region: ${{ secrets.AWS_REGION }}
-            - run: "cd /home/ubuntu/Projects/personal_blog/server"
+            - run: "cd /home/ubuntu/Projects/personal-blog/server"
             - run: "docker compose down"
     Deploy-To-EC2:
         environment: production
@@ -39,5 +39,5 @@ jobs:
                  USER_NAME: ${{secrets.AWS_EC2_USERNAME}}
             - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
             - run: ssh -i personal_blog.pem ${USER_NAME}@${HOSTNAME} 
-            - run: cd /home/ubuntu/Projects/personal_blog/server && git fetch --all && git pull && bun install && rm -rf dist && bun run build
+            - run: cd /home/ubuntu/Projects/personal-blog/server && git fetch --all && git pull && bun install && rm -rf dist && bun run build
                     
