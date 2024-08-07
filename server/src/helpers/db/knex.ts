@@ -1,8 +1,7 @@
 import { Knex } from "knex";
 
 import dotenv from "dotenv";
-dotenv.config()
-;
+dotenv.config();
 const platform = String(process.env.DEV_PLATFORM) || "macOS";
 const knexConfig: { [key: string]: Knex.Config } = {
   local: {
@@ -26,6 +25,9 @@ const knexConfig: { [key: string]: Knex.Config } = {
       password: process.env.RDS_AWS_PASSWORD,
       database: process.env.RDS_AWS_DB_NAME,
       port: Number(process.env.RDS_AWS_PORT),
+      ssl: {
+        rejectUnauthorized: false,
+      },
     },
   },
 };
