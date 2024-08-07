@@ -3,6 +3,7 @@ run-name: "${{ github.actor }} deploy to EC2"
 on: [push]
 jobs:
     Clean-Docker:
+        environment: production
         runs-on: self-hosted
         steps:
             - run: echo "🧹 Cleanup docker images, containers and instances"
