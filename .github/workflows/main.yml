@@ -31,5 +31,14 @@ jobs:
             - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
             - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
             - run: whoami && pwd
-            - run: cd /home/ubuntu/Projects/personal-blog/server && git fetch --all && git pull && bun install && bun run build
+              run: |
+              ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_ENDPOINT }} << 'EOF'
+              cd /home/ubuntu/Projects/personal-blog/server
+              git fetch --all
+              git pull
+              export BUN_INSTALL="$HOME/.bun"
+              export PATH="$BUN_INSTALL/bin:$PATH"
+              bun install
+              bun run build
+              EOF
                     
