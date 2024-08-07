@@ -42,7 +42,7 @@ declare module "knex" {
 
 export function attachSoftDelete(): void;
 
-const environment = process.env.NODE_ENV || "development";
+const environment = process.env.NODE_ENV || "local";
 const config = knexConfig[environment];
 const db = knex(config);
 export const demoQuery = async () => {

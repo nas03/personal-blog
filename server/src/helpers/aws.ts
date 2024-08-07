@@ -6,10 +6,10 @@ dotenv.config()
 ;
 
 const awsConfig = {
-  region: process.env.AWS_REGION,
+  region: process.env.CONFIG_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_KEY_ID,
+    accessKeyId: process.env.CONFIG_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.CONFIG_AWS_SECRET_KEY_ID,
   },
 };
 
@@ -43,7 +43,7 @@ const retryDbConnection = async (maxRetries: number, delay: number) => {
 const awsStartUp = async () => {
   // FORWARD AWS CONNECTION TO LOCALHOST
   if (process.env.NODE_ENV === "local") {
-    const command = `ssh -i ${process.env.AWS_EC2_KEY_PAIR} -L 5433:${process.env.AWS_RDS_ENDPOINT}:5432 ${process.env.AWS_EC2_USERNAME}@${process.env.AWS_EC2_ENDPOINT}`;
+    const command = `ssh -i ${process.env.EC2_AWS_KEY_PAIR} -L 5433:${process.env.RDS_AWS_ENDPOINT}:${process.env.RDS_AWS_PORT} ${process.env.EC2_AWS_USERNAME}@${process.env.EC2_AWS_ENDPOINT}`;
     exec(command);
     console.log(`⚡️[server]: Port forwarding to AWS RDS success`);
   }
@@ -67,3 +67,4 @@ const listBuckets = async () => {
   }
 };
 export { awsStartUp, listBuckets };
+
