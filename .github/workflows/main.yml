@@ -32,7 +32,6 @@ jobs:
             - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
             - run: whoami && pwd
             - run: |
-               ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{ secrets.AWS_EC2_USERNAME }}@${{ secrets.AWS_EC2_ENDPOINT }}
                cd /home/ubuntu/Projects/personal-blog/server
                git fetch --all
                git pull
