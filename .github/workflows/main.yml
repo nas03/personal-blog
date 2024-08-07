@@ -3,12 +3,13 @@ run-name: "${{ github.actor }} deploy to EC2"
 on: [push]
 jobs:
     Deploy-To-EC2:
+        environment: production
         runs-on: self-hosted
         steps:
             - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
             - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
             - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-            - run: echo "✨ AWS REGION\:${{secrets.AWS_REGION}} ."
+            - run: echo "✨ AWS REGION:${{secrets.AWS_REGION}} ."
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
