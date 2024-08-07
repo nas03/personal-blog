@@ -19,7 +19,7 @@ jobs:
         runs-on: self-hosted
         # needs: Clean-Docker
         steps:
-            - run: whoiam && pwd && locate bun && which bun ls -sh ${which bun}
+            - run: whoami && pwd && locate bun && which bun ls -sh ${which bun}
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
