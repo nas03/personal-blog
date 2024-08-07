@@ -30,6 +30,6 @@ jobs:
               uses: actions/checkout@v4
             - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
             - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
-            - run: whoami && pwd && which bun
+            - run: whoami && pwd
             - run: cd /home/ubuntu/Projects/personal-blog/server && git fetch --all && git pull && bun install && bun run build
                     
