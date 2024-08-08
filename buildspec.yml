@@ -14,13 +14,11 @@ phases:
 
   pre_build:
     commands:
-      - echo "Running TypeScript compilation..."
-      - npx tsc  # Run TypeScript compiler (tsc)
-
+      - echo "Pre build compilation..."
   build:
     commands:
-      - echo "Applying tsc-alias..."
-      - npx tsc-alias  # Run tsc-alias after tsc
+      - echo "Compile tsc-alias..."
+      - npx tsc && npx tsc-alias  # Run tsc-alias after tsc
 
   post_build:
     commands:
@@ -28,7 +26,7 @@ phases:
 
 artifacts:
   files:
-    - '**/*'  # Include all files from the base directory
+    - 'dist/**/*'  # Include all files from the base directory
   discard-paths: no
   # The following line specifies the S3 bucket and folder (key) where the artifacts will be stored
   name: source_code/  # Store the artifacts in the 'source_code' folder in S3
