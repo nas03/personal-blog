@@ -5,9 +5,12 @@ phases:
     runtime-versions:
       nodejs: 21  # Specify the Node.js version
     commands:
+      - curl -fsSL https://bun.sh/install | bash
+      - export BUN_INSTALL="$HOME/.bun"
+      - export PATH="$BUN_INSTALL/bin:$PATH"
       - cd server
       - echo "Installing dependencies..."
-      - npm install  # Install dependencies defined in package.json
+      - bun install  # Install dependencies defined in package.json
 
   pre_build:
     commands:
