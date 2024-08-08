@@ -8,7 +8,7 @@
     "compile:webpack": "webpack",
     "clean": "rm -rf dist && docker system prune -f --volumes",
     "container": "docker compose -e CONFIG_AWS_ACCESS_KEY_ID CONFIG_AWS_SECRET_KEY_ID  CONFIG_AWS_REGION=ap-southeast-1 --project-name personal-blog-server up --build --detach",
-    "start": "bun run compile && bun run container && bun run clean",
+    "start": "bun run container && bun run clean",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "introspect:db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
     "generate:secret": "node -e console.log(require('crypto').randomBytes(16).toString('base64'))",
