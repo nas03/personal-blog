@@ -21,9 +21,11 @@ jobs:
     runs-on: codebuild-personal-blog-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Fetch required parameters
-        run: export CONFIG_AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
-      - run: export CONFIG_AWS_SECRET_KEY_ID=${{secrets.AWS_SECRET_KEY_ID}}
-      - run: npm run start
+        run: cd server
+      - run: |
+          export CONFIG_AWS_SECRET_KEY_ID=${{secrets.AWS_SECRET_KEY_ID}}
+          export CONFIG_AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
+          npm run start
   AWS_EC2:
     environment: production
     runs-on: self-hosted
