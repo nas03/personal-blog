@@ -1,0 +1,28 @@
+phases:
+  install:
+    runtime-versions:
+      nodejs: 21  # Specify the Node.js version
+    commands:
+      - cd server
+      - echo "Installing dependencies..."
+      - npm install  # Install dependencies defined in package.json
+
+  pre_build:
+    commands:
+      - echo "Running TypeScript compilation..."
+      - npx tsc  # Run TypeScript compiler (tsc)
+
+  build:
+    commands:
+      - echo "Applying tsc-alias..."
+      - npx tsc-alias  # Run tsc-alias after tsc
+
+  post_build:
+    commands:
+      - echo "Build completed."
+
+artifacts:
+  files:
+    - dist/**/*  # Include all files from the 'dist' directory
+  discard-paths: no
+  base-directory: dist  # Base directory where the compiled files are stored
