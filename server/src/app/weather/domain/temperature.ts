@@ -1,7 +1,7 @@
 import { createResponse, getErrorMsg, getUserIdByToken } from "@/utilities";
 import { Request, Response } from "express";
 
-const getTemperatureData = async (req: Request, res: Response) => {
+export const getTemperatureData = async (req: Request, res: Response) => {
     try {
         const user_id = getUserIdByToken(req);
         // const {forecast, current} = req.query;
