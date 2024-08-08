@@ -32,47 +32,47 @@ jobs:
   #         export CONFIG_AWS_SECRET_KEY_ID=${{secrets.AWS_SECRET_KEY_ID}}
   #         export CONFIG_AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
   #         npm run start
-  AWS_EC2:
-    environment: production
-    runs-on: self-hosted
-    needs: Clean-Docker
-    steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
-          aws-region: ${{ secrets.AWS_REGION }}
+  # AWS_EC2:
+  #   environment: production
+  #   runs-on: self-hosted
+  #   needs: Clean-Docker
+  #   steps:
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+  #         aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: SSH to EC2 instances
-        uses: actions/checkout@v4
-      - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
-      - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
+  #     - name: SSH to EC2 instances
+  #       uses: actions/checkout@v4
+  #     - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
+  #     - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
       
-      - name: Verify persmission
-        run: whoami && pwd
+  #     - name: Verify persmission
+  #       run: whoami && pwd
       
-      - name: Create environment
-        run: |
-          chmod +x .github/workflows/load_env.sh
-          ./.github/workflows/load_env.sh
+  #     - name: Create environment
+  #       run: |
+  #         chmod +x .github/workflows/load_env.sh
+  #         ./.github/workflows/load_env.sh
 
-      - name: Fetch required parameters
-        run: |
-          PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')
-          PS_SECRET_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_SECRET_KEY_ID --output json) | jq -r '.Parameter.Value')
-          export CONFIG_AWS_ACCESS_KEY_ID=$PS_ACCESS_KEY_ID
-          export CONFIG_AWS_SECRET_KEY_ID=$PS_SECRET_KEY_ID
-          echo $CONFIG_AWS_ACCESS_KEY_ID
-          echo $CONFIG_AWS_SECRET_KEY_ID
+  #     - name: Fetch required parameters
+  #       run: |
+  #         PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')
+  #         PS_SECRET_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_SECRET_KEY_ID --output json) | jq -r '.Parameter.Value')
+  #         export CONFIG_AWS_ACCESS_KEY_ID=$PS_ACCESS_KEY_ID
+  #         export CONFIG_AWS_SECRET_KEY_ID=$PS_SECRET_KEY_ID
+  #         echo $CONFIG_AWS_ACCESS_KEY_ID
+  #         echo $CONFIG_AWS_SECRET_KEY_ID
 
-      - name: Build and run containers
-        run: |
-          cd /home/ubuntu/Projects/personal-blog/server
-          git fetch --all
-          git pull
-          export BUN_INSTALL="$HOME/.bun"
-          export PATH="$BUN_INSTALL/bin:$PATH"
-          bun install
-          bun run container
-          bun run clean
+  #     - name: Build and run containers
+  #       run: |
+  #         cd /home/ubuntu/Projects/personal-blog/server
+  #         git fetch --all
+  #         git pull
+  #         export BUN_INSTALL="$HOME/.bun"
+  #         export PATH="$BUN_INSTALL/bin:$PATH"
+  #         bun install
+  #         bun run container
+  #         bun run clean
