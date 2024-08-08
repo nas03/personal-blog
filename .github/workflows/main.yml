@@ -16,7 +16,15 @@ jobs:
       - run: |
           cd /home/ubuntu/Projects/personal-blog/server
           docker compose down
-  Deploy-To-EC2:
+  AWS_CodeBuidld:
+    environment: production
+    runs-on: codebuild-personal-blog-${{github.run_id}}-${{github.run_attempt}}
+    steps:
+      - name: Fetch required parameters
+        run: export CONFIG_AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
+      - run: export CONFIG_AWS_SECRET_KEY_ID=${{secrets.AWS_SECRET_KEY_ID}}
+      - run: npm run start
+  AWS_EC2:
     environment: production
     runs-on: self-hosted
     needs: Clean-Docker
@@ -50,14 +58,14 @@ jobs:
           echo $CONFIG_AWS_ACCESS_KEY_ID
           echo $CONFIG_AWS_SECRET_KEY_ID
 
-      - name: Build and run containers
-        run: |
-          cd /home/ubuntu/Projects/personal-blog/server
-          git fetch --all
-          git pull
-          export BUN_INSTALL="$HOME/.bun"
-          export PATH="$BUN_INSTALL/bin:$PATH"
-          bun install
-          bun run compile
-          bun run container
-          bun run clean
+      # - name: Build and run containers
+      #   run: |
+      #     cd /home/ubuntu/Projects/personal-blog/server
+      #     git fetch --all
+      #     git pull
+      #     export BUN_INSTALL="$HOME/.bun"
+      #     export PATH="$BUN_INSTALL/bin:$PATH"
+      #     bun install
+      #     tsc && tsc-alias
+      #     bun run container
+      #     bun run clean
