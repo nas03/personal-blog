@@ -5,6 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "compile": "tsc && tsc-alias",
+    "compile:webpack": "webpack",
     "clean": "rm -rf dist && docker system prune -f --volumes",
     "container": "docker compose -e CONFIG_AWS_ACCESS_KEY_ID CONFIG_AWS_SECRET_KEY_ID  CONFIG_AWS_REGION=ap-southeast-1 --project-name personal-blog-server up --build --detach",
     "start": "bun run compile && bun run container && bun run clean",
@@ -63,9 +64,12 @@
     "crypto": "^1.0.1",
     "nodemon": "^3.1.4",
     "ssh2": "^1.15.0",
+    "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.10",
-    "tunnel-ssh": "^5.1.2"
+    "tunnel-ssh": "^5.1.2",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4"
   },
   "trustedDependencies": [
     "aws-sdk"

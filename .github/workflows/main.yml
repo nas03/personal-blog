@@ -74,7 +74,6 @@ jobs:
           export BUN_INSTALL="$HOME/.bun"
           export PATH="$BUN_INSTALL/bin:$PATH"
           bun install
-          bunx tsc
-          bunx tsc-alias
+          bun run compile:webpack
           bun run container
           bun run clean
