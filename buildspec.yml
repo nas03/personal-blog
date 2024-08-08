@@ -21,12 +21,14 @@ phases:
       - npx tsc && npx tsc-alias  # Run tsc-alias after tsc
 
   post_build:
-    commands:
-      - echo "Build completed."
+  commands:
+    - echo "Listing contents of server/dist..."
+    - ls -R server/dist
+    - echo "Build complete"
 
 artifacts:
   files:
-    - 'dist/**/*'  # Include all files from the base directory
+    - '**/*'  # Include all files from the base directory
+  base-directory: server/dist  # Adjust the base directory to where your build output is
   discard-paths: no
-  # The following line specifies the S3 bucket and folder (key) where the artifacts will be stored
   name: source_code/  # Store the artifacts in the 'source_code' folder in S3
