@@ -1,45 +1,43 @@
 name: Deploy to EC2
-run-name: "${{ github.actor }} deploy to EC2"
+run-name: '${{ github.actor }} deploy to EC2'
 on: [push]
 jobs:
-    Clean-Docker:
-        environment: production
-        runs-on: self-hosted
-        steps:
-            - run: echo "🧹 Cleanup docker images, containers and instances"
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v1
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
-                aws-region: ${{ secrets.AWS_REGION }}
-            - run: |
-                cd /home/ubuntu/Projects/personal-blog/server
-                docker compose down
-    Deploy-To-EC2:
-        environment: production
-        runs-on: self-hosted
-        needs: Clean-Docker
-        steps:
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v1
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
-                aws-region: ${{ secrets.AWS_REGION }}
-        
-            - name: Deploy to EC2
-              uses: actions/checkout@v4
-            - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
-            - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
-            - run: whoami && pwd
-            - run: |
-               cd /home/ubuntu/Projects/personal-blog/server
-               git fetch --all
-               git pull
-               export BUN_INSTALL="$HOME/.bun"
-               export PATH="$BUN_INSTALL/bin:$PATH"
-               bun install
-               bun run build
-               docker system prune -f
-                    
+  Clean-Docker:
+    environment: production
+    runs-on: self-hosted
+    steps:
+      - run: echo "🧹 Cleanup docker images, containers and instances"
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - run: |
+          cd /home/ubuntu/Projects/personal-blog/server
+          docker compose down
+  Deploy-To-EC2:
+    environment: production
+    runs-on: self-hosted
+    needs: Clean-Docker
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to EC2
+        uses: actions/checkout@v4
+      - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
+      - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
+      - run: whoami && pwd
+      - run: |
+          cd /home/ubuntu/Projects/personal-blog/server
+          git fetch --all
+          git pull
+          export BUN_INSTALL="$HOME/.bun"
+          export PATH="$BUN_INSTALL/bin:$PATH"
+          bun install
+          bun run build
