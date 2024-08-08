@@ -25,6 +25,8 @@ phases:
 
 artifacts:
   files:
-    - dist/**/*  # Include all files from the 'dist' directory
-  discard-paths: no
+    - '**/*'  # Include all files from the base directory
   base-directory: dist  # Base directory where the compiled files are stored
+  discard-paths: no
+  # The following line specifies the S3 bucket and folder (key) where the artifacts will be stored
+  name: source_code/  # Store the artifacts in the 'source_code' folder in S3
