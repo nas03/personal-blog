@@ -2,22 +2,24 @@ name: Deploy to EC2
 run-name: "${{ github.actor }} deploy to EC2"
 on: [push]
 jobs:
-    # Clean-Docker:
-    #     environment: production
-    #     runs-on: self-hosted
-    #     steps:
-    #         - run: echo "🧹 Cleanup docker images, containers and instances"
-    #         - name: Configure AWS credentials
-    #           uses: aws-actions/configure-aws-credentials@v1
-    #           with:
-    #             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #             aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
-    #             aws-region: ${{ secrets.AWS_REGION }}
-    #         - run: "cd /home/ubuntu/Projects/personal-blog/server && docker compose down"
+    Clean-Docker:
+        environment: production
+        runs-on: self-hosted
+        steps:
+            - run: echo "🧹 Cleanup docker images, containers and instances"
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+                aws-region: ${{ secrets.AWS_REGION }}
+            - run: |
+                cd /home/ubuntu/Projects/personal-blog/server
+                docker compose down
     Deploy-To-EC2:
         environment: production
         runs-on: self-hosted
-        # needs: Clean-Docker
+        needs: Clean-Docker
         steps:
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
@@ -39,4 +41,5 @@ jobs:
                export PATH="$BUN_INSTALL/bin:$PATH"
                bun install
                bun run build
+               docker system prune -f
                     
