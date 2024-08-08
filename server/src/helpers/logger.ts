@@ -9,22 +9,14 @@ const myFormat = combine(
 	printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
 );
 const logger = createLogger({
-	level: 'error',
-	format: myFormat,
-	transports: [
-		new transports.File({
-			filename: 'log/sys.log',
-			level: 'error',
-		}),
-		new transports.Console({
-			format: combine(
-				colorize({ all: true }),
-				timestamp({
-					format: 'YYYY-MM-DD hh:mm:ss.SSS A',
-				}),
-				printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
-			),
-		}),
-	],
+  level: "error",
+  format: myFormat,
+  transports: [
+    new transports.File({
+      filename: "log/sys.log",
+      level: "error",
+    }),
+    new transports.Console(),
+  ],
 });
 export default logger;

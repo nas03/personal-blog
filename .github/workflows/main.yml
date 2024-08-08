@@ -28,16 +28,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to EC2
+      - name: SSH to EC2 instances
         uses: actions/checkout@v4
       - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
       - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
-      - run: whoami && pwd
-      - run: |
+      
+      - name: Verify persmission
+        run: whoami && pwd
+      
+      - name: Fetch required parameters
+        run: |
+          PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')
+          PS_SECRET_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_SECRET_KEY_ID --output json) | jq -r '.Parameter.Value')
+          export CONFIG_AWS_ACCESS_KEY_ID=$PS_ACCESS_KEY_ID
+          export CONFIG_AWS_SECRET_KEY_ID=$PS_SECRET_KEY_ID
+          echo $CONFIG_AWS_ACCESS_KEY_ID
+          echo $CONFIG_AWS_SECRET_KEY_ID
+
+      - name: Build and run containers
+        run: |
           cd /home/ubuntu/Projects/personal-blog/server
           git fetch --all
           git pull
           export BUN_INSTALL="$HOME/.bun"
           export PATH="$BUN_INSTALL/bin:$PATH"
           bun install
-          bun run build
+          bun run start
