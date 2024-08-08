@@ -1,39 +1,28 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
 import { isJSON } from "@/utilities";
-import dotenv from "dotenv";
 import { createClient } from "redis";
-import logger from "./logger";
-// Create a new Redis client
-dotenv.config()
-;
-const redisClient = createClient(
-  ["development", "local", 'production'].includes(String(process.env.NODE_ENV))
-    ? {
-        password: process.env.REDIS_CLOUD_PASSWORD,
-        socket: {
-          host: process.env.REDIS_CLOUD_HOST,
-          port: Number(process.env.REDIS_CLOUD_PORT),
-        },
-      }
-    : {}
-);
+import logger from "../logger";
+
+let redisClient = createClient({
+  password: process.env.REDIS_CLOUD_PASSWORD,
+  socket: {
+    host: process.env.REDIS_CLOUD_HOST,
+    port: Number(process.env.REDIS_CLOUD_PORT),
+  },
+});
 
 redisClient.on("connect", () => {
   console.log("⚡️[server]: Connected to Redis");
 });
+
 redisClient.on("error", async (err) => {
   console.error("⚡️[server]: Error connecting to Redis:", err);
 });
 
-const redisStart = async () => {
+export const redisStart = async () => {
   await redisClient.connect();
-  redisClient.on("connect", () => {
-    console.log("Connected to Redis");
-  });
-  redisClient.on("error", async (err) => {
-    console.error("Error connecting to Redis:", err);
-  });
+  return redisClient;
 };
 
 const createObjectIndex = async <T>(data: T) => {
@@ -96,5 +85,5 @@ const updateCache = async <T>(key: object | string, values: object | string | T[
   }
 };
 
-const redis = { redisStart, deleteCache, getCache, setCache, updateCache };
+const redis = { deleteCache, getCache, setCache, updateCache };
 export default redis;

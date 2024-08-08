@@ -36,6 +36,11 @@ jobs:
       - name: Verify persmission
         run: whoami && pwd
       
+      - name: Create environment
+        run: |
+          chmod +x .github/workflows/load_env.sh
+          ./.github/workflows/load_env.sh
+
       - name: Fetch required parameters
         run: |
           PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')

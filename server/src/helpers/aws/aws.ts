@@ -1,10 +1,12 @@
 import { ListBucketsCommand, S3Client, S3ClientConfig } from "@aws-sdk/client-s3";
-import { GetParametersCommand, GetParametersCommandInput, GetParametersRequest, SSMClient, SSMClientConfig } from "@aws-sdk/client-ssm";
+import { GetParametersCommand, GetParametersRequest, Parameter, SSMClient, SSMClientConfig } from "@aws-sdk/client-ssm";
 import { exec } from "child_process";
 import dotenv from "dotenv";
-import { demoQuery } from "./db";
-import logger from "./logger";
-dotenv.config()
+import _ from "lodash";
+import { demoQuery } from "../db";
+import logger from "../logger";
+import awsCommon from "./common";
+dotenv.config();
 
 const awsConfig = {
   region: process.env.CONFIG_AWS_REGION,
@@ -15,7 +17,7 @@ const awsConfig = {
 };
 
 const s3Client = new S3Client(awsConfig as S3ClientConfig);
-const ssmClient = new SSMClient(awsConfig as SSMClientConfig)
+const ssmClient = new SSMClient(awsConfig as SSMClientConfig);
 
 const retryDbConnection = async (maxRetries: number, delay: number) => {
   let retry = 0;
@@ -41,36 +43,37 @@ const retryDbConnection = async (maxRetries: number, delay: number) => {
 
   return attemptConnection();
 };
-const getEnvParams = async () => {
+
+const _getEnvParams = async () => {
   try {
-    let retry = 0
-    const fetchParamsCommand: GetParametersCommandInput[]= [
-      {
-        Names
-      }
-    ] as GetParametersCommand<GetParametersCommandInput>
-    const params = await ssmClient.send(fetchParamsCommand)
-    const attemptConnection = () => {
-      return new Promise ((resolve) => {
-        setTimeout(async () => {
-          console.log(`⚡️[server]: Retry getting params from Parameters Store: ${++retry} times`);
-          try {
-            const conn = await 
-          } catch (error) {
-            logger.error(`⚡️[server]: Failed fetching params from Parameters Store. Trace: ${error}`);
-            if(retry < 10) {
-              resolve(attemptConnection())
-            }else {
-              resolve(null)
-            }
-          }
-        })
-      })
+    const requests: GetParametersRequest[] = [];
+    const paramsPageNo = Math.floor(awsCommon.parametersName.length / 10);
+    for (let i = 0; i < paramsPageNo; i++) {
+      requests.push({ Names: awsCommon.parametersName.slice(i * 10, (i + 1) * 10) });
     }
+    requests.push({
+      Names: awsCommon.parametersName.slice(paramsPageNo * 10, paramsPageNo * 10 + (awsCommon.parametersName.length % 10)),
+    });
+
+    const fetchParams = await Promise.all(
+      requests.map((request) => {
+        const command = new GetParametersCommand(request);
+        return ssmClient.send(command, { requestTimeout: 3000 });
+      })
+    );
+    fetchParams.forEach((response) => {
+      response.Parameters?.forEach((parameter: Parameter) => {
+        if (parameter.Name && parameter.Value && _.isNil(process.env[parameter.Name])) {
+          process.env[parameter.Name] = parameter.Value;
+        }
+      });
+    });
+    console.log("⚡️[server]: Loaded Env Parameters Success");
   } catch (error) {
-    logger.error(error)
+    logger.error(`⚡️[server]: Failed fetching params from Parameters Store. Trace: ${error}`);
   }
-}
+};
+
 const awsStartUp = async () => {
   // FORWARD AWS CONNECTION TO LOCALHOST
   if (process.env.NODE_ENV === "local") {
@@ -97,5 +100,5 @@ const listBuckets = async () => {
     return false;
   }
 };
-export { awsStartUp, listBuckets };
+export { _getEnvParams, awsStartUp, listBuckets };
 
