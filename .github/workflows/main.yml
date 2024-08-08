@@ -53,4 +53,6 @@ jobs:
           export BUN_INSTALL="$HOME/.bun"
           export PATH="$BUN_INSTALL/bin:$PATH"
           bun install
-          bun run start
+          bun run compile
+          bun run container
+          bun run clean
