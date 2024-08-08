@@ -21,10 +21,8 @@ phases:
       - npx tsc && npx tsc-alias  # Run tsc-alias after tsc
 
   post_build:
-  commands:
-    - echo "Listing contents of server/dist..."
-    - ls -R server/dist
-    - echo "Build complete"
+    commands:
+      - echo "Build complete"
 
 artifacts:
   files:
