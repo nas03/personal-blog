@@ -22,7 +22,7 @@ jobs:
 
       - name: Clean previous build
         run: |
-          docker system prune -f --volumes
+          sudo docker system prune -f --volumes
           cd ~/Projects
           rm -rf build
           aws s3 rm ${{secrets.AWS_S3_URI}}/build
