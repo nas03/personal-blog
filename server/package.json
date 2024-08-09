@@ -7,7 +7,7 @@
     "compile": "tsc && tsc-alias",
     "compile:webpack": "webpack",
     "clean": "rm -rf dist && docker system prune -f --volumes",
-    "container": "docker compose --project-name personal-blog-server up --build --detach",
+    "container": "docker compose --project-name personal-blog-server up --detach",
     "start": "bun run container && bun run clean",
     "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "introspect:db": "drizzle-kit introspect --config=src/helpers/drizzle.config.ts",
