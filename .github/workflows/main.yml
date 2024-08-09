@@ -28,7 +28,6 @@ jobs:
         run: |
           cd ~/Projects
           rm -rf personal-blog
-          aws s3 rm ${{secrets.AWS_S3_URI}}/source_code
 
   Build-On-AWS-CodeBuidld:
     environment: production
@@ -96,6 +95,8 @@ jobs:
       
       - name: Build container
         run: |
+          export BUN_INSTALL="$HOME/.bun"
+          export PATH="$BUN_INSTALL/bin:$PATH"
           bun run container
           bun run clean
       - name: Cleanup
