@@ -20,12 +20,15 @@ jobs:
       - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
       - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
 
-      - name: Clean previous build
+      - name: Clean previous images
         run: |
           sudo docker system prune -f --volumes
+      
+      - name: Clean workspace
+        run: |
           cd ~/Projects
-          rm -rf build
-          aws s3 rm ${{secrets.AWS_S3_URI}}/build
+          rm -rf personal-blog
+          aws s3 rm ${{secrets.AWS_S3_URI}}/source_code
 
   Build-On-AWS-CodeBuidld:
     environment: production
@@ -42,6 +45,7 @@ jobs:
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: personal_blog
+          
   AWS_EC2:
     environment: production
     runs-on: self-hosted
@@ -71,21 +75,23 @@ jobs:
           echo $CONFIG_AWS_ACCESS_KEY_ID
           echo $CONFIG_AWS_SECRET_KEY_ID
 
-      - name: Fetch new build
+      - name: Install new build
         run: |
           export BUN_INSTALL="$HOME/.bun"
           export PATH="$BUN_INSTALL/bin:$PATH"
           cd /home/ubuntu/Projects
-          aws s3api get-object --bucket ${{secrets.AWS_S3_BUCKET}} --key build
-          unzip build.zip
-          cd build
+          aws s3api get-object --bucket ${{secrets.AWS_S3_BUCKET}} --key source_code ~/Projects/personal-blog
+          cd ~/Projects
+          unzip personal-blog -o
+          cd personal-blog
           bun install
+
       - name: Create environment
         run: |
-          cd ~/Projects/build
-          >.env
-          chmod +x .github/workflows/load_env.sh
-          ./.github/workflows/load_env.sh
+          cd ~/Projects/personal-blog
+          > .env
+          chmod +x scripts/load_env.sh
+          scripts/load_env.sh
       
       - name: Build container
         run: |

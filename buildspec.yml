@@ -26,12 +26,12 @@ phases:
 
 artifacts:
   files:
-    - /dist/**/*
+    - dist/**/*
     - package.json
     - .dockerignore
     - docker-compose.yml
     - Dockerfile
-    - /.github/workflows/load_env.sh
+    - scripts/**/*
   base-directory: server
   discard-paths: no
   name: build
