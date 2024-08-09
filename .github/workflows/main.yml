@@ -2,77 +2,89 @@ name: Deploy to EC2
 run-name: '${{ github.actor }} deploy to EC2'
 on: [push]
 jobs:
-  Clean-Docker:
+  Clean-Up-Previous-Build:
     environment: production
     runs-on: self-hosted
     steps:
-      - run: echo "🧹 Cleanup docker images, containers and instances"
+      - run: echo "🧹 Cleanup previous build"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - run: |
-          cd /home/ubuntu/Projects/personal-blog/server
+
+      - name: Setup SSH Tunnel
+        uses: actions/checkout@v4
+      - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
+      - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
+
+      - name: Clean previous build
+        run: |
           docker compose down
-  # AWS_CodeBuidld:
-  #   environment: production
-  #   runs-on: codebuild-personal-blog-${{ github.run_id }}-${{ github.run_attempt }}
-  #   steps:
-  #     - name: Fetch required parameters
-  #       run: ls
-  #     - run: |
-  #         git clone 
-  #         echo "Script executed from: ${PWD}"
-  #         echo "List files: $(ls)"
-  #         cd ..
-  #         echo "Script executed from: ${PWD}"
-  #         echo "List files: $(ls)"
-  #         export CONFIG_AWS_SECRET_KEY_ID=${{secrets.AWS_SECRET_KEY_ID}}
-  #         export CONFIG_AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
-  #         npm run start
-  # AWS_EC2:
-  #   environment: production
-  #   runs-on: self-hosted
-  #   needs: Clean-Docker
-  #   steps:
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
-  #         aws-region: ${{ secrets.AWS_REGION }}
+          docker rm -vf $(docker ps -aq)
+          docker rmi -f $(docker images -aq)
+          docker system prune -f --volumes
+          cd /home/ubuntu/Projects/personal-blog/server
+          rm -rf dist
+          aws s3 rm ${{secrets.AWS_S3_URI}}/build
 
-  #     - name: SSH to EC2 instances
-  #       uses: actions/checkout@v4
-  #     - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
-  #     - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
+  Build-On-AWS-CodeBuidld:
+    environment: production
+    runs-on: codebuild-personal_blog-${{ github.run_id }}-${{ github.run_attempt }}
+    needs: Clean-Up-Previous-Build
+    steps:
+      - name: Build on AWS CodeBuild
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: personal_blog
+  AWS_EC2:
+    environment: production
+    runs-on: self-hosted
+    needs: Build-On-AWS-CodeBuidld
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: SSH to EC2 instances
+        uses: actions/checkout@v4
+      - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
+      - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
+
+      - name: Verify persmission
+        run: whoami && pwd
+
+      - name: Fetch required parameters
+        run: |
+          PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')
+          PS_SECRET_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_SECRET_KEY_ID --output json) | jq -r '.Parameter.Value')
+          export CONFIG_AWS_ACCESS_KEY_ID=$PS_ACCESS_KEY_ID
+          export CONFIG_AWS_SECRET_KEY_ID=$PS_SECRET_KEY_ID
+          echo $CONFIG_AWS_ACCESS_KEY_ID
+          echo $CONFIG_AWS_SECRET_KEY_ID
+
+      - name: Fetch new build
+        run: |
+          export BUN_INSTALL="$HOME/.bun"
+          export PATH="$BUN_INSTALL/bin:$PATH"
+          cd /home/ubuntu/Projects
+          aws s3api get-object --bucket ${{secrets.AWS_S3_BUCKET}} --key build
+          unzip build.zip
+          cd build
+          bun install
+      - name: Create environment
+        run: |
+          cd ~/Projects/build
+          >.env
+          chmod +x .github/workflows/load_env.sh
+          ./.github/workflows/load_env.sh
       
-  #     - name: Verify persmission
-  #       run: whoami && pwd
-      
-  #     - name: Create environment
-  #       run: |
-  #         chmod +x .github/workflows/load_env.sh
-  #         ./.github/workflows/load_env.sh
-
-  #     - name: Fetch required parameters
-  #       run: |
-  #         PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')
-  #         PS_SECRET_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_SECRET_KEY_ID --output json) | jq -r '.Parameter.Value')
-  #         export CONFIG_AWS_ACCESS_KEY_ID=$PS_ACCESS_KEY_ID
-  #         export CONFIG_AWS_SECRET_KEY_ID=$PS_SECRET_KEY_ID
-  #         echo $CONFIG_AWS_ACCESS_KEY_ID
-  #         echo $CONFIG_AWS_SECRET_KEY_ID
-
-  #     - name: Build and run containers
-  #       run: |
-  #         cd /home/ubuntu/Projects/personal-blog/server
-  #         git fetch --all
-  #         git pull
-  #         export BUN_INSTALL="$HOME/.bun"
-  #         export PATH="$BUN_INSTALL/bin:$PATH"
-  #         bun install
-  #         bun run container
-  #         bun run clean
+      - name: Build container
+        run: |
+          bun run container
+          bun run clean

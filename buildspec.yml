@@ -26,7 +26,12 @@ phases:
 
 artifacts:
   files:
-    - '**/*'  # Include all files from the base directory
-  base-directory: server/dist  # Adjust the base directory to where your build output is
+    - /dist/**/*
+    - package.json
+    - .dockerignore
+    - docker-compose.yml
+    - Dockerfile
+    - /.github/workflows/load_env.sh
+  base-directory: server
   discard-paths: no
-  name: source_code/  # Store the artifacts in the 'source_code' folder in S3
+  name: build
