@@ -82,8 +82,9 @@ jobs:
           cd /home/ubuntu/Projects
           aws s3api get-object --bucket ${{secrets.AWS_S3_BUCKET}} --key source_code ~/Projects/personal-blog
           cd ~/Projects
-          unzip personal-blog -o
+          unzip -o personal-blog
           cd personal-blog
+          rm -rf personal-blog
           bun install
 
       - name: Create environment
