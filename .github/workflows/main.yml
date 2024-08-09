@@ -26,7 +26,7 @@ jobs:
           docker rm -vf $(docker ps -aq)
           docker rmi -f $(docker images -aq)
           docker system prune -f --volumes
-          cd /home/ubuntu/Projects
+          cd ~/Projects
           rm -rf build
           aws s3 rm ${{secrets.AWS_S3_URI}}/build
 
