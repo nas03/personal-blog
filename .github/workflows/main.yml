@@ -80,12 +80,11 @@ jobs:
           export BUN_INSTALL="$HOME/.bun"
           export PATH="$BUN_INSTALL/bin:$PATH"
           cd /home/ubuntu/Projects
-          aws s3api get-object --bucket ${{secrets.AWS_S3_BUCKET}} --key source_code ~/Projects/personal-blog
-          cd ~/Projects
           mkdir personal-blog
-          cd personal-blog
-          unzip -o personal-blog
-          rm -rf personal-blog
+          aws s3api get-object --bucket ${{secrets.AWS_S3_BUCKET}} --key source_code ~/Projects/personal-blog/build
+          cd ~/Projects/personal-blog
+          unzip -o build
+          rm -rf build
           bun install
 
       - name: Create environment
