@@ -89,7 +89,7 @@ jobs:
       - name: Create environment
         run: |
           cd ~/Projects/personal-blog
-          > .env
+          >.env
           chmod +x scripts/load_env.sh
           scripts/load_env.sh
       
@@ -97,6 +97,7 @@ jobs:
         run: |
           export BUN_INSTALL="$HOME/.bun"
           export PATH="$BUN_INSTALL/bin:$PATH"
+          cd ~/Projects/personal-blog
           bun run container
           bun run clean
       - name: Cleanup
