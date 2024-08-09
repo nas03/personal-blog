@@ -22,8 +22,6 @@ jobs:
 
       - name: Clean previous build
         run: |
-          docker rm -vf $(docker ps -aq)
-          docker rmi -f $(docker images -aq)
           docker system prune -f --volumes
           cd ~/Projects
           rm -rf build
@@ -87,3 +85,5 @@ jobs:
         run: |
           bun run container
           bun run clean
+      - name: Cleanup
+        run: docker system prune -f --volumes
