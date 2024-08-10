@@ -1,6 +1,9 @@
 name: Deploy to EC2
 run-name: '${{ github.actor }} deploy to EC2'
-on: [push]
+on:
+  push:
+    tags:
+      - release
 jobs:
   Clean-Up-Previous-Build:
     environment: production
