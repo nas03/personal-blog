@@ -10,8 +10,9 @@ import morgan from "morgan";
 import { route } from "@/app";
 /* Services */
 
+import { redis } from "@/helpers";
+import { redisStart } from "@/helpers/redis";
 import { _getEnvParams, awsStartUp } from "./helpers/aws/aws";
-import redisUtils, { redisStart } from "./helpers/redis/redis";
 import { printRoute } from "./tools/debug/log_routes";
 /* Config library */
 dotenv.config();
@@ -51,9 +52,8 @@ const startup = async () => {
   // VERIFY CONNECTIONS
   await _getEnvParams();
   await Promise.all([redisStart(), awsStartUp()]);
-  await redisUtils.setCache("startup:test", "Success");
-  const getCache = await redisUtils.getCache("startup:test");
-  console.log(getCache);
+  await redis.setCache("startup:test", "Success");
+  await redis.getCache("startup:test");
   server._router.stack.forEach(printRoute.bind(null, []));
 };
 

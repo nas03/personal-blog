@@ -14,5 +14,5 @@
 - [x] Redis for caching
 - [ ] Mail services
 - [x] User information
-- [ ] Deploy to EC2
-- [ ] CI/CD with Github Actions and EC2
+- [x] Deploy to EC2
+- [x] CI/CD with Github Actions, S3 and CodeBuild

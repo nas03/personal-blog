@@ -11,7 +11,7 @@ jobs:
     steps:
       - run: echo "🧹 Cleanup previous build"
 
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -23,11 +23,11 @@ jobs:
       - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
       - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
 
-      - name: Clean previous images
+      - name: Cleanup Docker
         run: |
           sudo docker system prune -f --volumes
       
-      - name: Clean workspace
+      - name: Clean Workspace
         run: |
           cd ~/Projects
           rm -rf personal-blog
@@ -37,13 +37,13 @@ jobs:
     runs-on: codebuild-personal_blog-${{ github.run_id }}-${{ github.run_attempt }}
     needs: Clean-Up-Previous-Build
     steps:
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Build on AWS CodeBuild
+      - name: Build With AWS CodeBuild
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: personal_blog
@@ -53,22 +53,19 @@ jobs:
     runs-on: self-hosted
     needs: Build-On-AWS-CodeBuidld
     steps:
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: SSH to EC2 instances
+      - name: Setup SSH Tunnel
         uses: actions/checkout@v4
       - run: echo "${{secrets.AWS_SSH_PRIVATE_KEY}}" > personal_blog.pem && chmod 600 personal_blog.pem
       - run: ssh -o StrictHostKeyChecking=no -i personal_blog.pem ${{secrets.AWS_EC2_USERNAME}}@${{secrets.AWS_EC2_ENDPOINT}}
 
-      - name: Verify persmission
-        run: whoami && pwd
-
-      - name: Fetch required parameters
+      - name: Fetch Env Variables
         run: |
           PS_ACCESS_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_ACCESS_KEY_ID --output json) | jq -r '.Parameter.Value')
           PS_SECRET_KEY_ID=$(echo $(aws ssm get-parameter --name CONFIG_AWS_SECRET_KEY_ID --output json) | jq -r '.Parameter.Value')

@@ -1,8 +1,9 @@
 import { ErrorLog } from "@/constants/common";
 import { code, message } from "@/constants/consts";
+import logger from "@/helpers/logger";
 import { isJSON } from "@/utilities";
+
 import { createClient } from "redis";
-import logger from "../logger";
 
 let redisClient = createClient({
   password: process.env.REDIS_CLOUD_PASSWORD,
